@@ -10,7 +10,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ProductsAndPricingNew.Appli
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ProductsAndPricingNew.Domain", "ProductsAndPricingNew.Domain\ProductsAndPricingNew.Domain.csproj", "{3C5B2B3E-9AA1-4DC5-9BA3-CBDC5ABAEF84}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ProductsAndPricingNew.Infrastructure", "ProductsAndPricingNew.Infrastructure\ProductsAndPricingNew.Infrastructure.csproj", "{A4906B8D-EA14-4DB9-9FB6-26BAC84E17C6}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ProductsAndPricingNew.Persistence", "ProductsAndPricingNew.Persistence\ProductsAndPricingNew.Persistence.csproj", "{A4906B8D-EA14-4DB9-9FB6-26BAC84E17C6}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ProductsAndPricingNew.UnitTests", "ProductsAndPricingNew.UnitTests\ProductsAndPricingNew.UnitTests.csproj", "{9B7178D3-90D4-47F7-BEF2-FE78856D6EF6}"
 EndProject
