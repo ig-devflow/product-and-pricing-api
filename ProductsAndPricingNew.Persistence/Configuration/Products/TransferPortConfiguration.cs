@@ -2,7 +2,7 @@
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using ProductsAndPricingNew.Domain.Entities.Products;
 
-namespace ProductsAndPricingNew.Persistence.Configuration;
+namespace ProductsAndPricingNew.Persistence.Configuration.Products;
 
 public sealed class TransferPortConfiguration : IEntityTypeConfiguration<TransferPort>
 {
@@ -73,6 +73,27 @@ public sealed class TransferPortConfiguration : IEntityTypeConfiguration<Transfe
                 .IsUnique();
         });
 
+        b.ComplexProperty(x => x.EditInfo, audit =>
+        {
+            audit.Property(x => x.CreatedBy)
+                .HasColumnName("CreatedBy")
+                .IsRequired();
+
+            audit.Property(x => x.CreateTimestamp)
+                .HasColumnName("CreateTimestamp")
+                .IsRequired();
+
+            audit.Property(x => x.UpdatedBy)
+                .HasColumnName("UpdatedBy")
+                .IsRequired();
+
+            audit.Property(x => x.UpdateTimestamp)
+                .HasColumnName("UpdateTimestamp")
+                .IsRequired();
+        });
+        
+        b.Property(x => x.RowVersion).IsRowVersion();
+        
         b.Ignore(x => x.DomainEvents);
     }
 }

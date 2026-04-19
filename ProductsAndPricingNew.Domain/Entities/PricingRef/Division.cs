@@ -1,4 +1,5 @@
 ﻿using ProductsAndPricingNew.Domain.Base;
+using ProductsAndPricingNew.Domain.Entities.Common;
 
 namespace ProductsAndPricingNew.Domain.Entities.PricingRef;
 
@@ -6,9 +7,8 @@ public sealed class Division : AggregateRoot<int>
 {
     private Division() { }
 
-    public Division(int id, string name)
+    private Division(string name)
     {
-        Id = id;
         ShowInDropdown = true;
         IsActive = true;
 
@@ -52,4 +52,94 @@ public sealed class Division : AggregateRoot<int>
 
     private static string? Normalize(string? value) =>
         string.IsNullOrWhiteSpace(value) ? null : value.Trim();
+
+    public sealed class Builder
+    {
+        private readonly string _name;
+        private bool _showInDropdown = true;
+        private bool _isActive = true;
+        private string? _termsAndConditions;
+        private string? _groupsPaymentTerms;
+        private string? _websiteUrl;
+        private string? _headOfficeEmail;
+        private string? _headOfficeTelephoneNo;
+        private Address? _contactAddress;
+
+        public Builder(string name)
+        {
+            if (string.IsNullOrWhiteSpace(name))
+                throw new DomainException("Division name is required");
+
+            _name = name.Trim();
+        }
+
+        public Builder ShowInDropdown(bool value)
+        {
+            _showInDropdown = value;
+            return this;
+        }
+
+        public Builder IsActive(bool value)
+        {
+            _isActive = value;
+            return this;
+        }
+
+        public Builder TermsAndConditions(string? value)
+        {
+            _termsAndConditions = value;
+            return this;
+        }
+
+        public Builder GroupsPaymentTerms(string? value)
+        {
+            _groupsPaymentTerms = value;
+            return this;
+        }
+
+        public Builder Website(string? value)
+        {
+            _websiteUrl = value;
+            return this;
+        }
+
+        public Builder HeadOfficeEmail(string? value)
+        {
+            _headOfficeEmail = value;
+            return this;
+        }
+
+        public Builder HeadOfficeTelephone(string? value)
+        {
+            _headOfficeTelephoneNo = value;
+            return this;
+        }
+
+        public Builder Address(Address? address)
+        {
+            _contactAddress = address;
+            return this;
+        }
+
+        public Division Build()
+        {
+            var division = new Division(_name);
+
+            division.SetDropdownVisibility(_showInDropdown);
+
+            if (_isActive)
+                division.Activate();
+            else
+                division.Deactivate();
+
+            division.ChangeTermsAndConditions(_termsAndConditions);
+            division.ChangeGroupsPaymentTerms(_groupsPaymentTerms);
+            division.ChangeWebsite(_websiteUrl);
+            division.ChangeHeadOfficeEmail(_headOfficeEmail);
+            division.ChangeHeadOfficeTelephone(_headOfficeTelephoneNo);
+            division.ChangeContactAddress(_contactAddress);
+
+            return division;
+        }
+    }
 }
