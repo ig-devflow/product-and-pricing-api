@@ -14,6 +14,7 @@ public static class ServiceCollectionExtensions
         services.AddScoped<IAddOnRepository, AddOnRepository>();
         services.AddScoped<IPackageRepository, PackageRepository>();
         services.AddScoped<ITransferPortRepository, TransferPortRepository>();
+        services.AddScoped<IUnitOfWork, UnitOfWork>();
 
         return services;
     }

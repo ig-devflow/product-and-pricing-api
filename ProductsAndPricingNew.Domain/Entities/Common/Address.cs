@@ -1,4 +1,4 @@
-﻿namespace ProductsAndPricingNew.Domain.Entities.PricingRef;
+﻿namespace ProductsAndPricingNew.Domain.Entities.Common;
 
 public sealed class Address : IEquatable<Address>
 {
@@ -25,7 +25,7 @@ public sealed class Address : IEquatable<Address>
         Line4 = normalized.Length > 3 ? normalized[3] : null;
     }
 
-    public static Address Empty { get; } = new(null, Array.Empty<string?>());
+    public static Address Empty { get; } = new(null, []);
 
     public string? Line1 { get; private set; }
     public string? Line2 { get; private set; }

@@ -48,6 +48,27 @@ public sealed class AddOnConfiguration : IEntityTypeConfiguration<AddOn>
         b.HasIndex(x => x.AddOnTypeId);
         b.HasIndex(x => x.UnitTypeId);
 
+        b.ComplexProperty(x => x.EditInfo, audit =>
+        {
+            audit.Property(x => x.CreatedBy)
+                .HasColumnName("CreatedBy")
+                .IsRequired();
+
+            audit.Property(x => x.CreateTimestamp)
+                .HasColumnName("CreateTimestamp")
+                .IsRequired();
+
+            audit.Property(x => x.UpdatedBy)
+                .HasColumnName("UpdatedBy")
+                .IsRequired();
+
+            audit.Property(x => x.UpdateTimestamp)
+                .HasColumnName("UpdateTimestamp")
+                .IsRequired();
+        });
+        
+        b.Property(x => x.RowVersion).IsRowVersion();
+        
         b.Ignore(x => x.DomainEvents);
     }
 }

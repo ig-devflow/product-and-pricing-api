@@ -11,7 +11,7 @@ public sealed class DivisionConfiguration : IEntityTypeConfiguration<Division>
         b.ToTable("Division");
 
         b.HasKey(x => x.Id);
-        b.Property(x => x.Id).ValueGeneratedNever();
+        b.Property(x => x.Id).ValueGeneratedOnAdd();
 
         b.Property(x => x.Name)
             .HasMaxLength(200)
@@ -32,7 +32,7 @@ public sealed class DivisionConfiguration : IEntityTypeConfiguration<Division>
         b.Property(x => x.HeadOfficeTelephoneNo)
             .HasMaxLength(50);
 
-        b.OwnsOne(x => x.ContactAddress, owned =>
+        b.ComplexProperty(x => x.ContactAddress, owned =>
         {
             owned.Property(x => x.Line1)
                 .HasColumnName("AddressLine1")
@@ -53,8 +53,27 @@ public sealed class DivisionConfiguration : IEntityTypeConfiguration<Division>
             owned.Property(x => x.CountryId)
                 .HasColumnName("AddressCountryId");
         });
+        
+        b.ComplexProperty(x => x.EditInfo, audit =>
+        {
+            audit.Property(x => x.CreatedBy)
+                .HasColumnName("CreatedBy")
+                .IsRequired();
 
-        b.Navigation(x => x.ContactAddress).IsRequired(false);
+            audit.Property(x => x.CreateTimestamp)
+                .HasColumnName("CreateTimestamp")
+                .IsRequired();
+
+            audit.Property(x => x.UpdatedBy)
+                .HasColumnName("UpdatedBy")
+                .IsRequired();
+
+            audit.Property(x => x.UpdateTimestamp)
+                .HasColumnName("UpdateTimestamp")
+                .IsRequired();
+        });
+        
+        b.Property(x => x.RowVersion).IsRowVersion();
 
         b.Ignore(x => x.DomainEvents);
     }
