@@ -4,13 +4,13 @@ public readonly struct FinanceCodes : IEquatable<FinanceCodes>
 {
     public string? GeneralLedgerCode { get; }
     public string? CostCentreCode { get; }
-        
+
     public FinanceCodes(string? generalLedgerCode, string? costCentreCode)
     {
         GeneralLedgerCode = generalLedgerCode;
         CostCentreCode = costCentreCode;
     }
-        
+
     public bool Equals(FinanceCodes other)
     {
         return string.Equals(GeneralLedgerCode, other.GeneralLedgerCode, StringComparison.Ordinal)

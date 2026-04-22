@@ -16,7 +16,7 @@ public sealed class Course : AggregateRoot<int>, IProductDefinition
     public int? ProductCategoryId { get; private set; }
     public DateOnly? OfferingsClosureDate { get; private set; }
     public FinanceCodes FinanceCodes { get; private set; }
-    
+
     private Course() { }
 
     public Course(int id, int divisionId, string name, int courseLanguageId, int courseIntensityId, int unitTypeId)
@@ -31,7 +31,7 @@ public sealed class Course : AggregateRoot<int>, IProductDefinition
 
         Rename(name);
     }
-    
+
     public void Rename(string name)
     {
         if (string.IsNullOrWhiteSpace(name))

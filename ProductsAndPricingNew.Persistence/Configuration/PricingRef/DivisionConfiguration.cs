@@ -17,7 +17,6 @@ public sealed class DivisionConfiguration : IEntityTypeConfiguration<Division>
             .HasMaxLength(200)
             .IsRequired();
 
-        b.Property(x => x.ShowInDropdown).IsRequired();
         b.Property(x => x.IsActive).IsRequired();
 
         b.Property(x => x.TermsAndConditions);
@@ -53,26 +52,12 @@ public sealed class DivisionConfiguration : IEntityTypeConfiguration<Division>
             owned.Property(x => x.CountryId)
                 .HasColumnName("AddressCountryId");
         });
-        
-        b.ComplexProperty(x => x.EditInfo, audit =>
-        {
-            audit.Property(x => x.CreatedBy)
-                .HasColumnName("CreatedBy")
-                .IsRequired();
 
-            audit.Property(x => x.CreateTimestamp)
-                .HasColumnName("CreateTimestamp")
-                .IsRequired();
+        b.ConfigureAuditMetadata(x => x.AuditMetadata);
+        b.Property(x => x.IsDeleted)
+            .HasDefaultValue(false)
+            .IsRequired();
 
-            audit.Property(x => x.UpdatedBy)
-                .HasColumnName("UpdatedBy")
-                .IsRequired();
-
-            audit.Property(x => x.UpdateTimestamp)
-                .HasColumnName("UpdateTimestamp")
-                .IsRequired();
-        });
-        
         b.Property(x => x.RowVersion).IsRowVersion();
 
         b.Ignore(x => x.DomainEvents);

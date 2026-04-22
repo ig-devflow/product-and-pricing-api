@@ -1,11 +1,42 @@
-bin/
-obj/
-.vs/
-.idea/
-_ReSharper.Caches/
-*.user
-*.suo
-*.DotSettings.user
+# Build output
+[Bb]in/
+[Oo]bj/
+artifacts/
+publish/
+
+# Test output
 TestResults/
 coverage/
-artifacts/
+coverage-report/
+*.coverage
+*.coveragexml
+**/coverage.cobertura.xml
+*.trx
+
+# IDE / tooling
+.vs/
+.idea/
+.vscode/
+_ReSharper*/
+_ReSharper.Caches/
+*.suo
+*.user
+*.userosscache
+*.sln.docstates
+*.DotSettings.user
+
+# Rider / solution user state
+*.sln.iml
+*.sln.DotSettings.user
+
+# OS
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Logs
+*.log
+
+# Local env
+.env
+.env.*

@@ -13,7 +13,6 @@ public static class ServiceCollectionExtensions
             cfg.AddOpenBehavior(typeof(UnitOfWorkBehavior<,>));
         });
 
-
         return services;
     }
 }

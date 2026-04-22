@@ -7,7 +7,6 @@ namespace ProductsAndPricingNew.Application.Features.Division.Commands.UpdateDiv
 public sealed record UpdateDivisionCommand(
     int Id,
     string Name,
-    bool ShowInDropdown,
     bool IsActive,
     string? TermsAndConditions,
     string? GroupsPaymentTerms,

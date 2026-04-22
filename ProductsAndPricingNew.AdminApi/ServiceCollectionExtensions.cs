@@ -1,6 +1,3 @@
 ﻿namespace ProductsAndPricingNew.AdminApi;
 
-public static class ServiceCollectionExtensions
-{
-    
-}
+public static class ServiceCollectionExtensions;

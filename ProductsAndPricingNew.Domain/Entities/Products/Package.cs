@@ -113,8 +113,8 @@ public sealed class Package : AggregateRoot<int>, IProductDefinition
 
     public void ChangeItemPercentage(ProductRef product, decimal percentage)
     {
-        var item = _items.SingleOrDefault(x => x.ProductKind == product.Kind && x.ProductDefinitionId == product.Id)
-                   ?? throw new DomainException("Package item not found");
+        PackageItem item = _items.SingleOrDefault(x => x.ProductKind == product.Kind && x.ProductDefinitionId == product.Id)
+                           ?? throw new DomainException("Package item not found");
 
         item.ChangePercentage(percentage);
         ValidatePercentagesDoNotExceed100();
@@ -122,15 +122,15 @@ public sealed class Package : AggregateRoot<int>, IProductDefinition
 
     public void RemoveItem(ProductRef product)
     {
-        var item = _items.SingleOrDefault(x => x.Product == product)
-                   ?? throw new DomainException("Package item not found");
+        PackageItem item = _items.SingleOrDefault(x => x.Product == product)
+                           ?? throw new DomainException("Package item not found");
 
         _items.Remove(item);
     }
 
     public void EnsureBreakdownTotalEquals100()
     {
-        var total = _items.Sum(x => x.Percentage);
+        decimal total = _items.Sum(x => x.Percentage);
 
         if (Math.Abs(total - 100m) > 0.01m)
             throw new DomainException($"Total percentage breakdown must equal 100%, current total is {total}%");
@@ -138,7 +138,7 @@ public sealed class Package : AggregateRoot<int>, IProductDefinition
 
     private void ValidatePercentagesDoNotExceed100()
     {
-        var total = _items.Sum(x => x.Percentage);
+        decimal total = _items.Sum(x => x.Percentage);
 
         if (total > 100m)
             throw new DomainException("Package breakdown total cannot exceed 100%");

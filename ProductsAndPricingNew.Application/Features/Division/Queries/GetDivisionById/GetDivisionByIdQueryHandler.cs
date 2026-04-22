@@ -22,7 +22,6 @@ internal sealed class GetDivisionByIdQueryHandler : IRequestHandler<GetDivisionB
             .Select(x => new DivisionDetailsDto( // automapper
                 x.Id,
                 x.Name,
-                x.ShowInDropdown,
                 x.IsActive,
                 x.TermsAndConditions,
                 x.GroupsPaymentTerms,

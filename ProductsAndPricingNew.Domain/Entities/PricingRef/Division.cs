@@ -5,25 +5,21 @@ namespace ProductsAndPricingNew.Domain.Entities.PricingRef;
 
 public sealed class Division : AggregateRoot<int>
 {
-    private Division() { }
-
-    private Division(string name)
-    {
-        ShowInDropdown = true;
-        IsActive = true;
-
-        Rename(name);
-    }
-
     public string Name { get; private set; } = null!;
-    public bool ShowInDropdown { get; private set; }
     public bool IsActive { get; private set; }
     public string? TermsAndConditions { get; private set; }
     public string? GroupsPaymentTerms { get; private set; }
     public string? WebsiteUrl { get; private set; }
     public string? HeadOfficeEmail { get; private set; }
     public string? HeadOfficeTelephoneNo { get; private set; }
-    public Address? ContactAddress { get; private set; }
+    public Address ContactAddress { get; private set; } = Address.Empty;
+
+    private Division() { }
+
+    private Division(string name)
+    {
+        Rename(name);
+    }
 
     public void Rename(string name)
     {
@@ -33,7 +29,6 @@ public sealed class Division : AggregateRoot<int>
         Name = name.Trim();
     }
 
-    public void SetDropdownVisibility(bool visible) => ShowInDropdown = visible;
     public void Activate() => IsActive = true;
     public void Deactivate() => IsActive = false;
 
@@ -45,10 +40,8 @@ public sealed class Division : AggregateRoot<int>
 
     public void ChangeContactAddress(Address? address)
     {
-        ContactAddress = address is null || address.IsEmpty ? null : address;
+        ContactAddress = address ?? Address.Empty;
     }
-
-    public void ClearContactAddress() => ContactAddress = null;
 
     private static string? Normalize(string? value) =>
         string.IsNullOrWhiteSpace(value) ? null : value.Trim();
@@ -56,8 +49,7 @@ public sealed class Division : AggregateRoot<int>
     public sealed class Builder
     {
         private readonly string _name;
-        private bool _showInDropdown = true;
-        private bool _isActive = true;
+        private bool _isActive;
         private string? _termsAndConditions;
         private string? _groupsPaymentTerms;
         private string? _websiteUrl;
@@ -71,12 +63,6 @@ public sealed class Division : AggregateRoot<int>
                 throw new DomainException("Division name is required");
 
             _name = name.Trim();
-        }
-
-        public Builder ShowInDropdown(bool value)
-        {
-            _showInDropdown = value;
-            return this;
         }
 
         public Builder IsActive(bool value)
@@ -123,9 +109,7 @@ public sealed class Division : AggregateRoot<int>
 
         public Division Build()
         {
-            var division = new Division(_name);
-
-            division.SetDropdownVisibility(_showInDropdown);
+            Division division = new(_name);
 
             if (_isActive)
                 division.Activate();

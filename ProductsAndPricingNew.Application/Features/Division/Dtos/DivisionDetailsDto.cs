@@ -3,7 +3,6 @@
 public sealed record DivisionDetailsDto(
     int Id,
     string Name,
-    bool ShowInDropdown,
     bool IsActive,
     string? TermsAndConditions,
     string? GroupsPaymentTerms,

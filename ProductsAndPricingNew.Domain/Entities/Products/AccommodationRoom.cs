@@ -18,7 +18,7 @@ public sealed class AccommodationRoom : AggregateRoot<int>, IProductDefinition
     public int? ProductCategoryId { get; private set; }
     public DateOnly? OfferingsClosureDate { get; private set; }
     public FinanceCodes FinanceCodes { get; private set; }
-    
+
     private AccommodationRoom() { }
 
     public AccommodationRoom(
@@ -43,7 +43,7 @@ public sealed class AccommodationRoom : AggregateRoot<int>, IProductDefinition
 
         Rename(name);
     }
-    
+
     public void Rename(string name)
     {
         Name = name.Trim();
@@ -60,7 +60,7 @@ public sealed class AccommodationRoom : AggregateRoot<int>, IProductDefinition
     }
 
     public void ChangeUnitType(int unitTypeId) => UnitTypeId = unitTypeId;
-    
+
     public void SetOccupyRoom(bool value)
     {
         OccupyRoom = value;

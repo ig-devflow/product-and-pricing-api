@@ -48,7 +48,7 @@ public sealed class TransferPort : AggregateRoot<int>
         if (divisionId <= 0)
             throw new DomainException("DivisionId must be greater than zero");
 
-        var existing = _instructions.FirstOrDefault(x => x.DivisionId == divisionId);
+        TransferPortInstruction? existing = _instructions.FirstOrDefault(x => x.DivisionId == divisionId);
         if (existing is not null)
         {
             existing.UpdateInstructions(instructions);
@@ -60,7 +60,7 @@ public sealed class TransferPort : AggregateRoot<int>
 
     public void RemoveInstruction(int divisionId)
     {
-        var existing = _instructions.FirstOrDefault(x => x.DivisionId == divisionId);
+        TransferPortInstruction? existing = _instructions.FirstOrDefault(x => x.DivisionId == divisionId);
         if (existing is null)
             return;
 
@@ -77,7 +77,7 @@ public sealed class TransferPort : AggregateRoot<int>
 
     public void RemoveTerminal(int number)
     {
-        var terminal = _terminals.FirstOrDefault(x => x.Number == number && !x.IsDeleted);
+        TransferPortTerminal? terminal = _terminals.FirstOrDefault(x => x.Number == number && !x.IsDeleted);
         if (terminal is null)
             return;
 

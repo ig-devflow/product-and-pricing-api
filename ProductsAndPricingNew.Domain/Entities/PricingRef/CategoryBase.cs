@@ -19,7 +19,6 @@ public abstract class CategoryBase : AggregateRoot<int>
     public int DivisionId { get; private set; }
     public string Name { get; private set; } = null!;
     public bool IsActive { get; private set; }
-    public bool IsDeleted { get; private set; }
 
     public void Rename(string name)
     {

@@ -11,12 +11,12 @@ public sealed class Address : IEquatable<Address>
 
     public Address(int? countryId, IEnumerable<string?> lines)
     {
-        var normalized = lines?
-            .Where(x => !string.IsNullOrWhiteSpace(x))
-            .Select(x => x!.Trim())
-            .Take(4)
-            .ToArray()
-            ?? Array.Empty<string>();
+        string[] normalized = lines?
+                                  .Where(x => !string.IsNullOrWhiteSpace(x))
+                                  .Select(x => x!.Trim())
+                                  .Take(4)
+                                  .ToArray()
+                              ?? Array.Empty<string>();
 
         CountryId = countryId;
         Line1 = normalized.Length > 0 ? normalized[0] : null;
@@ -50,7 +50,7 @@ public sealed class Address : IEquatable<Address>
 
     public bool Equals(Address? other)
     {
-        if (other is null) 
+        if (other is null)
             return false;
 
         return CountryId == other.CountryId

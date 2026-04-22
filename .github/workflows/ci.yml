@@ -1,0 +1,108 @@
+name: ci
+
+on:
+  push:
+    branches:
+      - main
+      - develop
+      - feature/**
+  pull_request:
+    branches:
+      - main
+      - develop
+
+permissions:
+  contents: read
+
+jobs:
+  quality:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v6
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v5
+        with:
+          dotnet-version: '8.0.x'
+          cache: true
+          cache-dependency-path: |
+            **/packages.lock.json
+
+      - name: Restore
+        run: dotnet restore ProductsAndPricingNew.sln --locked-mode
+
+      - name: Verify formatting and code style
+        run: dotnet format ProductsAndPricingNew.sln --verify-no-changes --severity error --no-restore
+
+      - name: Build
+        run: dotnet build ProductsAndPricingNew.sln --configuration Release --no-restore
+
+  tests:
+    runs-on: ubuntu-latest
+    needs: quality
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v6
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v5
+        with:
+          dotnet-version: '8.0.x'
+          cache: true
+          cache-dependency-path: |
+            **/packages.lock.json
+
+      - name: Restore
+        run: dotnet restore ProductsAndPricingNew.sln --locked-mode
+
+      - name: Unit tests
+        run: >
+          dotnet test
+          ProductsAndPricingNew.UnitTests/ProductsAndPricingNew.UnitTests.csproj
+          --configuration Release
+          --no-restore
+          --logger "trx;LogFileName=unit-tests.trx"
+          --results-directory TestResults/UnitTests
+          --collect "XPlat Code Coverage"
+
+      - name: Architecture tests
+        run: >
+          dotnet test
+          ProductsAndPricingNew.ArchitectureTests/ProductsAndPricingNew.ArchitectureTests.csproj
+          --configuration Release
+          --no-restore
+          --logger "trx;LogFileName=architecture-tests.trx"
+          --results-directory TestResults/ArchitectureTests
+          --collect "XPlat Code Coverage"
+
+      - name: Integration tests
+        run: >
+          dotnet test
+          ProductsAndPricingNew.IntegrationTests/ProductsAndPricingNew.IntegrationTests.csproj
+          --configuration Release
+          --no-restore
+          --logger "trx;LogFileName=integration-tests.trx"
+          --results-directory TestResults/IntegrationTests
+          --collect "XPlat Code Coverage"
+
+      - name: API E2E tests
+        run: >
+          dotnet test
+          ProductsAndPricingNew.Api.E2ETests/ProductsAndPricingNew.Api.E2ETests.csproj
+          --configuration Release
+          --no-restore
+          --logger "trx;LogFileName=api-e2e-tests.trx"
+          --results-directory TestResults/ApiE2ETests
+          --collect "XPlat Code Coverage"
+
+      - name: Upload test artifacts
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: test-results
+          path: |
+            TestResults/**/*.trx
+            TestResults/**/coverage.cobertura.xml
