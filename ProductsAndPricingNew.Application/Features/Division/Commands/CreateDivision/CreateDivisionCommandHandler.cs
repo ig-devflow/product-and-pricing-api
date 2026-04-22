@@ -16,6 +16,9 @@ internal sealed class CreateDivisionCommandHandler : IRequestHandler<CreateDivis
 
     public async Task<int> Handle(CreateDivisionCommand request, CancellationToken ct)
     {
+        // if (await _divisionRepository.ExistsAsync(request.Name, ct))
+        //     return -1;
+
         Address? address = null;
 
         if (request.ContactAddress is not null)
@@ -28,8 +31,7 @@ internal sealed class CreateDivisionCommandHandler : IRequestHandler<CreateDivis
                 request.ContactAddress.Line4);
         }
 
-        var division = new DivisionEntity.Builder(request.Name)
-            .ShowInDropdown(request.ShowInDropdown)
+        DivisionEntity division = new DivisionEntity.Builder(request.Name)
             .IsActive(request.IsActive)
             .TermsAndConditions(request.TermsAndConditions)
             .GroupsPaymentTerms(request.GroupsPaymentTerms)

@@ -1,12 +1,12 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.ChangeTracking;
 using Microsoft.EntityFrameworkCore.Diagnostics;
 using ProductsAndPricingNew.Domain.Abstractions;
-using ProductsAndPricingNew.Domain.Base;
 using ProductsAndPricingNew.Domain.Entities.Common;
 
 namespace ProductsAndPricingNew.Persistence.Interceptors;
 
-public sealed class AuditSaveChangesInterceptor : SaveChangesInterceptor
+internal sealed class AuditSaveChangesInterceptor : SaveChangesInterceptor
 {
     private readonly ICurrentUser _currentUser;
     private readonly ISystemClock _clock;
@@ -39,28 +39,22 @@ public sealed class AuditSaveChangesInterceptor : SaveChangesInterceptor
         if (context is null)
             return;
 
-        var now = _clock.UtcNow;
-        var userId = _currentUser.UserId;
+        DateTimeOffset now = _clock.UtcNow;
+        int userId = _currentUser.UserId;
 
-        foreach (var entry in context.ChangeTracker.Entries())
+        foreach (EntityEntry<IHasAuditMetadata> entry in context.ChangeTracker.Entries<IHasAuditMetadata>())
         {
-            if (entry.Entity is not IAggregateRoot)
-                continue;
-
-            if (entry.Metadata.FindProperty(nameof(AggregateRoot<int>.EditInfo)) is null)
-                continue;
-
-            var current = (EditInfo?)entry.Property(nameof(AggregateRoot<int>.EditInfo)).CurrentValue;
+            ComplexPropertyEntry<IHasAuditMetadata, AuditMetadata> audit = entry.ComplexProperty<AuditMetadata>(nameof(IHasAuditMetadata.AuditMetadata));
 
             if (entry.State == EntityState.Added)
             {
-                entry.Property(nameof(AggregateRoot<int>.EditInfo)).CurrentValue =
-                    EditInfo.Create(userId, now);
+                audit.CurrentValue = AuditMetadata.Create(userId, now);
+                continue;
             }
-            else if (entry.State == EntityState.Modified && current is not null)
+
+            if (entry.State == EntityState.Modified)
             {
-                entry.Property(nameof(AggregateRoot<int>.EditInfo)).CurrentValue =
-                    current.Touch(userId, now);
+                audit.CurrentValue = audit.CurrentValue.MarkUpdated(userId, now);
             }
         }
     }

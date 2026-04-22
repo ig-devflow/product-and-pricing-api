@@ -4,13 +4,13 @@ public readonly struct ProductRef : IEquatable<ProductRef>, IComparable<ProductR
 {
     public ProductKind Kind { get; }
     public int Id { get; }
-    
+
     public ProductRef(ProductKind kind, int id)
     {
         Kind = kind;
         Id = id;
     }
-    
+
     public bool Equals(ProductRef other)
     {
         return Kind == other.Kind && Id == other.Id;
@@ -28,7 +28,7 @@ public readonly struct ProductRef : IEquatable<ProductRef>, IComparable<ProductR
 
     public int CompareTo(ProductRef other)
     {
-        var kindCompare = Kind.CompareTo(other.Kind);
+        int kindCompare = Kind.CompareTo(other.Kind);
         if (kindCompare != 0)
             return kindCompare;
 

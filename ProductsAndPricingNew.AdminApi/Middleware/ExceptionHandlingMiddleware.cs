@@ -1,6 +1,3 @@
 ﻿namespace ProductsAndPricingNew.AdminApi.Middleware;
 
-public class ExceptionHandlingMiddleware
-{
-    
-}
+public class ExceptionHandlingMiddleware;

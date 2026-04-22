@@ -5,7 +5,6 @@ namespace ProductsAndPricingNew.Application.Features.Division.Commands.CreateDiv
 
 public sealed record CreateDivisionCommand(
     string Name,
-    bool ShowInDropdown,
     bool IsActive,
     string? TermsAndConditions,
     string? GroupsPaymentTerms,

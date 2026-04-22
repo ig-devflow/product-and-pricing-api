@@ -51,27 +51,13 @@ public sealed class TransferConfiguration : IEntityTypeConfiguration<Transfer>
         b.HasIndex(x => x.ProductCategoryId);
         b.HasIndex(x => x.UnitTypeId);
 
-        b.ComplexProperty(x => x.EditInfo, audit =>
-        {
-            audit.Property(x => x.CreatedBy)
-                .HasColumnName("CreatedBy")
-                .IsRequired();
+        b.ConfigureAuditMetadata(x => x.AuditMetadata);
+        b.Property(x => x.IsDeleted)
+            .HasDefaultValue(false)
+            .IsRequired();
 
-            audit.Property(x => x.CreateTimestamp)
-                .HasColumnName("CreateTimestamp")
-                .IsRequired();
-
-            audit.Property(x => x.UpdatedBy)
-                .HasColumnName("UpdatedBy")
-                .IsRequired();
-
-            audit.Property(x => x.UpdateTimestamp)
-                .HasColumnName("UpdateTimestamp")
-                .IsRequired();
-        });
-        
         b.Property(x => x.RowVersion).IsRowVersion();
-        
+
         b.Ignore(x => x.DomainEvents);
     }
 }

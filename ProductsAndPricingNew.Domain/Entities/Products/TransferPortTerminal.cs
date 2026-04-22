@@ -1,8 +1,13 @@
-﻿namespace ProductsAndPricingNew.Domain.Entities.Products;
+﻿using ProductsAndPricingNew.Domain.Abstractions;
 
-public sealed class TransferPortTerminal
+namespace ProductsAndPricingNew.Domain.Entities.Products;
+
+public sealed class TransferPortTerminal : ISoftDeletable
 {
-    private TransferPortTerminal() { }
+    public int Number { get; private set; }
+    public string Name { get; private set; } = null!;
+    public int Order { get; private set; }
+    public bool IsDeleted { get; private set; }
 
     internal TransferPortTerminal(int number, string name, int order)
     {
@@ -15,11 +20,6 @@ public sealed class TransferPortTerminal
         IsDeleted = false;
     }
 
-    public int Number { get; private set; }
-    public string Name { get; private set; } = null!;
-    public int Order { get; private set; }
-    public bool IsDeleted { get; private set; }
-
     internal void Rename(string name)
     {
         if (string.IsNullOrWhiteSpace(name))
@@ -30,4 +30,5 @@ public sealed class TransferPortTerminal
 
     internal void ChangeOrder(int order) => Order = order;
     internal void Delete() => IsDeleted = true;
+    internal void Restore() => IsDeleted = false;
 }

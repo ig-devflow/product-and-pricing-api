@@ -12,7 +12,7 @@ namespace ProductsAndPricingNew.Domain.Entities.Products
         public int? MaximumAge { get; private set; }
         public bool IsCommitted { get; private set; }
         public bool IsNonCommitted { get; private set; }
-        
+
         private Accommodation() { }
 
         public Accommodation(int id, string name, int accommodationTypeId)
@@ -23,7 +23,7 @@ namespace ProductsAndPricingNew.Domain.Entities.Products
 
             Rename(name);
         }
-        
+
         public void Rename(string name)
         {
             Name = name.Trim();

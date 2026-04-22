@@ -19,7 +19,7 @@ public sealed class UnitOfWorkBehavior<TRequest, TResponse> : IPipelineBehavior<
         RequestHandlerDelegate<TResponse> next,
         CancellationToken cancellationToken)
     {
-        var response = await next();
+        TResponse response = await next(cancellationToken);
 
         await _unitOfWork.SaveChangesAsync(cancellationToken);
 

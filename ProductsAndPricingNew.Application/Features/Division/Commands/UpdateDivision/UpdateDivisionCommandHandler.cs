@@ -1,8 +1,7 @@
 ﻿using MediatR;
 using ProductsAndPricingNew.Domain.Entities.Common;
-using ProductsAndPricingNew.Domain.Entities.PricingRef;
 using ProductsAndPricingNew.Domain.Repositories;
-using ProductsAndPricingNew.Persistence;
+using DivisionEntity = ProductsAndPricingNew.Domain.Entities.PricingRef.Division;
 
 namespace ProductsAndPricingNew.Application.Features.Division.Commands.UpdateDivision;
 
@@ -17,12 +16,11 @@ internal sealed class UpdateDivisionCommandHandler : IRequestHandler<UpdateDivis
 
     public async Task<Unit> Handle(UpdateDivisionCommand request, CancellationToken ct)
     {
-        var division = await _divisionRepository.GetByIdAsync(request.Id, ct);
+        DivisionEntity? division = await _divisionRepository.GetByIdAsync(request.Id, ct);
         if (division is null)
             throw new KeyNotFoundException($"Division with id {request.Id} was not found");
 
         division.Rename(request.Name);
-        division.SetDropdownVisibility(request.ShowInDropdown);
 
         if (request.IsActive)
             division.Activate();
@@ -35,21 +33,16 @@ internal sealed class UpdateDivisionCommandHandler : IRequestHandler<UpdateDivis
         division.ChangeHeadOfficeEmail(request.HeadOfficeEmail);
         division.ChangeHeadOfficeTelephone(request.HeadOfficeTelephoneNo);
 
-        if (request.ContactAddress is null)
-        {
-            division.ClearContactAddress();
-        }
-        else
-        {
-            var address = new Address(
+        Address address = request.ContactAddress is null
+            ? Address.Empty
+            : new(
                 request.ContactAddress.CountryId,
                 request.ContactAddress.Line1,
                 request.ContactAddress.Line2,
                 request.ContactAddress.Line3,
                 request.ContactAddress.Line4);
 
-            division.ChangeContactAddress(address);
-        }
+        division.ChangeContactAddress(address);
 
         return Unit.Value;
     }
