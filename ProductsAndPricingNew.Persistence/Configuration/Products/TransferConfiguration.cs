@@ -18,7 +18,7 @@ public sealed class TransferConfiguration : IEntityTypeConfiguration<Transfer>
         b.Property(x => x.UnitTypeId).IsRequired();
 
         b.Property(x => x.Name)
-            .HasMaxLength(200)
+            .HasMaxLength(100)
             .IsRequired();
 
         b.Property(x => x.IsActive).IsRequired();
@@ -37,11 +37,11 @@ public sealed class TransferConfiguration : IEntityTypeConfiguration<Transfer>
         {
             complex.Property(p => p.GeneralLedgerCode)
                 .HasColumnName("GeneralLedgerCode")
-                .HasMaxLength(50);
+                .HasMaxLength(10);
 
             complex.Property(p => p.CostCentreCode)
                 .HasColumnName("CostCentreCode")
-                .HasMaxLength(50);
+                .HasMaxLength(10);
         });
 
         b.HasIndex(x => new { x.DivisionId, x.Name });

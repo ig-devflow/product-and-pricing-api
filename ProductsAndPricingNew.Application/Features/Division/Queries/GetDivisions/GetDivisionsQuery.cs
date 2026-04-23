@@ -1,4 +1,5 @@
 ﻿using MediatR;
+using ProductsAndPricingNew.Application.Common.Pagination;
 using ProductsAndPricingNew.Application.Features.Division.Dtos;
 
 namespace ProductsAndPricingNew.Application.Features.Division.Queries.GetDivisions;
@@ -6,7 +7,5 @@ namespace ProductsAndPricingNew.Application.Features.Division.Queries.GetDivisio
 public sealed record GetDivisionsQuery(
     string? Search = null,
     bool? IsActive = null,
-    bool? ShowInDropdown = null,
-    int? Page = null,
-    int? PageSize = null
-) : IRequest<IReadOnlyList<DivisionListItemDto>>;
+    PagingFilter Paging = default
+) : IRequest<PagedResult<DivisionListItemDto>>;

@@ -7,3 +7,16 @@ public sealed record DivisionAddressDto(
     string? Line4,
     int? CountryId
 );
+
+/*
+ * Features
+  Division
+    Commands
+      Models
+        DivisionAddressInputDto.cs
+    Queries
+      Models
+        DivisionAddressDto.cs
+        DivisionDetailsDto.cs
+        DivisionListItemDto.cs
+*/

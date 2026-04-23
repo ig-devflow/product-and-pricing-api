@@ -1,50 +1,29 @@
 ﻿using MediatR;
-using Microsoft.EntityFrameworkCore;
+using ProductsAndPricingNew.Application.Common.Pagination;
+using ProductsAndPricingNew.Application.Features.Division.Abstractions;
 using ProductsAndPricingNew.Application.Features.Division.Dtos;
-using ProductsAndPricingNew.Persistence;
-using DivisionEntity = ProductsAndPricingNew.Domain.Entities.PricingRef.Division;
 
 namespace ProductsAndPricingNew.Application.Features.Division.Queries.GetDivisions;
 
-internal sealed class GetDivisionsQueryHandler : IRequestHandler<GetDivisionsQuery, IReadOnlyList<DivisionListItemDto>>
+internal sealed class GetDivisionsQueryHandler : IRequestHandler<GetDivisionsQuery, PagedResult<DivisionListItemDto>>
 {
-    private readonly ProductsAndPricingDbContext _db;
+    private readonly IDivisionQueries _divisionQueries;
 
-    public GetDivisionsQueryHandler(ProductsAndPricingDbContext db)
+    public GetDivisionsQueryHandler(IDivisionQueries divisionQueries)
     {
-        _db = db;
+        _divisionQueries = divisionQueries;
     }
 
-    public async Task<IReadOnlyList<DivisionListItemDto>> Handle(GetDivisionsQuery request, CancellationToken ct)
+    public Task<PagedResult<DivisionListItemDto>> Handle(GetDivisionsQuery request, CancellationToken ct)
     {
-        IQueryable<DivisionEntity> query = _db.Divisions.AsNoTracking();
+        string? normalizedSearch = !string.IsNullOrWhiteSpace(request.Search)
+            ? request.Search.Trim()
+            : null;
 
-        if (!string.IsNullOrWhiteSpace(request.Search))
-        {
-            string search = request.Search.Trim();
-            query = query.Where(x => x.Name.Contains(search));
-        }
-
-        if (request.IsActive.HasValue)
-            query = query.Where(x => x.IsActive == request.IsActive.Value);
-
-        query = query.OrderBy(x => x.Name).ThenBy(x => x.Id);
-
-        if (request.Page.HasValue && request.PageSize.HasValue)
-        {
-            int page = request.Page.Value > 0 ? request.Page.Value : 1;
-            int pageSize = request.PageSize.Value > 0 ? request.PageSize.Value : 20;
-
-            query = query
-                .Skip((page - 1) * pageSize)
-                .Take(pageSize);
-        }
-
-        return await query
-            .Select(x => new DivisionListItemDto(
-                x.Id,
-                x.Name,
-                x.IsActive))
-            .ToListAsync(ct);
+        return _divisionQueries.GetListAsync(
+            normalizedSearch,
+            request.IsActive,
+            request.Paging,
+            ct);
     }
 }

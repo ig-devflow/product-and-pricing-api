@@ -4,6 +4,7 @@ namespace ProductsAndPricingNew.Domain.Entities.Products;
 
 public sealed class TransferPortTerminal : ISoftDeletable
 {
+    private TransferPortTerminal() { }
     public int Number { get; private set; }
     public string Name { get; private set; } = null!;
     public int Order { get; private set; }

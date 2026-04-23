@@ -42,9 +42,9 @@ internal sealed class AuditSaveChangesInterceptor : SaveChangesInterceptor
         DateTimeOffset now = _clock.UtcNow;
         int userId = _currentUser.UserId;
 
-        foreach (EntityEntry<IHasAuditMetadata> entry in context.ChangeTracker.Entries<IHasAuditMetadata>())
+        foreach (EntityEntry<IAuditable> entry in context.ChangeTracker.Entries<IAuditable>())
         {
-            ComplexPropertyEntry<IHasAuditMetadata, AuditMetadata> audit = entry.ComplexProperty<AuditMetadata>(nameof(IHasAuditMetadata.AuditMetadata));
+            ComplexPropertyEntry<IAuditable, AuditMetadata> audit = entry.ComplexProperty<AuditMetadata>(nameof(IAuditable.AuditMetadata));
 
             if (entry.State == EntityState.Added)
             {

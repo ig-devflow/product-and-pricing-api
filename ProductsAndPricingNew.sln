@@ -1,6 +1,9 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ProductsAndPricingNew.AdminApi", "ProductsAndPricingNew.AdminApi\ProductsAndPricingNew.AdminApi.csproj", "{97681304-E146-4F1E-8E48-77C0CD5AFDB3}"
+	ProjectSection(ProjectDependencies) = postProject
+		{A4906B8D-EA14-4DB9-9FB6-26BAC84E17C6} = {A4906B8D-EA14-4DB9-9FB6-26BAC84E17C6}
+	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{CE34D19A-260F-4FC5-8837-9BFD0BEFFF6C}"
 EndProject

@@ -1,5 +1,6 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using ProductsAndPricingNew.Application.Behaviors;
+using FluentValidation;
 
 namespace ProductsAndPricingNew.Application;
 
@@ -10,8 +11,11 @@ public static class ServiceCollectionExtensions
         services.AddMediatR(cfg =>
         {
             cfg.RegisterServicesFromAssembly(typeof(ServiceCollectionExtensions).Assembly);
+            //cfg.AddOpenBehavior(typeof(ValidationBehavior<,>));
             cfg.AddOpenBehavior(typeof(UnitOfWorkBehavior<,>));
         });
+
+        services.AddValidatorsFromAssemblyContaining<ValidationBehavior>();
 
         return services;
     }

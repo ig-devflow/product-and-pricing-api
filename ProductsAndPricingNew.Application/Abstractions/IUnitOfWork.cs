@@ -1,4 +1,4 @@
-﻿namespace ProductsAndPricingNew.Domain.Repositories;
+﻿namespace ProductsAndPricingNew.Application.Abstractions;
 
 public interface IUnitOfWork
 {
