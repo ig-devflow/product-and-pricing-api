@@ -1,4 +1,4 @@
-﻿namespace ProductsAndPricingNew.Application.Features.Division.Dtos;
+﻿namespace ProductsAndPricingNew.Application.Features.Division.Models;
 
 public sealed record DivisionDetailsDto(
     int Id,

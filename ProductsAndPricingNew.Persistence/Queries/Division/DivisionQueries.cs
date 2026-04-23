@@ -2,7 +2,7 @@
 using Dapper;
 using ProductsAndPricingNew.Application.Common.Pagination;
 using ProductsAndPricingNew.Application.Features.Division.Abstractions;
-using ProductsAndPricingNew.Application.Features.Division.Dtos;
+using ProductsAndPricingNew.Application.Features.Division.Models;
 using ProductsAndPricingNew.Persistence.Queries.Configuration;
 
 namespace ProductsAndPricingNew.Persistence.Queries.Division;
@@ -14,6 +14,32 @@ internal sealed class DivisionQueries : IDivisionQueries
     public DivisionQueries(ISqlConnectionFactory connectionFactory)
     {
         _connectionFactory = connectionFactory;
+    }
+
+    public async Task<bool> ExistsByNameAsync(string name, int? excludingId = null, CancellationToken ct = default)
+    {
+        const string sql = """
+           SELECT CAST(CASE WHEN EXISTS (
+               SELECT 1
+               FROM dbo.Division d
+               WHERE d.IsDeleted = 0
+                 AND d.Name = @Name
+                 AND (@ExcludingId IS NULL OR d.Id <> @ExcludingId)
+           ) THEN 1 ELSE 0 END AS bit);
+           """;
+
+        await using DbConnection connection = _connectionFactory.CreateConnection();
+
+        CommandDefinition command = new(
+            commandText: sql,
+            parameters: new
+            {
+                Name = name,
+                ExcludingId = excludingId
+            },
+            cancellationToken: ct);
+
+        return await connection.QuerySingleAsync<bool>(command);
     }
 
     public async Task<DivisionDetailsDto?> GetByIdAsync(int id, CancellationToken ct = default)

@@ -13,12 +13,14 @@ public sealed class Division : AggregateRoot<int>
     public string? HeadOfficeEmail { get; private set; }
     public string? HeadOfficeTelephoneNo { get; private set; }
     public Address ContactAddress { get; private set; } = Address.Empty;
+    public ImageFile AccreditationBanner { get; private set; } = ImageFile.Empty;
 
     private Division() { }
 
-    private Division(string name)
+    private Division(string name, string websiteUrl)
     {
         Rename(name);
+        ChangeWebsite(websiteUrl);
     }
 
     public void Rename(string name)
@@ -29,40 +31,39 @@ public sealed class Division : AggregateRoot<int>
         Name = name.Trim();
     }
 
-    public void Activate() => IsActive = true;
-    public void Deactivate() => IsActive = false;
-
-    public void ChangeTermsAndConditions(string? value) => TermsAndConditions = Normalize(value);
-    public void ChangeGroupsPaymentTerms(string? value) => GroupsPaymentTerms = Normalize(value);
-    public void ChangeWebsite(string? value) => WebsiteUrl = Normalize(value);
-    public void ChangeHeadOfficeEmail(string? value) => HeadOfficeEmail = Normalize(value);
-    public void ChangeHeadOfficeTelephone(string? value) => HeadOfficeTelephoneNo = Normalize(value);
-
-    public void ChangeContactAddress(Address? address)
+    public void ChangeWebsite(string? value)
     {
-        ContactAddress = address ?? Address.Empty;
+        string? normalized = Normalize(value);
+        if (string.IsNullOrWhiteSpace(normalized))
+            throw new DomainException("Website URL is required");
+
+        WebsiteUrl = normalized;
     }
 
-    private static string? Normalize(string? value) =>
-        string.IsNullOrWhiteSpace(value) ? null : value.Trim();
+    public void ChangeActiveState(bool state) => IsActive = state;
+    public void ChangeTermsAndConditions(string? value) => TermsAndConditions = Normalize(value);
+    public void ChangeGroupsPaymentTerms(string? value) => GroupsPaymentTerms = Normalize(value);
+    public void ChangeHeadOfficeEmail(string? value) => HeadOfficeEmail = Normalize(value);
+    public void ChangeHeadOfficeTelephone(string? value) => HeadOfficeTelephoneNo = Normalize(value);
+    public void ChangeContactAddress(Address address) => ContactAddress = address;
+    public void ChangeAccreditationBanner(ImageFile value) => AccreditationBanner = value;
 
     public sealed class Builder
     {
         private readonly string _name;
+        private readonly string _websiteUrl;
         private bool _isActive;
         private string? _termsAndConditions;
         private string? _groupsPaymentTerms;
-        private string? _websiteUrl;
         private string? _headOfficeEmail;
         private string? _headOfficeTelephoneNo;
-        private Address? _contactAddress;
+        private Address _contactAddress = Address.Empty;
+        private ImageFile _accreditationBanner = ImageFile.Empty;
 
-        public Builder(string name)
+        public Builder(string name, string websiteUrl)
         {
-            if (string.IsNullOrWhiteSpace(name))
-                throw new DomainException("Division name is required");
-
-            _name = name.Trim();
+            _name = name;
+            _websiteUrl = websiteUrl;
         }
 
         public Builder IsActive(bool value)
@@ -83,12 +84,6 @@ public sealed class Division : AggregateRoot<int>
             return this;
         }
 
-        public Builder Website(string? value)
-        {
-            _websiteUrl = value;
-            return this;
-        }
-
         public Builder HeadOfficeEmail(string? value)
         {
             _headOfficeEmail = value;
@@ -101,29 +96,34 @@ public sealed class Division : AggregateRoot<int>
             return this;
         }
 
-        public Builder Address(Address? address)
+        public Builder ContactAddress(Address address)
         {
             _contactAddress = address;
             return this;
         }
 
+        public Builder AccreditationBanner(ImageFile accreditationBanner)
+        {
+            _accreditationBanner = accreditationBanner;
+            return this;
+        }
+
         public Division Build()
         {
-            Division division = new(_name);
+            Division division = new(_name, _websiteUrl);
 
-            if (_isActive)
-                division.Activate();
-            else
-                division.Deactivate();
-
+            division.ChangeActiveState(_isActive);
             division.ChangeTermsAndConditions(_termsAndConditions);
             division.ChangeGroupsPaymentTerms(_groupsPaymentTerms);
-            division.ChangeWebsite(_websiteUrl);
             division.ChangeHeadOfficeEmail(_headOfficeEmail);
             division.ChangeHeadOfficeTelephone(_headOfficeTelephoneNo);
             division.ChangeContactAddress(_contactAddress);
+            division.ChangeAccreditationBanner(_accreditationBanner);
 
             return division;
         }
     }
+
+    private static string? Normalize(string? value) =>
+        string.IsNullOrWhiteSpace(value) ? null : value.Trim();
 }

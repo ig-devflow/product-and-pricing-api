@@ -15,9 +15,5 @@
         <ProjectReference Include="..\ProductsAndPricingNew.Application\ProductsAndPricingNew.Application.csproj" />
         <ProjectReference Include="..\ProductsAndPricingNew.Persistence\ProductsAndPricingNew.Persistence.csproj" />
     </ItemGroup>
-    
-    <ItemGroup>
-      <Folder Include="Controllers\" />
-    </ItemGroup>
 
 </Project>
