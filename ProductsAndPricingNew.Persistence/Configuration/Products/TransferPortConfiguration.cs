@@ -14,7 +14,7 @@ public sealed class TransferPortConfiguration : IEntityTypeConfiguration<Transfe
         b.Property(x => x.Id).ValueGeneratedNever();
 
         b.Property(x => x.Name)
-            .HasMaxLength(200)
+            .HasMaxLength(100)
             .IsRequired();
 
         b.Property(x => x.TransferPortTypeId).IsRequired();

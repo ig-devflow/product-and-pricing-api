@@ -1,4 +1,5 @@
-﻿using MediatR;
+﻿using FluentResults;
+using MediatR;
 using ProductsAndPricingNew.Application.Abstractions;
 using ProductsAndPricingNew.Application.Features.Division.Dtos;
 
@@ -14,4 +15,4 @@ public sealed record UpdateDivisionCommand(
     string? HeadOfficeEmail,
     string? HeadOfficeTelephoneNo,
     DivisionAddressDto? ContactAddress
-) : ICommand<Unit>;
+) : ICommand<Result<Unit>>;

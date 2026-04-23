@@ -17,7 +17,7 @@ public sealed class PackageConfiguration : IEntityTypeConfiguration<Package>
         b.Property(x => x.UnitTypeId).IsRequired();
 
         b.Property(x => x.Name)
-            .HasMaxLength(200)
+            .HasMaxLength(100)
             .IsRequired();
 
         b.Property(x => x.IsActive).IsRequired();
@@ -41,11 +41,11 @@ public sealed class PackageConfiguration : IEntityTypeConfiguration<Package>
         {
             finance.Property(x => x.GeneralLedgerCode)
                 .HasColumnName("GeneralLedgerCode")
-                .HasMaxLength(50);
+                .HasMaxLength(10);
 
             finance.Property(x => x.CostCentreCode)
                 .HasColumnName("CostCentreCode")
-                .HasMaxLength(50);
+                .HasMaxLength(10);
         });
 
         b.HasIndex(x => new { x.DivisionId, x.Name });

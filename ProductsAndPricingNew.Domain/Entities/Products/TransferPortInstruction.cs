@@ -5,6 +5,7 @@ namespace ProductsAndPricingNew.Domain.Entities.Products;
 
 public sealed class TransferPortInstruction : Entity<int>, ISoftDeletable
 {
+    private TransferPortInstruction() { }
     internal TransferPortInstruction(int divisionId, string instructions)
     {
         if (divisionId <= 0)

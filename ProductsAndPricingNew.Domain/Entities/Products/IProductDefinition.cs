@@ -7,4 +7,5 @@ public interface IProductDefinition
     string Name { get; }
     bool IsActive { get; }
     DateOnly? OfferingsClosureDate { get; }
+    FinanceCodes FinanceCodes { get; }
 }

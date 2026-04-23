@@ -15,8 +15,7 @@ public sealed class Address : IEquatable<Address>
                                   .Where(x => !string.IsNullOrWhiteSpace(x))
                                   .Select(x => x!.Trim())
                                   .Take(4)
-                                  .ToArray()
-                              ?? Array.Empty<string>();
+                                  .ToArray() ?? [];
 
         CountryId = countryId;
         Line1 = normalized.Length > 0 ? normalized[0] : null;

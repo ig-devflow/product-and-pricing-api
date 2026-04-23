@@ -26,8 +26,6 @@ public sealed class AddOn : AggregateRoot<int>, IProductDefinition
     public int? MinimumAge { get; private set; }
     public int? AccountCategoryId { get; private set; }
     public int? ProductCategoryId { get; private set; }
-
-    // Важно: это не FK на Course.
     public int? OneToOneLessonsPerWeek { get; private set; }
 
     public DateOnly? OfferingsClosureDate { get; private set; }

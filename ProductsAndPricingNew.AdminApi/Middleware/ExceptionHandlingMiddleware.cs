@@ -1,3 +1,11 @@
-﻿namespace ProductsAndPricingNew.AdminApi.Middleware;
+﻿using Microsoft.AspNetCore.Diagnostics;
 
-public class ExceptionHandlingMiddleware;
+namespace ProductsAndPricingNew.AdminApi.Middleware;
+
+public class GlobalExceptionHandler : IExceptionHandler
+{
+    public ValueTask<bool> TryHandleAsync(HttpContext httpContext, Exception exception, CancellationToken cancellationToken)
+    {
+        throw new NotImplementedException();
+    }
+}

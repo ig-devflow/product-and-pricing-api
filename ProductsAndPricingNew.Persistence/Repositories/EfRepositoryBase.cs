@@ -20,11 +20,6 @@ public abstract class EfRepositoryBase<TAggregate, TId> : IRepository<TAggregate
         return await Set.FindAsync(new object?[] { id }, ct);
     }
 
-    public virtual async Task<bool> ExistsAsync(TId id, CancellationToken ct = default)
-    {
-        return await GetByIdAsync(id, ct) is not null;
-    }
-
     public virtual async Task AddAsync(TAggregate aggregate, CancellationToken ct = default)
     {
         await Set.AddAsync(aggregate, ct);

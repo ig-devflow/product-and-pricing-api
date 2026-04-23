@@ -1,8 +1,8 @@
-﻿using ProductsAndPricingNew.Domain.Repositories;
+﻿using ProductsAndPricingNew.Application.Abstractions;
 
 namespace ProductsAndPricingNew.Persistence;
 
-public sealed class UnitOfWork : IUnitOfWork
+internal sealed class UnitOfWork : IUnitOfWork
 {
     private readonly ProductsAndPricingDbContext _dbContext;
 

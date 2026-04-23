@@ -14,7 +14,7 @@ public sealed class DivisionConfiguration : IEntityTypeConfiguration<Division>
         b.Property(x => x.Id).ValueGeneratedOnAdd();
 
         b.Property(x => x.Name)
-            .HasMaxLength(200)
+            .HasMaxLength(100)
             .IsRequired();
 
         b.Property(x => x.IsActive).IsRequired();
@@ -23,10 +23,10 @@ public sealed class DivisionConfiguration : IEntityTypeConfiguration<Division>
         b.Property(x => x.GroupsPaymentTerms);
 
         b.Property(x => x.WebsiteUrl)
-            .HasMaxLength(500);
+            .HasMaxLength(50);
 
         b.Property(x => x.HeadOfficeEmail)
-            .HasMaxLength(320);
+            .HasMaxLength(50);
 
         b.Property(x => x.HeadOfficeTelephoneNo)
             .HasMaxLength(50);
@@ -35,30 +35,33 @@ public sealed class DivisionConfiguration : IEntityTypeConfiguration<Division>
         {
             owned.Property(x => x.Line1)
                 .HasColumnName("AddressLine1")
-                .HasMaxLength(200);
+                .HasMaxLength(50);
 
             owned.Property(x => x.Line2)
                 .HasColumnName("AddressLine2")
-                .HasMaxLength(200);
+                .HasMaxLength(50);
 
             owned.Property(x => x.Line3)
                 .HasColumnName("AddressLine3")
-                .HasMaxLength(200);
+                .HasMaxLength(50);
 
             owned.Property(x => x.Line4)
                 .HasColumnName("AddressLine4")
-                .HasMaxLength(200);
+                .HasMaxLength(50);
 
             owned.Property(x => x.CountryId)
                 .HasColumnName("AddressCountryId");
         });
 
         b.ConfigureAuditMetadata(x => x.AuditMetadata);
+
         b.Property(x => x.IsDeleted)
             .HasDefaultValue(false)
             .IsRequired();
 
         b.Property(x => x.RowVersion).IsRowVersion();
+
+        b.HasIndex(x => x.Name).IsUnique();
 
         b.Ignore(x => x.DomainEvents);
     }

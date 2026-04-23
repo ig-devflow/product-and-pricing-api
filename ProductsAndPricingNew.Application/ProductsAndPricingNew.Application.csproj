@@ -7,11 +7,14 @@
     </PropertyGroup>
 
     <ItemGroup>
-      <PackageReference Include="MediatR" Version="14.1.0" />
+        <PackageReference Include="MediatR" Version="14.1.0" />
+        <PackageReference Include="FluentValidation" Version="12.1.1" />
+        <PackageReference Include="FluentValidation.DependencyInjectionExtensions" Version="12.1.1" />
+        <PackageReference Include="FluentResults" Version="4.0.0" />
     </ItemGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\ProductsAndPricingNew.Persistence\ProductsAndPricingNew.Persistence.csproj" />
+      <ProjectReference Include="..\ProductsAndPricingNew.Domain\ProductsAndPricingNew.Domain.csproj" />
     </ItemGroup>
 
 </Project>

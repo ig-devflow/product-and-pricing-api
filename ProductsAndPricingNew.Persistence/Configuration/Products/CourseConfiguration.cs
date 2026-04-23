@@ -13,7 +13,7 @@ public sealed class CourseConfiguration : IEntityTypeConfiguration<Course>
         b.HasKey(x => x.Id);
         b.Property(x => x.Id).ValueGeneratedNever();
 
-        b.Property(x => x.Name).HasMaxLength(200).IsRequired();
+        b.Property(x => x.Name).HasMaxLength(100).IsRequired();
         b.Property(x => x.DivisionId).IsRequired();
         b.Property(x => x.IsActive).IsRequired();
         b.Property(x => x.CourseLanguageId).IsRequired();
@@ -29,11 +29,11 @@ public sealed class CourseConfiguration : IEntityTypeConfiguration<Course>
         {
             complex.Property(p => p.GeneralLedgerCode)
                 .HasColumnName("GeneralLedgerCode")
-                .HasMaxLength(50);
+                .HasMaxLength(10);
 
             complex.Property(p => p.CostCentreCode)
                 .HasColumnName("CostCentreCode")
-                .HasMaxLength(50);
+                .HasMaxLength(10);
         });
 
         b.HasIndex(x => new { x.DivisionId, x.Name });

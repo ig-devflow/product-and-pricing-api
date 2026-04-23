@@ -1,11 +1,12 @@
-﻿using MediatR;
+﻿using FluentResults;
+using MediatR;
 using ProductsAndPricingNew.Domain.Entities.Common;
 using ProductsAndPricingNew.Domain.Repositories;
 using DivisionEntity = ProductsAndPricingNew.Domain.Entities.PricingRef.Division;
 
 namespace ProductsAndPricingNew.Application.Features.Division.Commands.UpdateDivision;
 
-internal sealed class UpdateDivisionCommandHandler : IRequestHandler<UpdateDivisionCommand, Unit>
+internal sealed class UpdateDivisionCommandHandler : IRequestHandler<UpdateDivisionCommand, Result<Unit>>
 {
     private readonly IDivisionRepository _divisionRepository;
 
@@ -14,7 +15,7 @@ internal sealed class UpdateDivisionCommandHandler : IRequestHandler<UpdateDivis
         _divisionRepository = divisionRepository;
     }
 
-    public async Task<Unit> Handle(UpdateDivisionCommand request, CancellationToken ct)
+    public async Task<Result<Unit>> Handle(UpdateDivisionCommand request, CancellationToken ct)
     {
         DivisionEntity? division = await _divisionRepository.GetByIdAsync(request.Id, ct);
         if (division is null)
@@ -44,6 +45,6 @@ internal sealed class UpdateDivisionCommandHandler : IRequestHandler<UpdateDivis
 
         division.ChangeContactAddress(address);
 
-        return Unit.Value;
+        return Result.Ok(Unit.Value);
     }
 }

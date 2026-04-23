@@ -1,11 +1,12 @@
 ﻿using MediatR;
 using ProductsAndPricingNew.Application.Abstractions;
-using ProductsAndPricingNew.Domain.Repositories;
+using FluentResults;
 
 namespace ProductsAndPricingNew.Application.Behaviors;
 
 public sealed class UnitOfWorkBehavior<TRequest, TResponse> : IPipelineBehavior<TRequest, TResponse>
     where TRequest : ICommand<TResponse>
+    where TResponse : ResultBase
 {
     private readonly IUnitOfWork _unitOfWork;
 
@@ -21,7 +22,8 @@ public sealed class UnitOfWorkBehavior<TRequest, TResponse> : IPipelineBehavior<
     {
         TResponse response = await next(cancellationToken);
 
-        await _unitOfWork.SaveChangesAsync(cancellationToken);
+        if (response.IsSuccess)
+            await _unitOfWork.SaveChangesAsync(cancellationToken);
 
         return response;
     }
