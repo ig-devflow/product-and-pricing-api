@@ -1,4 +1,6 @@
 ﻿using ProductsAndPricingNew.Domain.Base;
+using ProductsAndPricingNew.Domain.Common.Errors;
+using ProductsAndPricingNew.Domain.Common.Extensions;
 using ProductsAndPricingNew.Domain.Entities.Common;
 
 namespace ProductsAndPricingNew.Domain.Entities.PricingRef;
@@ -23,28 +25,13 @@ public sealed class Division : AggregateRoot<int>
         ChangeWebsite(websiteUrl);
     }
 
-    public void Rename(string name)
-    {
-        if (string.IsNullOrWhiteSpace(name))
-            throw new DomainException("Division name is required");
-
-        Name = name.Trim();
-    }
-
-    public void ChangeWebsite(string? value)
-    {
-        string? normalized = Normalize(value);
-        if (string.IsNullOrWhiteSpace(normalized))
-            throw new DomainException("Website URL is required");
-
-        WebsiteUrl = normalized;
-    }
-
-    public void ChangeActiveState(bool state) => IsActive = state;
-    public void ChangeTermsAndConditions(string? value) => TermsAndConditions = Normalize(value);
-    public void ChangeGroupsPaymentTerms(string? value) => GroupsPaymentTerms = Normalize(value);
-    public void ChangeHeadOfficeEmail(string? value) => HeadOfficeEmail = Normalize(value);
-    public void ChangeHeadOfficeTelephone(string? value) => HeadOfficeTelephoneNo = Normalize(value);
+    public void Rename(string name) => Name = name.AsRequiredDomainText();
+    public void ChangeWebsite(string website) => WebsiteUrl = website.AsRequiredDomainText();
+    public void ChangeActiveState(bool isActive) => IsActive = isActive;
+    public void ChangeTermsAndConditions(string? termsAndConditions) => TermsAndConditions = termsAndConditions.AsOptionalDomainText();
+    public void ChangeGroupsPaymentTerms(string? groupsPaymentTerms) => GroupsPaymentTerms = groupsPaymentTerms.AsOptionalDomainText();
+    public void ChangeHeadOfficeEmail(string? headOfficeEmail) => HeadOfficeEmail = headOfficeEmail.AsOptionalDomainText();
+    public void ChangeHeadOfficeTelephone(string? headOfficeTelephone) => HeadOfficeTelephoneNo = headOfficeTelephone.AsOptionalDomainText();
     public void ChangeContactAddress(Address address) => ContactAddress = address;
     public void ChangeAccreditationBanner(ImageFile value) => AccreditationBanner = value;
 
@@ -123,7 +110,4 @@ public sealed class Division : AggregateRoot<int>
             return division;
         }
     }
-
-    private static string? Normalize(string? value) =>
-        string.IsNullOrWhiteSpace(value) ? null : value.Trim();
 }

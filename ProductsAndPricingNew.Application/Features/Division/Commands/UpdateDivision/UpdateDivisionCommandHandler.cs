@@ -1,7 +1,9 @@
 ﻿using FluentResults;
 using MediatR;
+using ProductsAndPricingNew.Application.Common.Errors;
 using ProductsAndPricingNew.Application.Features.Division.Abstractions;
 using ProductsAndPricingNew.Application.Features.Division.Models;
+using ProductsAndPricingNew.Domain.Common.Extensions;
 using ProductsAndPricingNew.Domain.Entities.Common;
 using ProductsAndPricingNew.Domain.Repositories;
 using DivisionEntity = ProductsAndPricingNew.Domain.Entities.PricingRef.Division;
@@ -23,10 +25,13 @@ internal sealed class UpdateDivisionCommandHandler : IRequestHandler<UpdateDivis
     {
         DivisionEntity? division = await _divisionRepository.GetByIdAsync(request.Id, ct);
         if (division is null)
-            return Result.Fail($"Division with id {request.Id} was not found");
+            return Result.Fail(new NotFoundError($"Division with id {request.Id} was not found"));
 
-        if (await _divisionQueries.ExistsByNameAsync(request.Name.Trim(), request.Id, ct))
-            return Result.Fail("Division name already exists");
+        string name = request.Name.AsRequiredDomainText();
+
+        bool nameAlreadyExists = await _divisionQueries.ExistsByNameAsync(name, request.Id, ct);
+        if (nameAlreadyExists)
+            return Result.Fail(new ConflictError("Division name already exists"));
 
         DivisionAddressDto? addressDto = request.ContactAddress;
         DivisionAccreditationBanner? banner = request.AccreditationBanner;
@@ -39,7 +44,7 @@ internal sealed class UpdateDivisionCommandHandler : IRequestHandler<UpdateDivis
             ? ImageFile.Create(banner.Data, banner.ContentType, banner.FileName)
             : ImageFile.Empty;
 
-        division.Rename(request.Name);
+        division.Rename(name);
         division.ChangeActiveState(request.IsActive);
         division.ChangeTermsAndConditions(request.TermsAndConditions);
         division.ChangeGroupsPaymentTerms(request.GroupsPaymentTerms);

@@ -8,7 +8,7 @@ public sealed class CourseConfiguration : IEntityTypeConfiguration<Course>
 {
     public void Configure(EntityTypeBuilder<Course> b)
     {
-        b.ToTable("Course");
+        b.ToTable("Course", "Product");
 
         b.HasKey(x => x.Id);
         b.Property(x => x.Id).ValueGeneratedNever();

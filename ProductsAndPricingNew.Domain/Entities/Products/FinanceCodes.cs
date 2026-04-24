@@ -29,7 +29,7 @@ public readonly struct FinanceCodes : IEquatable<FinanceCodes>
 
     public override string ToString()
     {
-        return string.Format("GeneralLedgerCode: {0}, CostCentre: {1}", GeneralLedgerCode ?? "-", CostCentreCode ?? "-");
+        return $"GeneralLedgerCode: {GeneralLedgerCode ?? "-"}, CostCentre: {CostCentreCode ?? "-"}";
     }
 
     public static bool operator ==(FinanceCodes left, FinanceCodes right)

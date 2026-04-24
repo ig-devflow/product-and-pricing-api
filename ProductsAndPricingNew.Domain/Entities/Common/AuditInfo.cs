@@ -1,4 +1,6 @@
-﻿namespace ProductsAndPricingNew.Domain.Entities.Common;
+﻿using ProductsAndPricingNew.Domain.Common.Errors;
+
+namespace ProductsAndPricingNew.Domain.Entities.Common;
 
 public readonly struct AuditMetadata : IEquatable<AuditMetadata>
 {

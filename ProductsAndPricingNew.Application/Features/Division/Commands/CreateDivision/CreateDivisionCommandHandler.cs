@@ -1,7 +1,9 @@
 ﻿using FluentResults;
 using MediatR;
+using ProductsAndPricingNew.Application.Common.Errors;
 using ProductsAndPricingNew.Application.Features.Division.Abstractions;
 using ProductsAndPricingNew.Application.Features.Division.Models;
+using ProductsAndPricingNew.Domain.Common.Extensions;
 using ProductsAndPricingNew.Domain.Entities.Common;
 using ProductsAndPricingNew.Domain.Repositories;
 using DivisionEntity = ProductsAndPricingNew.Domain.Entities.PricingRef.Division;
@@ -21,8 +23,11 @@ internal sealed class CreateDivisionCommandHandler : IRequestHandler<CreateDivis
 
     public async Task<Result<int>> Handle(CreateDivisionCommand request, CancellationToken ct)
     {
-        if (await _divisionQueries.ExistsByNameAsync(request.Name.Trim(), ct: ct))
-            return Result.Fail("Division name already exists");
+        string name = request.Name.AsRequiredDomainText();
+
+        bool nameAlreadyExists = await _divisionQueries.ExistsByNameAsync(name, ct: ct);
+        if (nameAlreadyExists)
+            return Result.Fail(new ConflictError("Division name already exists"));
 
         DivisionAddressDto? addressDto = request.ContactAddress;
         DivisionAccreditationBanner? banner = request.AccreditationBanner;
@@ -35,7 +40,7 @@ internal sealed class CreateDivisionCommandHandler : IRequestHandler<CreateDivis
             ? ImageFile.Create(banner.Data, banner.ContentType, banner.FileName)
             : ImageFile.Empty;
 
-        DivisionEntity division = new DivisionEntity.Builder(request.Name, request.WebsiteUrl)
+        DivisionEntity division = new DivisionEntity.Builder(name, request.WebsiteUrl)
             .IsActive(request.IsActive)
             .TermsAndConditions(request.TermsAndConditions)
             .GroupsPaymentTerms(request.GroupsPaymentTerms)

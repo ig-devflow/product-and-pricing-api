@@ -5,7 +5,7 @@ using ProductsAndPricingNew.Domain.Entities.Products;
 
 namespace ProductsAndPricingNew.Persistence;
 
-public sealed class ProductsAndPricingDbContext : DbContext
+internal sealed class ProductsAndPricingDbContext : DbContext
 {
     public ProductsAndPricingDbContext(DbContextOptions<ProductsAndPricingDbContext> options)
         : base(options)
@@ -14,6 +14,8 @@ public sealed class ProductsAndPricingDbContext : DbContext
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
+        modelBuilder.UseCollation("SQL_Latin1_General_CP1_CI_AS");
+
         modelBuilder.ApplyConfigurationsFromAssembly(typeof(ProductsAndPricingDbContext).Assembly);
     }
 }

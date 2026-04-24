@@ -1,4 +1,7 @@
-﻿namespace ProductsAndPricingNew.Domain.Entities.Common;
+﻿using ProductsAndPricingNew.Domain.Common.Errors;
+using ProductsAndPricingNew.Domain.Common.Extensions;
+
+namespace ProductsAndPricingNew.Domain.Entities.Common;
 
 public sealed class ImageFile : IEquatable<ImageFile>
 {
@@ -21,19 +24,19 @@ public sealed class ImageFile : IEquatable<ImageFile>
         if (maxBytes.HasValue && data.Length > maxBytes)
             throw new DomainException("Image is too large.");
 
-        contentType = Normalize(contentType);
-        fileName = Normalize(fileName);
+        string? normalizedContentType = contentType.AsOptionalDomainText();
+        string? normalizedFileName = fileName.AsOptionalDomainText();
 
-        if (string.IsNullOrWhiteSpace(contentType))
+        if (string.IsNullOrWhiteSpace(normalizedContentType))
             throw new DomainException("Image content type is required.");
 
-        if (contentType is not "image/png" and not "image/jpeg" and not "image/jpg" and not "image/webp" and not "image/svg+xml")
+        if (normalizedContentType is not "image/png" and not "image/jpeg" and not "image/jpg" and not "image/webp" and not "image/svg+xml")
             throw new DomainException("Unsupported image content type.");
 
-        if (string.IsNullOrWhiteSpace(fileName))
+        if (string.IsNullOrWhiteSpace(normalizedFileName))
             throw new DomainException("Image file name is required.");
 
-        return new ImageFile(data, contentType, fileName);
+        return new ImageFile(data, normalizedContentType, normalizedFileName);
     }
 
     public static ImageFile Empty { get; } = new(null, null, null);
@@ -91,7 +94,4 @@ public sealed class ImageFile : IEquatable<ImageFile>
 
         return true;
     }
-
-    private static string Normalize(string? value) =>
-        string.IsNullOrWhiteSpace(value) ? string.Empty : value.Trim();
 }

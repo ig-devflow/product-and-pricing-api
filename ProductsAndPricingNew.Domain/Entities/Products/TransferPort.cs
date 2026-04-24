@@ -1,4 +1,6 @@
 ﻿using ProductsAndPricingNew.Domain.Base;
+using ProductsAndPricingNew.Domain.Common.Errors;
+using ProductsAndPricingNew.Domain.Common.Extensions;
 
 namespace ProductsAndPricingNew.Domain.Entities.Products;
 
@@ -24,14 +26,7 @@ public sealed class TransferPort : AggregateRoot<int>
     public IReadOnlyCollection<TransferPortTerminal> Terminals => _terminals.AsReadOnly();
     public IReadOnlyCollection<TransferPortInstruction> Instructions => _instructions.AsReadOnly();
 
-    public void Rename(string name)
-    {
-        if (string.IsNullOrWhiteSpace(name))
-            throw new DomainException("Transfer port name is required");
-
-        Name = name.Trim();
-    }
-
+    public void Rename(string name) => Name = name.AsRequiredDomainText();
     public void ChangePortType(int transferPortTypeId)
     {
         if (transferPortTypeId <= 0)

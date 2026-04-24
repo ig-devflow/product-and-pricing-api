@@ -8,7 +8,7 @@ public sealed class DivisionConfiguration : IEntityTypeConfiguration<Division>
 {
     public void Configure(EntityTypeBuilder<Division> b)
     {
-        b.ToTable("Division");
+        b.ToTable("Division", "PricingRef");
 
         b.HasKey(x => x.Id);
         b.Property(x => x.Id).ValueGeneratedOnAdd();

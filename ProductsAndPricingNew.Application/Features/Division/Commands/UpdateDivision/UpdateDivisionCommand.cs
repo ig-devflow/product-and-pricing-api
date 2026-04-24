@@ -8,10 +8,10 @@ namespace ProductsAndPricingNew.Application.Features.Division.Commands.UpdateDiv
 public sealed record UpdateDivisionCommand(
     int Id,
     string Name,
+    string WebsiteUrl,
     bool IsActive,
     string? TermsAndConditions,
     string? GroupsPaymentTerms,
-    string? WebsiteUrl,
     string? HeadOfficeEmail,
     string? HeadOfficeTelephoneNo,
     DivisionAddressDto? ContactAddress,

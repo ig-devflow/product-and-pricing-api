@@ -3,7 +3,7 @@ using ProductsAndPricingNew.Domain.Repositories;
 
 namespace ProductsAndPricingNew.Persistence.Repositories;
 
-public sealed class AccountCategoryRepository : EfRepositoryBase<AccountCategory, int>, IAccountCategoryRepository
+internal sealed class AccountCategoryRepository : EfRepositoryBase<AccountCategory, int>, IAccountCategoryRepository
 {
     public AccountCategoryRepository(ProductsAndPricingDbContext db) : base(db) { }
 }

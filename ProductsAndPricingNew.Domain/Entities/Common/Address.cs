@@ -1,4 +1,6 @@
-﻿namespace ProductsAndPricingNew.Domain.Entities.Common;
+﻿using ProductsAndPricingNew.Domain.Common.Extensions;
+
+namespace ProductsAndPricingNew.Domain.Entities.Common;
 
 public sealed record Address
 {
@@ -12,10 +14,10 @@ public sealed record Address
         string? postalCode)
     {
         CountryId = countryId;
-        Street = Normalize(street);
-        this.District = Normalize(district);
-        City = Normalize(city);
-        PostalCode = Normalize(postalCode);
+        Street = street.AsOptionalDomainText();
+        District = district.AsOptionalDomainText();
+        City = city.AsOptionalDomainText();
+        PostalCode = postalCode.AsOptionalDomainText();
     }
 
     public int? CountryId { get; init; }
@@ -43,7 +45,4 @@ public sealed record Address
         Address address = new(countryId, street, district, city, postalCode);
         return address.IsEmpty ? Empty : address;
     }
-
-    private static string? Normalize(string? value) =>
-        string.IsNullOrWhiteSpace(value) ? null : value.Trim();
 }

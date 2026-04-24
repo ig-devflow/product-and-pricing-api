@@ -1,5 +1,6 @@
 ﻿using FluentResults;
 using MediatR;
+using ProductsAndPricingNew.Application.Common.Errors;
 using ProductsAndPricingNew.Application.Features.Division.Abstractions;
 using ProductsAndPricingNew.Application.Features.Division.Models;
 
@@ -18,7 +19,7 @@ internal sealed class GetDivisionByIdQueryHandler : IRequestHandler<GetDivisionB
     {
         DivisionDetailsDto? result = await _divisionQueries.GetByIdAsync(request.Id, ct);
         if (result is null)
-            return Result.Fail($"Division with id {request.Id} was not found");
+            return Result.Fail(new NotFoundError($"Division with id {request.Id} was not found"));
 
         return Result.Ok(result);
     }

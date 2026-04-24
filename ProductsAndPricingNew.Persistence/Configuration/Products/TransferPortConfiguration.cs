@@ -8,7 +8,7 @@ public sealed class TransferPortConfiguration : IEntityTypeConfiguration<Transfe
 {
     public void Configure(EntityTypeBuilder<TransferPort> b)
     {
-        b.ToTable("TransferPort");
+        b.ToTable("TransferPort", "Product");
 
         b.HasKey(x => x.Id);
         b.Property(x => x.Id).ValueGeneratedNever();
