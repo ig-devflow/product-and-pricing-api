@@ -8,7 +8,7 @@ public sealed class AddOnConfiguration : IEntityTypeConfiguration<AddOn>
 {
     public void Configure(EntityTypeBuilder<AddOn> b)
     {
-        b.ToTable("AddOn");
+        b.ToTable("AddOn", "Product");
 
         b.HasKey(x => x.Id);
         b.Property(x => x.Id).ValueGeneratedNever();

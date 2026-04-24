@@ -349,6 +349,15 @@
         "resolved": "1.0.0",
         "contentHash": "N4KeF3cpcm1PUHym1RmakkzfkEv3GRMyofVv40uXsQhCQeglr2OHNcUk2WOG51AKpGO8ynGpo9M/kFXSzghwug=="
       },
+      "Scrutor": {
+        "type": "Transitive",
+        "resolved": "7.0.0",
+        "contentHash": "wHWaroody48jnlLoq/REwUltIFLxplXyHTP+sttrc8P7+jkiVqf38afDidJNv4qgD/6zz2NKOYg06xLZ1bG7wQ==",
+        "dependencies": {
+          "Microsoft.Extensions.DependencyInjection.Abstractions": "10.0.0",
+          "Microsoft.Extensions.DependencyModel": "10.0.0"
+        }
+      },
       "Serilog": {
         "type": "Transitive",
         "resolved": "4.3.0",
@@ -525,7 +534,8 @@
           "Microsoft.Data.SqlClient": "[7.0.0, )",
           "Microsoft.EntityFrameworkCore.SqlServer": "[8.0.19, )",
           "ProductsAndPricingNew.Application": "[1.0.0, )",
-          "ProductsAndPricingNew.Domain": "[1.0.0, )"
+          "ProductsAndPricingNew.Domain": "[1.0.0, )",
+          "Scrutor": "[7.0.0, )"
         }
       }
     }

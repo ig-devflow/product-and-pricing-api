@@ -1,4 +1,4 @@
-﻿namespace ProductsAndPricingNew.Domain;
+﻿namespace ProductsAndPricingNew.Domain.Common.Errors;
 
 public class DomainException : Exception
 {

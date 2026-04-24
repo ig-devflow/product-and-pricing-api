@@ -1,66 +1,48 @@
-﻿namespace ProductsAndPricingNew.Domain.Entities.Common;
+﻿using ProductsAndPricingNew.Domain.Common.Extensions;
 
-public sealed class Address : IEquatable<Address>
+namespace ProductsAndPricingNew.Domain.Entities.Common;
+
+public sealed record Address
 {
     private Address() { }
 
-    public Address(int? countryId, params string?[] lines)
-        : this(countryId, (IEnumerable<string?>)lines)
+    private Address(
+        int? countryId,
+        string? street,
+        string? district,
+        string? city,
+        string? postalCode)
     {
-    }
-
-    public Address(int? countryId, IEnumerable<string?> lines)
-    {
-        string[] normalized = lines?
-                                  .Where(x => !string.IsNullOrWhiteSpace(x))
-                                  .Select(x => x!.Trim())
-                                  .Take(4)
-                                  .ToArray() ?? [];
-
         CountryId = countryId;
-        Line1 = normalized.Length > 0 ? normalized[0] : null;
-        Line2 = normalized.Length > 1 ? normalized[1] : null;
-        Line3 = normalized.Length > 2 ? normalized[2] : null;
-        Line4 = normalized.Length > 3 ? normalized[3] : null;
+        Street = street.AsOptionalDomainText();
+        District = district.AsOptionalDomainText();
+        City = city.AsOptionalDomainText();
+        PostalCode = postalCode.AsOptionalDomainText();
     }
 
-    public static Address Empty { get; } = new(null, []);
-
-    public string? Line1 { get; private set; }
-    public string? Line2 { get; private set; }
-    public string? Line3 { get; private set; }
-    public string? Line4 { get; private set; }
-    public int? CountryId { get; private set; }
+    public int? CountryId { get; init; }
+    public string? Street { get; init; }
+    public string? District { get; init; }
+    public string? City { get; init; }
+    public string? PostalCode { get; init; }
 
     public bool IsEmpty =>
-        string.IsNullOrWhiteSpace(Line1) &&
-        string.IsNullOrWhiteSpace(Line2) &&
-        string.IsNullOrWhiteSpace(Line3) &&
-        string.IsNullOrWhiteSpace(Line4) &&
-        !CountryId.HasValue;
+        CountryId is null &&
+        Street is null &&
+        District is null &&
+        City is null &&
+        PostalCode is null;
 
-    public IEnumerable<string> GetLines()
+    public static Address Empty { get; } = new(null, null, null, null, null);
+
+    public static Address Create(
+        int? countryId,
+        string? street,
+        string? district,
+        string? city,
+        string? postalCode)
     {
-        if (!string.IsNullOrWhiteSpace(Line1)) yield return Line1!;
-        if (!string.IsNullOrWhiteSpace(Line2)) yield return Line2!;
-        if (!string.IsNullOrWhiteSpace(Line3)) yield return Line3!;
-        if (!string.IsNullOrWhiteSpace(Line4)) yield return Line4!;
+        Address address = new(countryId, street, district, city, postalCode);
+        return address.IsEmpty ? Empty : address;
     }
-
-    public bool Equals(Address? other)
-    {
-        if (other is null)
-            return false;
-
-        return CountryId == other.CountryId
-            && string.Equals(Line1, other.Line1, StringComparison.Ordinal)
-            && string.Equals(Line2, other.Line2, StringComparison.Ordinal)
-            && string.Equals(Line3, other.Line3, StringComparison.Ordinal)
-            && string.Equals(Line4, other.Line4, StringComparison.Ordinal);
-    }
-
-    public override bool Equals(object? obj) => obj is Address other && Equals(other);
-
-    public override int GetHashCode() =>
-        HashCode.Combine(CountryId, Line1, Line2, Line3, Line4);
 }

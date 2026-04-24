@@ -8,7 +8,7 @@ public sealed class PackageConfiguration : IEntityTypeConfiguration<Package>
 {
     public void Configure(EntityTypeBuilder<Package> b)
     {
-        b.ToTable("Package");
+        b.ToTable("Package", "Product");
 
         b.HasKey(x => x.Id);
         b.Property(x => x.Id).ValueGeneratedNever();

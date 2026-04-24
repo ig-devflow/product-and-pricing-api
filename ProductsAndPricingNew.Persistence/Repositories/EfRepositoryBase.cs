@@ -4,7 +4,7 @@ using ProductsAndPricingNew.Domain.Repositories;
 
 namespace ProductsAndPricingNew.Persistence.Repositories;
 
-public abstract class EfRepositoryBase<TAggregate, TId> : IRepository<TAggregate, TId>
+internal abstract class EfRepositoryBase<TAggregate, TId> : IRepository<TAggregate, TId>
     where TAggregate : AggregateRoot<TId>
 {
     protected readonly ProductsAndPricingDbContext Db;

@@ -8,7 +8,7 @@ public sealed class DivisionConfiguration : IEntityTypeConfiguration<Division>
 {
     public void Configure(EntityTypeBuilder<Division> b)
     {
-        b.ToTable("Division");
+        b.ToTable("Division", "PricingRef");
 
         b.HasKey(x => x.Id);
         b.Property(x => x.Id).ValueGeneratedOnAdd();
@@ -23,7 +23,8 @@ public sealed class DivisionConfiguration : IEntityTypeConfiguration<Division>
         b.Property(x => x.GroupsPaymentTerms);
 
         b.Property(x => x.WebsiteUrl)
-            .HasMaxLength(50);
+            .HasMaxLength(255)
+            .IsRequired();
 
         b.Property(x => x.HeadOfficeEmail)
             .HasMaxLength(50);
@@ -33,24 +34,39 @@ public sealed class DivisionConfiguration : IEntityTypeConfiguration<Division>
 
         b.ComplexProperty(x => x.ContactAddress, owned =>
         {
-            owned.Property(x => x.Line1)
-                .HasColumnName("AddressLine1")
+            owned.Property(x => x.Street)
+                .HasColumnName("Street")
                 .HasMaxLength(50);
 
-            owned.Property(x => x.Line2)
-                .HasColumnName("AddressLine2")
+            owned.Property(x => x.District)
+                .HasColumnName("District")
                 .HasMaxLength(50);
 
-            owned.Property(x => x.Line3)
-                .HasColumnName("AddressLine3")
+            owned.Property(x => x.City)
+                .HasColumnName("City")
                 .HasMaxLength(50);
 
-            owned.Property(x => x.Line4)
-                .HasColumnName("AddressLine4")
+            owned.Property(x => x.PostalCode)
+                .HasColumnName("PostalCode")
                 .HasMaxLength(50);
 
             owned.Property(x => x.CountryId)
                 .HasColumnName("AddressCountryId");
+        });
+
+        b.ComplexProperty(x => x.AccreditationBanner, owned =>
+        {
+            owned.Property(x => x.Data)
+                .HasColumnName("AccreditationBannerData")
+                .HasColumnType("varbinary(max)");
+
+            owned.Property(x => x.ContentType)
+                .HasColumnName("AccreditationBannerContentType")
+                .HasMaxLength(100);
+
+            owned.Property(x => x.FileName)
+                .HasColumnName("AccreditationBannerFileName")
+                .HasMaxLength(255);
         });
 
         b.ConfigureAuditMetadata(x => x.AuditMetadata);

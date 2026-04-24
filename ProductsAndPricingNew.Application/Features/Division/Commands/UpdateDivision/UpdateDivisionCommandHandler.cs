@@ -1,5 +1,9 @@
 ﻿using FluentResults;
 using MediatR;
+using ProductsAndPricingNew.Application.Common.Errors;
+using ProductsAndPricingNew.Application.Features.Division.Abstractions;
+using ProductsAndPricingNew.Application.Features.Division.Models;
+using ProductsAndPricingNew.Domain.Common.Extensions;
 using ProductsAndPricingNew.Domain.Entities.Common;
 using ProductsAndPricingNew.Domain.Repositories;
 using DivisionEntity = ProductsAndPricingNew.Domain.Entities.PricingRef.Division;
@@ -9,41 +13,46 @@ namespace ProductsAndPricingNew.Application.Features.Division.Commands.UpdateDiv
 internal sealed class UpdateDivisionCommandHandler : IRequestHandler<UpdateDivisionCommand, Result<Unit>>
 {
     private readonly IDivisionRepository _divisionRepository;
+    private readonly IDivisionQueries _divisionQueries;
 
-    public UpdateDivisionCommandHandler(IDivisionRepository divisionRepository)
+    public UpdateDivisionCommandHandler(IDivisionRepository divisionRepository, IDivisionQueries divisionQueries)
     {
         _divisionRepository = divisionRepository;
+        _divisionQueries = divisionQueries;
     }
 
     public async Task<Result<Unit>> Handle(UpdateDivisionCommand request, CancellationToken ct)
     {
         DivisionEntity? division = await _divisionRepository.GetByIdAsync(request.Id, ct);
         if (division is null)
-            throw new KeyNotFoundException($"Division with id {request.Id} was not found");
+            return Result.Fail(new NotFoundError($"Division with id {request.Id} was not found"));
 
-        division.Rename(request.Name);
+        string name = request.Name.AsRequiredDomainText();
 
-        if (request.IsActive)
-            division.Activate();
-        else
-            division.Deactivate();
+        bool nameAlreadyExists = await _divisionQueries.ExistsByNameAsync(name, request.Id, ct);
+        if (nameAlreadyExists)
+            return Result.Fail(new ConflictError("Division name already exists"));
 
+        DivisionAddressDto? addressDto = request.ContactAddress;
+        DivisionAccreditationBanner? banner = request.AccreditationBanner;
+
+        Address address = addressDto is not null
+            ? Address.Create(addressDto.CountryId, addressDto.Street, addressDto.District, addressDto.City, addressDto.PostalCode)
+            : Address.Empty;
+
+        ImageFile imageFile = banner is not null
+            ? ImageFile.Create(banner.Data, banner.ContentType, banner.FileName)
+            : ImageFile.Empty;
+
+        division.Rename(name);
+        division.ChangeActiveState(request.IsActive);
         division.ChangeTermsAndConditions(request.TermsAndConditions);
         division.ChangeGroupsPaymentTerms(request.GroupsPaymentTerms);
         division.ChangeWebsite(request.WebsiteUrl);
         division.ChangeHeadOfficeEmail(request.HeadOfficeEmail);
         division.ChangeHeadOfficeTelephone(request.HeadOfficeTelephoneNo);
-
-        Address address = request.ContactAddress is null
-            ? Address.Empty
-            : new(
-                request.ContactAddress.CountryId,
-                request.ContactAddress.Line1,
-                request.ContactAddress.Line2,
-                request.ContactAddress.Line3,
-                request.ContactAddress.Line4);
-
         division.ChangeContactAddress(address);
+        division.ChangeAccreditationBanner(imageFile);
 
         return Result.Ok(Unit.Value);
     }

@@ -4,7 +4,7 @@ using ProductsAndPricingNew.Domain.Repositories;
 
 namespace ProductsAndPricingNew.Persistence.Repositories;
 
-public sealed class PackageRepository : EfRepositoryBase<Package, int>, IPackageRepository
+internal sealed class PackageRepository : EfRepositoryBase<Package, int>, IPackageRepository
 {
     public PackageRepository(ProductsAndPricingDbContext db) : base(db) { }
 

@@ -1,10 +1,10 @@
-﻿namespace ProductsAndPricingNew.Application.Features.Division.Dtos;
+﻿namespace ProductsAndPricingNew.Application.Features.Division.Models;
 
 public sealed record DivisionAddressDto(
-    string? Line1,
-    string? Line2,
-    string? Line3,
-    string? Line4,
+    string? Street,
+    string? District,
+    string? City,
+    string? PostalCode,
     int? CountryId
 );
 

@@ -1,4 +1,6 @@
 ﻿using ProductsAndPricingNew.Domain.Abstractions;
+using ProductsAndPricingNew.Domain.Common.Errors;
+using ProductsAndPricingNew.Domain.Common.Extensions;
 
 namespace ProductsAndPricingNew.Domain.Entities.Products;
 
@@ -21,14 +23,7 @@ public sealed class TransferPortTerminal : ISoftDeletable
         IsDeleted = false;
     }
 
-    internal void Rename(string name)
-    {
-        if (string.IsNullOrWhiteSpace(name))
-            throw new DomainException("Terminal name is required");
-
-        Name = name.Trim();
-    }
-
+    internal void Rename(string name) => Name = name.AsRequiredDomainText();
     internal void ChangeOrder(int order) => Order = order;
     internal void Delete() => IsDeleted = true;
     internal void Restore() => IsDeleted = false;

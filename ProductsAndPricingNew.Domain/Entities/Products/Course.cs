@@ -1,4 +1,6 @@
 ﻿using ProductsAndPricingNew.Domain.Base;
+using ProductsAndPricingNew.Domain.Common.Errors;
+using ProductsAndPricingNew.Domain.Common.Extensions;
 
 namespace ProductsAndPricingNew.Domain.Entities.Products;
 
@@ -32,14 +34,7 @@ public sealed class Course : AggregateRoot<int>, IProductDefinition
         Rename(name);
     }
 
-    public void Rename(string name)
-    {
-        if (string.IsNullOrWhiteSpace(name))
-            throw new DomainException("Course name is required");
-
-        Name = name.Trim();
-    }
-
+    public void Rename(string name) => Name = name.AsRequiredDomainText();
     public void Activate() => IsActive = true;
     public void Deactivate() => IsActive = false;
     public void ChangeLanguage(int courseLanguageId) => CourseLanguageId = courseLanguageId;

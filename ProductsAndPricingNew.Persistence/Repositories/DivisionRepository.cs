@@ -3,7 +3,7 @@ using ProductsAndPricingNew.Domain.Repositories;
 
 namespace ProductsAndPricingNew.Persistence.Repositories;
 
-public sealed class DivisionRepository : EfRepositoryBase<Division, int>, IDivisionRepository
+internal sealed class DivisionRepository : EfRepositoryBase<Division, int>, IDivisionRepository
 {
     public DivisionRepository(ProductsAndPricingDbContext db) : base(db) { }
 }

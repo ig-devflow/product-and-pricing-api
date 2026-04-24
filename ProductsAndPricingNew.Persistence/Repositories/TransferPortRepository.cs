@@ -4,7 +4,7 @@ using ProductsAndPricingNew.Domain.Repositories;
 
 namespace ProductsAndPricingNew.Persistence.Repositories;
 
-public sealed class TransferPortRepository : EfRepositoryBase<TransferPort, int>, ITransferPortRepository
+internal sealed class TransferPortRepository : EfRepositoryBase<TransferPort, int>, ITransferPortRepository
 {
     public TransferPortRepository(ProductsAndPricingDbContext db) : base(db) { }
 

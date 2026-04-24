@@ -31,14 +31,15 @@ public static class ServiceCollectionExtensions
 
         services.AddSingleton<ISqlConnectionFactory>(new SqlConnectionFactory(connectionString));
 
-        services.AddScoped<IDivisionQueries, DivisionQueries>();
+        services.Scan(scan => scan
+            .FromAssemblyOf<DivisionRepository>()
+            .AddClasses(classes => classes.Where(type => type.Name.EndsWith("Repository")), publicOnly: false)
+            .AsMatchingInterface()
+            .WithScopedLifetime()
+            .AddClasses(classes => classes.Where(type => type.Name.EndsWith("Queries")), publicOnly: false)
+            .AsMatchingInterface()
+            .WithScopedLifetime());
 
-        services.AddScoped<IDivisionRepository, DivisionRepository>();
-        services.AddScoped<IAccountCategoryRepository, AccountCategoryRepository>();
-        services.AddScoped<IProductCategoryRepository, ProductCategoryRepository>();
-        services.AddScoped<IAddOnRepository, AddOnRepository>();
-        services.AddScoped<IPackageRepository, PackageRepository>();
-        services.AddScoped<ITransferPortRepository, TransferPortRepository>();
         services.AddScoped<IUnitOfWork, UnitOfWork>();
 
         return services;

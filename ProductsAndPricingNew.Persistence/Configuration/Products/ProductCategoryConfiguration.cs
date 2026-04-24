@@ -2,13 +2,13 @@
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using ProductsAndPricingNew.Domain.Entities.PricingRef;
 
-namespace ProductsAndPricingNew.Persistence.Configuration.PricingRef;
+namespace ProductsAndPricingNew.Persistence.Configuration.Products;
 
-public sealed class AccountCategoryConfiguration : IEntityTypeConfiguration<AccountCategory>
+public sealed class ProductCategoryConfiguration : IEntityTypeConfiguration<ProductCategory>
 {
-    public void Configure(EntityTypeBuilder<AccountCategory> b)
+    public void Configure(EntityTypeBuilder<ProductCategory> b)
     {
-        b.ToTable("AccountCategory");
+        b.ToTable("ProductCategory", "Product");
 
         b.HasKey(x => x.Id);
         b.Property(x => x.Id).ValueGeneratedNever();

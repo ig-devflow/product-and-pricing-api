@@ -8,7 +8,7 @@ public sealed class TransferConfiguration : IEntityTypeConfiguration<Transfer>
 {
     public void Configure(EntityTypeBuilder<Transfer> b)
     {
-        b.ToTable("Transfer");
+        b.ToTable("Transfer", "Product");
 
         b.HasKey(x => x.Id);
         b.Property(x => x.Id).ValueGeneratedNever();

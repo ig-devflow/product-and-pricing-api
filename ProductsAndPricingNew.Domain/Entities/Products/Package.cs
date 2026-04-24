@@ -1,4 +1,6 @@
 ﻿using ProductsAndPricingNew.Domain.Base;
+using ProductsAndPricingNew.Domain.Common.Errors;
+using ProductsAndPricingNew.Domain.Common.Extensions;
 
 namespace ProductsAndPricingNew.Domain.Entities.Products;
 
@@ -35,13 +37,7 @@ public sealed class Package : AggregateRoot<int>, IProductDefinition
 
     public IReadOnlyCollection<PackageItem> Items => _items.AsReadOnly();
 
-    public void Rename(string name)
-    {
-        if (string.IsNullOrWhiteSpace(name))
-            throw new DomainException("Package name is required");
-
-        Name = name.Trim();
-    }
+    public void Rename(string name) => Name = name.AsRequiredDomainText();
 
     public void ChangeDescription(string? description)
     {
