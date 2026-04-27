@@ -1,6 +1,8 @@
 ﻿using FluentResults;
 using MediatR;
+using ProductsAndPricingNew.Application.Abstractions;
 using ProductsAndPricingNew.Application.Common.Errors;
+using ProductsAndPricingNew.Application.Common.Models;
 using ProductsAndPricingNew.Application.Features.Division.Abstractions;
 using ProductsAndPricingNew.Application.Features.Division.Models;
 using ProductsAndPricingNew.Domain.Common.Extensions;
@@ -14,11 +16,16 @@ internal sealed class CreateDivisionCommandHandler : IRequestHandler<CreateDivis
 {
     private readonly IDivisionRepository _divisionRepository;
     private readonly IDivisionQueries _divisionQueries;
+    private readonly IUnitOfWork _unitOfWork;
 
-    public CreateDivisionCommandHandler(IDivisionRepository divisionRepository, IDivisionQueries divisionQueries)
+    public CreateDivisionCommandHandler(
+        IDivisionRepository divisionRepository,
+        IDivisionQueries divisionQueries,
+        IUnitOfWork unitOfWork)
     {
         _divisionRepository = divisionRepository;
         _divisionQueries = divisionQueries;
+        _unitOfWork = unitOfWork;
     }
 
     public async Task<Result<int>> Handle(CreateDivisionCommand request, CancellationToken ct)
@@ -29,8 +36,8 @@ internal sealed class CreateDivisionCommandHandler : IRequestHandler<CreateDivis
         if (nameAlreadyExists)
             return Result.Fail(new ConflictError("Division name already exists"));
 
-        DivisionAddressDto? addressDto = request.ContactAddress;
-        DivisionAccreditationBanner? banner = request.AccreditationBanner;
+        AddressDto? addressDto = request.ContactAddress;
+        ImageBannerDto? banner = request.AccreditationBanner;
 
         Address address = addressDto is not null
             ? Address.Create(addressDto.CountryId, addressDto.Street, addressDto.District, addressDto.City, addressDto.PostalCode)
@@ -51,6 +58,7 @@ internal sealed class CreateDivisionCommandHandler : IRequestHandler<CreateDivis
             .Build();
 
         await _divisionRepository.AddAsync(division, ct);
+        await _unitOfWork.SaveChangesAsync(ct);
 
         return Result.Ok(division.Id);
     }

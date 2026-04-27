@@ -1,6 +1,8 @@
 ﻿using FluentResults;
 using MediatR;
+using ProductsAndPricingNew.Application.Abstractions;
 using ProductsAndPricingNew.Application.Common.Errors;
+using ProductsAndPricingNew.Application.Common.Models;
 using ProductsAndPricingNew.Application.Features.Division.Abstractions;
 using ProductsAndPricingNew.Application.Features.Division.Models;
 using ProductsAndPricingNew.Domain.Common.Extensions;
@@ -14,11 +16,16 @@ internal sealed class UpdateDivisionCommandHandler : IRequestHandler<UpdateDivis
 {
     private readonly IDivisionRepository _divisionRepository;
     private readonly IDivisionQueries _divisionQueries;
+    private readonly IUnitOfWork _unitOfWork;
 
-    public UpdateDivisionCommandHandler(IDivisionRepository divisionRepository, IDivisionQueries divisionQueries)
+    public UpdateDivisionCommandHandler(
+        IDivisionRepository divisionRepository,
+        IDivisionQueries divisionQueries,
+        IUnitOfWork unitOfWork)
     {
         _divisionRepository = divisionRepository;
         _divisionQueries = divisionQueries;
+        _unitOfWork = unitOfWork;
     }
 
     public async Task<Result<Unit>> Handle(UpdateDivisionCommand request, CancellationToken ct)
@@ -33,8 +40,8 @@ internal sealed class UpdateDivisionCommandHandler : IRequestHandler<UpdateDivis
         if (nameAlreadyExists)
             return Result.Fail(new ConflictError("Division name already exists"));
 
-        DivisionAddressDto? addressDto = request.ContactAddress;
-        DivisionAccreditationBanner? banner = request.AccreditationBanner;
+        AddressDto? addressDto = request.ContactAddress;
+        ImageBannerDto? banner = request.AccreditationBanner;
 
         Address address = addressDto is not null
             ? Address.Create(addressDto.CountryId, addressDto.Street, addressDto.District, addressDto.City, addressDto.PostalCode)
@@ -53,6 +60,8 @@ internal sealed class UpdateDivisionCommandHandler : IRequestHandler<UpdateDivis
         division.ChangeHeadOfficeTelephone(request.HeadOfficeTelephoneNo);
         division.ChangeContactAddress(address);
         division.ChangeAccreditationBanner(imageFile);
+
+        await _unitOfWork.SaveChangesAsync(ct);
 
         return Result.Ok(Unit.Value);
     }

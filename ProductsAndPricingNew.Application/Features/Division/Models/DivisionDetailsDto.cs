@@ -1,4 +1,6 @@
-﻿namespace ProductsAndPricingNew.Application.Features.Division.Models;
+﻿using ProductsAndPricingNew.Application.Common.Models;
+
+namespace ProductsAndPricingNew.Application.Features.Division.Models;
 
 public sealed record DivisionDetailsDto(
     int Id,
@@ -9,5 +11,6 @@ public sealed record DivisionDetailsDto(
     string? WebsiteUrl,
     string? HeadOfficeEmail,
     string? HeadOfficeTelephoneNo,
-    DivisionAddressDto? ContactAddress
+    ImageBannerDto? ImageBanner,
+    AddressDto? ContactAddress
 );

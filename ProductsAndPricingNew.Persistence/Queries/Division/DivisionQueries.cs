@@ -1,5 +1,6 @@
 ﻿using System.Data.Common;
 using Dapper;
+using ProductsAndPricingNew.Application.Common.Models;
 using ProductsAndPricingNew.Application.Common.Pagination;
 using ProductsAndPricingNew.Application.Features.Division.Abstractions;
 using ProductsAndPricingNew.Application.Features.Division.Models;
@@ -21,7 +22,7 @@ internal sealed class DivisionQueries : IDivisionQueries
         const string sql = """
            SELECT CAST(CASE WHEN EXISTS (
                SELECT 1
-               FROM dbo.Division d
+               FROM PricingRef.Division d
                WHERE d.IsDeleted = 0
                  AND d.Name = @Name
                  AND (@ExcludingId IS NULL OR d.Id <> @ExcludingId)
@@ -54,12 +55,15 @@ internal sealed class DivisionQueries : IDivisionQueries
                 d.WebsiteUrl,
                 d.HeadOfficeEmail,
                 d.HeadOfficeTelephoneNo,
-                d.AddressLine1,
-                d.AddressLine2,
-                d.AddressLine3,
-                d.AddressLine4,
-                d.AddressCountryId
-            FROM dbo.Division d
+                d.Street,
+                d.District,
+                d.City,
+                d.PostalCode,
+                d.AddressCountryId,
+                d.AccreditationBannerData,
+                d.AccreditationBannerContentType,
+                d.AccreditationBannerFileName
+            FROM PricingRef.Division d
             WHERE d.Id = @Id
               AND d.IsDeleted = 0;
             """;
@@ -85,6 +89,7 @@ internal sealed class DivisionQueries : IDivisionQueries
             row.WebsiteUrl,
             row.HeadOfficeEmail,
             row.HeadOfficeTelephoneNo,
+            MapBanner(row),
             MapAddress(row));
     }
 
@@ -96,7 +101,7 @@ internal sealed class DivisionQueries : IDivisionQueries
     {
         const string sql = """
            SELECT COUNT(1)
-           FROM dbo.Division d
+           FROM PricingRef.Division d
            WHERE d.IsDeleted = 0
              AND (@IsActive IS NULL OR d.IsActive = @IsActive)
              AND (@Search IS NULL OR d.Name LIKE '%' + @Search + '%');
@@ -105,7 +110,7 @@ internal sealed class DivisionQueries : IDivisionQueries
                d.Id,
                d.Name,
                d.IsActive
-           FROM dbo.Division d
+           FROM PricingRef.Division d
            WHERE d.IsDeleted = 0
              AND (@IsActive IS NULL OR d.IsActive = @IsActive)
              AND (@Search IS NULL OR d.Name LIKE '%' + @Search + '%')
@@ -151,24 +156,40 @@ internal sealed class DivisionQueries : IDivisionQueries
             PageSize: pageSize);
     }
 
-    private static DivisionAddressDto? MapAddress(DivisionDetailsRow row)
+    private static ImageBannerDto? MapBanner(DivisionDetailsRow row)
     {
         bool isEmpty =
-            row.AddressLine1 is null &&
-            row.AddressLine2 is null &&
-            row.AddressLine3 is null &&
-            row.AddressLine4 is null &&
-            row.AddressCountryId is null;
+            row.AccreditationBannerData is null &&
+            row.AccreditationBannerContentType is null &&
+            row.AccreditationBannerFileName is null;
 
         if (isEmpty)
             return null;
 
-        return new DivisionAddressDto(
-            row.AddressLine1,
-            row.AddressLine2,
-            row.AddressLine3,
-            row.AddressLine4,
-            row.AddressCountryId);
+        return new ImageBannerDto(
+            row.AccreditationBannerData,
+            row.AccreditationBannerContentType,
+            row.AccreditationBannerFileName);
+    }
+
+    private static AddressDto? MapAddress(DivisionDetailsRow row)
+    {
+        bool isEmpty =
+            row.Street is null &&
+            row.District is null &&
+            row.City is null &&
+            row.PostalCode is null &&
+            row.CountryId is null;
+
+        if (isEmpty)
+            return null;
+
+        return new AddressDto(
+            row.Street,
+            row.District,
+            row.City,
+            row.PostalCode,
+            row.CountryId);
     }
 
     private sealed class DivisionDetailsRow
@@ -181,11 +202,14 @@ internal sealed class DivisionQueries : IDivisionQueries
         public string? WebsiteUrl { get; init; }
         public string? HeadOfficeEmail { get; init; }
         public string? HeadOfficeTelephoneNo { get; init; }
-        public string? AddressLine1 { get; init; }
-        public string? AddressLine2 { get; init; }
-        public string? AddressLine3 { get; init; }
-        public string? AddressLine4 { get; init; }
-        public int? AddressCountryId { get; init; }
+        public string? Street { get; init; }
+        public string? District { get; init; }
+        public string? City { get; init; }
+        public string? PostalCode { get; init; }
+        public int? CountryId { get; init; }
+        public byte[]? AccreditationBannerData { get; init; }
+        public string? AccreditationBannerContentType { get; init; }
+        public string? AccreditationBannerFileName { get; init; }
     }
 
     private sealed class DivisionListItemRow

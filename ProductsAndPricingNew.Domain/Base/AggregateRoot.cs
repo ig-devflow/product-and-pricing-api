@@ -9,7 +9,7 @@ public abstract class AggregateRoot<TId> : Entity<TId>, IAggregateRoot, IAuditab
     public IReadOnlyCollection<object> DomainEvents => _domainEvents;
     public AuditMetadata AuditMetadata { get; private set; }
     public bool IsDeleted { get; protected set; }
-    public byte[] RowVersion { get; private set; } = [];
+    public byte[] Version { get; private set; } = [];
     //protected void Raise(object @event) => _domainEvents.Add(@event);
     //public void ClearDomainEvents() => _domainEvents.Clear();
 }

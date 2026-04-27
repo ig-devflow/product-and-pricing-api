@@ -1,5 +1,6 @@
 ﻿using FluentResults;
 using ProductsAndPricingNew.Application.Abstractions;
+using ProductsAndPricingNew.Application.Common.Models;
 using ProductsAndPricingNew.Application.Features.Division.Models;
 
 namespace ProductsAndPricingNew.Application.Features.Division.Commands.CreateDivision;
@@ -12,6 +13,6 @@ public sealed record CreateDivisionCommand(
     string? GroupsPaymentTerms,
     string? HeadOfficeEmail,
     string? HeadOfficeTelephoneNo,
-    DivisionAddressDto? ContactAddress,
-    DivisionAccreditationBanner? AccreditationBanner
+    AddressDto? ContactAddress,
+    ImageBannerDto? AccreditationBanner
 ) : ICommand<Result<int>>;

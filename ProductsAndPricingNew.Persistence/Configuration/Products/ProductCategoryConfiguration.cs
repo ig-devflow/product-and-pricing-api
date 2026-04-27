@@ -4,34 +4,34 @@ using ProductsAndPricingNew.Domain.Entities.PricingRef;
 
 namespace ProductsAndPricingNew.Persistence.Configuration.Products;
 
-public sealed class ProductCategoryConfiguration : IEntityTypeConfiguration<ProductCategory>
+internal sealed class ProductCategoryConfiguration : IEntityTypeConfiguration<ProductCategory>
 {
-    public void Configure(EntityTypeBuilder<ProductCategory> b)
+    public void Configure(EntityTypeBuilder<ProductCategory> entity)
     {
-        b.ToTable("ProductCategory", "Product");
+        entity.ToTable("ProductCategory", "Product");
 
-        b.HasKey(x => x.Id);
-        b.Property(x => x.Id).ValueGeneratedNever();
+        entity.HasKey(x => x.Id);
+        entity.Property(x => x.Id).ValueGeneratedOnAdd();
 
-        b.Property(x => x.DivisionId).IsRequired();
+        entity.Property(x => x.DivisionId).IsRequired();
 
-        b.Property(x => x.Name)
+        entity.Property(x => x.Name)
             .HasMaxLength(100)
             .IsRequired();
 
-        b.Property(x => x.IsActive).IsRequired();
-        b.Property(x => x.IsDeleted).IsRequired();
+        entity.Property(x => x.IsActive).IsRequired();
+        entity.Property(x => x.IsDeleted).IsRequired();
 
-        b.HasIndex(x => new { x.DivisionId, x.Name });
-        b.HasIndex(x => new { x.DivisionId, x.IsDeleted, x.IsActive });
+        entity.HasIndex(x => new { x.DivisionId, x.Name });
+        entity.HasIndex(x => new { x.DivisionId, x.IsDeleted, x.IsActive });
 
-        b.ConfigureAuditMetadata(x => x.AuditMetadata);
-        b.Property(x => x.IsDeleted)
+        entity.ConfigureAuditMetadata(x => x.AuditMetadata);
+        entity.Property(x => x.IsDeleted)
             .HasDefaultValue(false)
             .IsRequired();
 
-        b.Property(x => x.RowVersion).IsRowVersion();
+        entity.Property(x => x.Version).IsRowVersion();
 
-        b.Ignore(x => x.DomainEvents);
+        entity.Ignore(x => x.DomainEvents);
     }
 }

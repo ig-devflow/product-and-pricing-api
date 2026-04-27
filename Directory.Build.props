@@ -9,7 +9,10 @@
     <AnalysisLevel>8.0</AnalysisLevel>
 
     <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
-
+	<WarningsNotAsErrors Condition="'$(GITHUB_ACTIONS)' != 'true'">
+		$(WarningsNotAsErrors);NU1900
+	</WarningsNotAsErrors>
+	  
     <RestorePackagesWithLockFile>true</RestorePackagesWithLockFile>
     <RestoreLockedMode Condition="'$(GITHUB_ACTIONS)' == 'true'">true</RestoreLockedMode>
 

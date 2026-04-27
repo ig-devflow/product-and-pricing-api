@@ -1,6 +1,7 @@
 ﻿using FluentResults;
 using MediatR;
 using ProductsAndPricingNew.Application.Abstractions;
+using ProductsAndPricingNew.Application.Common.Models;
 using ProductsAndPricingNew.Application.Features.Division.Models;
 
 namespace ProductsAndPricingNew.Application.Features.Division.Commands.UpdateDivision;
@@ -14,6 +15,6 @@ public sealed record UpdateDivisionCommand(
     string? GroupsPaymentTerms,
     string? HeadOfficeEmail,
     string? HeadOfficeTelephoneNo,
-    DivisionAddressDto? ContactAddress,
-    DivisionAccreditationBanner? AccreditationBanner
+    AddressDto? ContactAddress,
+    ImageBannerDto? AccreditationBanner
 ) : ICommand<Result<Unit>>;

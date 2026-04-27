@@ -1,0 +1,3 @@
+﻿namespace ProductsAndPricingNew.Application.Features.Division.Commands.UpdateDivision;
+
+public class UpdateDivisionCommandValidator;

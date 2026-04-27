@@ -1,4 +1,5 @@
-﻿using ProductsAndPricingNew.Application.Features.Division.Models;
+﻿using ProductsAndPricingNew.Application.Common.Models;
+using ProductsAndPricingNew.Application.Features.Division.Models;
 
 namespace ProductsAndPricingNew.AdminApi.Contracts.Division;
 
@@ -10,6 +11,6 @@ public sealed record CreateDivisionRequest(
     string? GroupsPaymentTerms,
     string? HeadOfficeEmail,
     string? HeadOfficeTelephoneNo,
-    DivisionAddressDto? ContactAddress,
-    DivisionAccreditationBanner? AccreditationBanner
+    AddressDto? ContactAddress,
+    ImageBannerDto? AccreditationBanner
 );

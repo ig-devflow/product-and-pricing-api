@@ -20,7 +20,7 @@ public sealed class HttpCurrentUser : ICurrentUser
 
             return int.TryParse(raw, out int userId)
                 ? userId
-                : 0;
+                : 1;
         }
     }
 }

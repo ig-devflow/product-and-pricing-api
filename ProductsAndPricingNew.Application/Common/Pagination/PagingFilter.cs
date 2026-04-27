@@ -6,14 +6,14 @@ public readonly record struct PagingFilter
     private const int DefaultPageSize = 20;
     private const int MaxPageSize = 200;
 
+    private int? Page { get; }
+    private int? PageSize { get; }
+
     public PagingFilter(int? page, int? pageSize)
     {
         Page = page;
         PageSize = pageSize;
     }
-
-    private int? Page { get; init; }
-    private int? PageSize { get; init; }
 
     public int GetPage()
     {
