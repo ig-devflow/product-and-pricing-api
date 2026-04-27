@@ -16,7 +16,7 @@ public sealed class ImageFile : IEquatable<ImageFile>
         FileName = fileName;
     }
 
-    public static ImageFile Create(byte[] data, string contentType, string fileName, int? maxBytes = null)
+    public static ImageFile Create(byte[]? data, string? contentType, string? fileName, int? maxBytes = null)
     {
         if (data is null || data.Length == 0)
             throw new DomainException("Image data is required.");
@@ -24,17 +24,11 @@ public sealed class ImageFile : IEquatable<ImageFile>
         if (maxBytes.HasValue && data.Length > maxBytes)
             throw new DomainException("Image is too large.");
 
-        string? normalizedContentType = contentType.AsOptionalDomainText();
-        string? normalizedFileName = fileName.AsOptionalDomainText();
-
-        if (string.IsNullOrWhiteSpace(normalizedContentType))
-            throw new DomainException("Image content type is required.");
+        string normalizedContentType = contentType.AsRequiredDomainText();
+        string normalizedFileName = fileName.AsOptionalDomainText() ?? Guid.NewGuid().ToString();
 
         if (normalizedContentType is not "image/png" and not "image/jpeg" and not "image/jpg" and not "image/webp" and not "image/svg+xml")
             throw new DomainException("Unsupported image content type.");
-
-        if (string.IsNullOrWhiteSpace(normalizedFileName))
-            throw new DomainException("Image file name is required.");
 
         return new ImageFile(data, normalizedContentType, normalizedFileName);
     }

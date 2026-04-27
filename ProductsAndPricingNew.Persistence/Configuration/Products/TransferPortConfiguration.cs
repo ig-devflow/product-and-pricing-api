@@ -4,29 +4,29 @@ using ProductsAndPricingNew.Domain.Entities.Products;
 
 namespace ProductsAndPricingNew.Persistence.Configuration.Products;
 
-public sealed class TransferPortConfiguration : IEntityTypeConfiguration<TransferPort>
+internal sealed class TransferPortConfiguration : IEntityTypeConfiguration<TransferPort>
 {
-    public void Configure(EntityTypeBuilder<TransferPort> b)
+    public void Configure(EntityTypeBuilder<TransferPort> entity)
     {
-        b.ToTable("TransferPort", "Product");
+        entity.ToTable("TransferPort", "Product");
 
-        b.HasKey(x => x.Id);
-        b.Property(x => x.Id).ValueGeneratedNever();
+        entity.HasKey(x => x.Id);
+        entity.Property(x => x.Id).ValueGeneratedOnAdd();
 
-        b.Property(x => x.Name)
+        entity.Property(x => x.Name)
             .HasMaxLength(100)
             .IsRequired();
 
-        b.Property(x => x.TransferPortTypeId).IsRequired();
-        b.Property(x => x.IsActive).IsRequired();
+        entity.Property(x => x.TransferPortTypeId).IsRequired();
+        entity.Property(x => x.IsActive).IsRequired();
 
-        b.Navigation(x => x.Instructions)
+        entity.Navigation(x => x.Instructions)
             .UsePropertyAccessMode(PropertyAccessMode.Field);
 
-        b.Navigation(x => x.Terminals)
+        entity.Navigation(x => x.Terminals)
             .UsePropertyAccessMode(PropertyAccessMode.Field);
 
-        b.OwnsMany(x => x.Instructions, owned =>
+        entity.OwnsMany(x => x.Instructions, owned =>
         {
             owned.ToTable("TransferPortInstruction");
 
@@ -49,7 +49,7 @@ public sealed class TransferPortConfiguration : IEntityTypeConfiguration<Transfe
                 .IsUnique();
         });
 
-        b.OwnsMany(x => x.Terminals, owned =>
+        entity.OwnsMany(x => x.Terminals, owned =>
         {
             owned.ToTable("TransferPortTerminal");
 
@@ -73,13 +73,13 @@ public sealed class TransferPortConfiguration : IEntityTypeConfiguration<Transfe
                 .IsUnique();
         });
 
-        b.ConfigureAuditMetadata(x => x.AuditMetadata);
-        b.Property(x => x.IsDeleted)
+        entity.ConfigureAuditMetadata(x => x.AuditMetadata);
+        entity.Property(x => x.IsDeleted)
             .HasDefaultValue(false)
             .IsRequired();
 
-        b.Property(x => x.RowVersion).IsRowVersion();
+        entity.Property(x => x.Version).IsRowVersion();
 
-        b.Ignore(x => x.DomainEvents);
+        entity.Ignore(x => x.DomainEvents);
     }
 }

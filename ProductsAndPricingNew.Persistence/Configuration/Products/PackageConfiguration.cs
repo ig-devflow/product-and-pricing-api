@@ -4,40 +4,40 @@ using ProductsAndPricingNew.Domain.Entities.Products;
 
 namespace ProductsAndPricingNew.Persistence.Configuration.Products;
 
-public sealed class PackageConfiguration : IEntityTypeConfiguration<Package>
+internal sealed class PackageConfiguration : IEntityTypeConfiguration<Package>
 {
-    public void Configure(EntityTypeBuilder<Package> b)
+    public void Configure(EntityTypeBuilder<Package> entity)
     {
-        b.ToTable("Package", "Product");
+        entity.ToTable("Package", "Product");
 
-        b.HasKey(x => x.Id);
-        b.Property(x => x.Id).ValueGeneratedNever();
+        entity.HasKey(x => x.Id);
+        entity.Property(x => x.Id).ValueGeneratedOnAdd();
 
-        b.Property(x => x.DivisionId).IsRequired();
-        b.Property(x => x.UnitTypeId).IsRequired();
+        entity.Property(x => x.DivisionId).IsRequired();
+        entity.Property(x => x.UnitTypeId).IsRequired();
 
-        b.Property(x => x.Name)
+        entity.Property(x => x.Name)
             .HasMaxLength(100)
             .IsRequired();
 
-        b.Property(x => x.IsActive).IsRequired();
+        entity.Property(x => x.IsActive).IsRequired();
 
-        b.Property(x => x.Description)
+        entity.Property(x => x.Description)
             .HasMaxLength(4000);
 
-        b.Property(x => x.CommissionPercentage)
+        entity.Property(x => x.CommissionPercentage)
             .HasPrecision(5, 2)
             .IsRequired();
 
-        b.Property(x => x.MinimumAge);
-        b.Property(x => x.MaximumAge);
-        b.Property(x => x.MinimumWeeks);
+        entity.Property(x => x.MinimumAge);
+        entity.Property(x => x.MaximumAge);
+        entity.Property(x => x.MinimumWeeks);
 
-        b.Property(x => x.AccountCategoryId);
-        b.Property(x => x.ProductCategoryId);
-        b.Property(x => x.OfferingsClosureDate);
+        entity.Property(x => x.AccountCategoryId);
+        entity.Property(x => x.ProductCategoryId);
+        entity.Property(x => x.OfferingsClosureDate);
 
-        b.ComplexProperty(x => x.FinanceCodes, finance =>
+        entity.ComplexProperty(x => x.FinanceCodes, finance =>
         {
             finance.Property(x => x.GeneralLedgerCode)
                 .HasColumnName("GeneralLedgerCode")
@@ -48,15 +48,15 @@ public sealed class PackageConfiguration : IEntityTypeConfiguration<Package>
                 .HasMaxLength(10);
         });
 
-        b.HasIndex(x => new { x.DivisionId, x.Name });
-        b.HasIndex(x => x.AccountCategoryId);
-        b.HasIndex(x => x.ProductCategoryId);
-        b.HasIndex(x => x.UnitTypeId);
+        entity.HasIndex(x => new { x.DivisionId, x.Name });
+        entity.HasIndex(x => x.AccountCategoryId);
+        entity.HasIndex(x => x.ProductCategoryId);
+        entity.HasIndex(x => x.UnitTypeId);
 
-        b.Navigation(x => x.Items)
+        entity.Navigation(x => x.Items)
             .UsePropertyAccessMode(PropertyAccessMode.Field);
 
-        b.OwnsMany(x => x.Items, owned =>
+        entity.OwnsMany(x => x.Items, owned =>
         {
             owned.ToTable("PackageItem");
 
@@ -68,7 +68,7 @@ public sealed class PackageConfiguration : IEntityTypeConfiguration<Package>
             owned.HasKey(x => x.Id);
 
             owned.Property(x => x.ProductKind)
-                .HasColumnName("ProductKindId")
+                .HasColumnName("ProductKind")
                 .HasConversion<int>()
                 .IsRequired();
 
@@ -83,17 +83,17 @@ public sealed class PackageConfiguration : IEntityTypeConfiguration<Package>
 
             owned.Ignore(x => x.Product);
 
-            owned.HasIndex("PackageId", "ProductKindId", "ProductDefinitionId")
+            owned.HasIndex("PackageId", nameof(PackageItem.ProductKind), nameof(PackageItem.ProductDefinitionId))
                 .IsUnique();
         });
 
-        b.ConfigureAuditMetadata(x => x.AuditMetadata);
-        b.Property(x => x.IsDeleted)
+        entity.ConfigureAuditMetadata(x => x.AuditMetadata);
+        entity.Property(x => x.IsDeleted)
             .HasDefaultValue(false)
             .IsRequired();
 
-        b.Property(x => x.RowVersion).IsRowVersion();
+        entity.Property(x => x.Version).IsRowVersion();
 
-        b.Ignore(x => x.DomainEvents);
+        entity.Ignore(x => x.DomainEvents);
     }
 }

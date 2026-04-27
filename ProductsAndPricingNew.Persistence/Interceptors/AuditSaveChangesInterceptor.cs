@@ -39,7 +39,7 @@ internal sealed class AuditSaveChangesInterceptor : SaveChangesInterceptor
         if (context is null)
             return;
 
-        DateTimeOffset now = _clock.UtcNow;
+        DateTimeOffset utcNow = _clock.UtcNow;
         int userId = _currentUser.UserId;
 
         foreach (EntityEntry<IAuditable> entry in context.ChangeTracker.Entries<IAuditable>())
@@ -48,13 +48,13 @@ internal sealed class AuditSaveChangesInterceptor : SaveChangesInterceptor
 
             if (entry.State == EntityState.Added)
             {
-                audit.CurrentValue = AuditMetadata.Create(userId, now);
+                audit.CurrentValue = AuditMetadata.Create(userId, utcNow);
                 continue;
             }
 
             if (entry.State == EntityState.Modified)
             {
-                audit.CurrentValue = audit.CurrentValue.MarkUpdated(userId, now);
+                audit.CurrentValue = audit.CurrentValue.MarkUpdated(userId, utcNow);
             }
         }
     }

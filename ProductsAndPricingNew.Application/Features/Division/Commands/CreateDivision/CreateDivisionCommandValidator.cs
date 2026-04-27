@@ -1,0 +1,3 @@
+﻿namespace ProductsAndPricingNew.Application.Features.Division.Commands.CreateDivision;
+
+public class CreateDivisionCommandValidator;
