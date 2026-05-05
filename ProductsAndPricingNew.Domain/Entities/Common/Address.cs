@@ -20,11 +20,11 @@ public sealed record Address
         PostalCode = postalCode.AsOptionalDomainText();
     }
 
-    public int? CountryId { get; init; }
-    public string? Street { get; init; }
-    public string? District { get; init; }
-    public string? City { get; init; }
-    public string? PostalCode { get; init; }
+    public int? CountryId { get; }
+    public string? Street { get; }
+    public string? District { get; }
+    public string? City { get; }
+    public string? PostalCode { get; }
 
     public bool IsEmpty =>
         CountryId is null &&

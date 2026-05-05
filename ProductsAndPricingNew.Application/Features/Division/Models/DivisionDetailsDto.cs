@@ -12,5 +12,6 @@ public sealed record DivisionDetailsDto(
     string? HeadOfficeEmail,
     string? HeadOfficeTelephoneNo,
     ImageBannerDto? ImageBanner,
-    AddressDto? ContactAddress
+    AddressDto? ContactAddress,
+    IReadOnlyCollection<DivisionTextContentDto> Texts
 );

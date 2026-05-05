@@ -1,9 +1,19 @@
-﻿using ProductsAndPricingNew.Domain.Entities.PricingRef;
+﻿using Microsoft.EntityFrameworkCore;
+using ProductsAndPricingNew.Domain.Entities.PricingRef;
 using ProductsAndPricingNew.Domain.Repositories;
 
 namespace ProductsAndPricingNew.Persistence.Repositories;
 
 internal sealed class DivisionRepository : EfRepositoryBase<Division, int>, IDivisionRepository
 {
-    public DivisionRepository(ProductsAndPricingDbContext db) : base(db) { }
+    public DivisionRepository(ProductsAndPricingDbContext db) : base(db)
+    {
+    }
+
+    public Task<Division?> GetByIdWithTextsAsync(int id, CancellationToken ct = default)
+    {
+        return Db.Set<Division>()
+            .Include(x => x.Texts)
+            .SingleOrDefaultAsync(x => x.Id == id && !x.IsDeleted, ct);
+    }
 }

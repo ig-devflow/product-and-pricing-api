@@ -2,11 +2,14 @@
 using ProductsAndPricingNew.Domain.Common.Errors;
 using ProductsAndPricingNew.Domain.Common.Extensions;
 using ProductsAndPricingNew.Domain.Entities.Common;
+using ProductsAndPricingNew.Domain.Entities.ReferenceData;
 
 namespace ProductsAndPricingNew.Domain.Entities.PricingRef;
 
 public sealed class Division : AggregateRoot<int>
 {
+    private readonly List<DivisionTextContent> _texts = new();
+
     public string Name { get; private set; } = null!;
     public bool IsActive { get; private set; }
     public string? TermsAndConditions { get; private set; }
@@ -16,6 +19,7 @@ public sealed class Division : AggregateRoot<int>
     public string? HeadOfficeTelephoneNo { get; private set; }
     public Address ContactAddress { get; private set; } = Address.Empty;
     public ImageFile AccreditationBanner { get; private set; } = ImageFile.Empty;
+    public IReadOnlyCollection<DivisionTextContent> Texts => _texts;
 
     private Division() { }
 
@@ -35,10 +39,52 @@ public sealed class Division : AggregateRoot<int>
     public void ChangeContactAddress(Address address) => ContactAddress = address;
     public void ChangeAccreditationBanner(ImageFile value) => AccreditationBanner = value;
 
+    public void DefineText(ContentTemplate template, Audience? audience, string content, ContentFormat format)
+    {
+        DefineText(template, audience, FormattedText.Create(content, format));
+    }
+
+    public void DefineText(ContentTemplate template, Audience? audience, FormattedText text)
+    {
+        ArgumentNullException.ThrowIfNull(template);
+        ArgumentNullException.ThrowIfNull(text);
+
+        template.EnsureCanBeUsedFor(ContentTemplateScope.Division);
+        audience?.EnsureActive();
+
+        int? audienceId = NormalizeAudienceId(audience?.Id);
+
+        DivisionTextContent? existing = _texts.FirstOrDefault(x =>
+            x.Matches(template.Id, audienceId));
+
+        if (existing is null)
+        {
+            _texts.Add(new DivisionTextContent(template.Id, audienceId, text));
+            return;
+        }
+
+        existing.ChangeText(text);
+    }
+
+    public void RemoveText(int contentTemplateId, int? audienceId)
+    {
+        if (contentTemplateId <= 0)
+            throw new DomainException("Content template id must be provided.");
+
+        DivisionTextContent? existing = _texts.FirstOrDefault(x =>
+            x.Matches(contentTemplateId, audienceId));
+
+        existing?.Delete();
+    }
+
+    private static int? NormalizeAudienceId(int? audienceId)
+        => audienceId > 0 ? audienceId : null;
+
     public sealed class Builder
     {
         private readonly string _name;
         private readonly string _websiteUrl;
+
         private bool _isActive;
         private string? _termsAndConditions;
         private string? _groupsPaymentTerms;

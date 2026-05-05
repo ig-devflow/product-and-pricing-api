@@ -4,15 +4,16 @@ using ProductsAndPricingNew.Application.Common.Models;
 using ProductsAndPricingNew.Application.Common.Pagination;
 using ProductsAndPricingNew.Application.Features.Division.Abstractions;
 using ProductsAndPricingNew.Application.Features.Division.Models;
+using ProductsAndPricingNew.Domain.Entities.ReferenceData;
 using ProductsAndPricingNew.Persistence.Queries.Configuration;
 
 namespace ProductsAndPricingNew.Persistence.Queries.Division;
 
-internal sealed class DivisionQueries : IDivisionQueries
+internal sealed class DivisionQuery : IDivisionQuery
 {
     private readonly ISqlConnectionFactory _connectionFactory;
 
-    public DivisionQueries(ISqlConnectionFactory connectionFactory)
+    public DivisionQuery(ISqlConnectionFactory connectionFactory)
     {
         _connectionFactory = connectionFactory;
     }
@@ -59,13 +60,30 @@ internal sealed class DivisionQueries : IDivisionQueries
                 d.District,
                 d.City,
                 d.PostalCode,
-                d.AddressCountryId,
+                d.CountryId,
                 d.AccreditationBannerData,
                 d.AccreditationBannerContentType,
                 d.AccreditationBannerFileName
             FROM PricingRef.Division d
             WHERE d.Id = @Id
               AND d.IsDeleted = 0;
+
+            SELECT
+                dtc.Id,
+                dtc.ContentTemplateId,
+                ct.Name AS ContentTemplateName,
+                dtc.AudienceId,
+                a.Name AS AudienceName,
+                dtc.Content,
+                dtc.Format
+            FROM PricingRef.DivisionTextContent dtc
+            INNER JOIN ReferenceData.ContentTemplate ct
+                ON ct.Id = dtc.ContentTemplateId
+            LEFT JOIN ReferenceData.Audience a
+                ON a.Id = dtc.AudienceId
+            WHERE dtc.DivisionId = @Id
+              AND dtc.IsDeleted = 0
+            ORDER BY ct.Name, a.Name;
             """;
 
         await using DbConnection connection = _connectionFactory.CreateConnection();
@@ -75,10 +93,23 @@ internal sealed class DivisionQueries : IDivisionQueries
             parameters: new { Id = id },
             cancellationToken: ct);
 
-        DivisionDetailsRow? row = await connection.QuerySingleOrDefaultAsync<DivisionDetailsRow>(command);
+        await using SqlMapper.GridReader grid = await connection.QueryMultipleAsync(command);
+
+        DivisionDetailsRow? row = await grid.ReadSingleOrDefaultAsync<DivisionDetailsRow>();
 
         if (row is null)
             return null;
+
+        List<DivisionTextContentDto> texts = (await grid.ReadAsync<DivisionTextContentRow>())
+            .Select(x => new DivisionTextContentDto(
+                x.Id,
+                x.ContentTemplateId,
+                x.ContentTemplateName,
+                x.AudienceId,
+                x.AudienceName,
+                x.Content,
+                x.Format))
+            .ToList();
 
         return new DivisionDetailsDto(
             row.Id,
@@ -90,7 +121,8 @@ internal sealed class DivisionQueries : IDivisionQueries
             row.HeadOfficeEmail,
             row.HeadOfficeTelephoneNo,
             MapBanner(row),
-            MapAddress(row));
+            MapAddress(row),
+            texts);
     }
 
     public async Task<PagedResult<DivisionListItemDto>> GetListAsync(
@@ -217,5 +249,16 @@ internal sealed class DivisionQueries : IDivisionQueries
         public int Id { get; init; }
         public string Name { get; init; } = null!;
         public bool IsActive { get; init; }
+    }
+
+    private sealed class DivisionTextContentRow
+    {
+        public int Id { get; init; }
+        public int ContentTemplateId { get; init; }
+        public string ContentTemplateName { get; init; } = null!;
+        public int? AudienceId { get; init; }
+        public string? AudienceName { get; init; }
+        public string Content { get; init; } = string.Empty;
+        public ContentFormat Format { get; init; }
     }
 }

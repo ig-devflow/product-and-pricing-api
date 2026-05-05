@@ -9,11 +9,11 @@ namespace ProductsAndPricingNew.Application.Features.Division.Queries.GetDivisio
 
 internal sealed class GetDivisionsQueryHandler : IRequestHandler<GetDivisionsQuery, Result<PagedResult<DivisionListItemDto>>>
 {
-    private readonly IDivisionQueries _divisionQueries;
+    private readonly IDivisionQuery _divisionQuery;
 
-    public GetDivisionsQueryHandler(IDivisionQueries divisionQueries)
+    public GetDivisionsQueryHandler(IDivisionQuery divisionQuery)
     {
-        _divisionQueries = divisionQueries;
+        _divisionQuery = divisionQuery;
     }
 
     public async Task<Result<PagedResult<DivisionListItemDto>>> Handle(GetDivisionsQuery request, CancellationToken ct)
@@ -21,7 +21,7 @@ internal sealed class GetDivisionsQueryHandler : IRequestHandler<GetDivisionsQue
 
         string? normalizedSearch = request.Search.AsOptionalDomainText();
 
-        PagedResult<DivisionListItemDto> result = await _divisionQueries.GetListAsync(
+        PagedResult<DivisionListItemDto> result = await _divisionQuery.GetListAsync(
             normalizedSearch,
             request.IsActive,
             request.Paging,
