@@ -1,12 +1,10 @@
 ﻿using ProductsAndPricingNew.Domain.Base;
 using ProductsAndPricingNew.Domain.Common.Errors;
-using ProductsAndPricingNew.Domain.Entities.ReferenceData;
 
 namespace ProductsAndPricingNew.Domain.Entities.Common;
 
 public abstract class TextContent : Entity<int>
 {
-    public abstract ContentTemplateScope OwnerScope { get; }
     public int ContentTemplateId { get; protected set; }
     public int? AudienceId { get; protected set; }
     public FormattedText Text { get; protected set; } = FormattedText.Empty;
@@ -21,6 +19,11 @@ public abstract class TextContent : Entity<int>
         if (contentTemplateId <= 0)
             throw new DomainException("Content template id must be provided.");
 
+        ArgumentNullException.ThrowIfNull(text);
+
+        if (text.IsEmpty)
+            throw new DomainException("Text content cannot be empty.");
+
         ContentTemplateId = contentTemplateId;
         AudienceId = NormalizeAudienceId(audienceId);
         Text = text;
@@ -32,6 +35,14 @@ public abstract class TextContent : Entity<int>
 
     internal void ChangeText(FormattedText text)
     {
+        ArgumentNullException.ThrowIfNull(text);
+
+        if (text.IsEmpty)
+        {
+            Delete();
+            return;
+        }
+
         if (IsDeleted)
             Restore();
 

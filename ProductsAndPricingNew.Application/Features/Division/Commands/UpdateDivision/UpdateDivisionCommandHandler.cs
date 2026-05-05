@@ -4,7 +4,6 @@ using ProductsAndPricingNew.Application.Abstractions;
 using ProductsAndPricingNew.Application.Common.Errors;
 using ProductsAndPricingNew.Application.Common.Models;
 using ProductsAndPricingNew.Application.Features.Division.Abstractions;
-using ProductsAndPricingNew.Application.Features.Division.Models;
 using ProductsAndPricingNew.Domain.Common.Extensions;
 using ProductsAndPricingNew.Domain.Entities.Common;
 using ProductsAndPricingNew.Domain.Repositories;
@@ -40,7 +39,7 @@ internal sealed class UpdateDivisionCommandHandler : IRequestHandler<UpdateDivis
         if (nameAlreadyExists)
             return Result.Fail(new ConflictError("Division name already exists"));
 
-        AddressDto? addressDto = request.ContactAddress;
+        AddressDto? address = request.ContactAddress;
         ImageBannerDto? banner = request.AccreditationBanner;
 
         division.Rename(name);
@@ -50,9 +49,10 @@ internal sealed class UpdateDivisionCommandHandler : IRequestHandler<UpdateDivis
         division.ChangeWebsite(request.WebsiteUrl);
         division.ChangeHeadOfficeEmail(request.HeadOfficeEmail);
         division.ChangeHeadOfficeTelephone(request.HeadOfficeTelephoneNo);
-        division.ChangeContactAddress(addressDto?.CountryId, addressDto?.Street, addressDto?.District, addressDto?.City, addressDto?.PostalCode);
+        division.ChangeContactAddress(address?.CountryId, address?.Street, address?.District, address?.City, address?.PostalCode);
         division.ChangeAccreditationBanner(banner?.Data, banner?.ContentType, banner?.FileName);
-        //division.ReplaceTexts(textChanges);
+        division.ChangeTexts(request.Texts.Select(x => new TextContentDefinition(x.ContentTemplateId, x.AudienceId, x.Content, x.Format)));
+
         await _unitOfWork.SaveChangesAsync(ct);
 
         return Result.Ok(Unit.Value);
