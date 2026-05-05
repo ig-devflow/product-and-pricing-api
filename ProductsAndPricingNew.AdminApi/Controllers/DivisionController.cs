@@ -78,7 +78,8 @@ public sealed class DivisionController : ControllerBase
             request.HeadOfficeEmail,
             request.HeadOfficeTelephoneNo,
             request.ContactAddress,
-            request.AccreditationBanner);
+            request.AccreditationBanner,
+            request.Texts);
 
         Result<int> result = await _sender.Send(command, ct);
 
@@ -111,7 +112,8 @@ public sealed class DivisionController : ControllerBase
             request.HeadOfficeEmail,
             request.HeadOfficeTelephoneNo,
             request.ContactAddress,
-            request.AccreditationBanner);
+            request.AccreditationBanner,
+            request.Texts);
 
         Result<Unit> result = await _sender.Send(command, ct);
         return result.ToActionResult(this);

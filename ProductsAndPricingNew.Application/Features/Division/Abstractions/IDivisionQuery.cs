@@ -3,7 +3,7 @@ using ProductsAndPricingNew.Application.Features.Division.Models;
 
 namespace ProductsAndPricingNew.Application.Features.Division.Abstractions;
 
-public interface IDivisionQueries
+public interface IDivisionQuery
 {
     Task<bool> ExistsByNameAsync(string name, int? excludingId = null, CancellationToken ct = default);
     Task<DivisionDetailsDto?> GetByIdAsync(int id, CancellationToken ct = default);

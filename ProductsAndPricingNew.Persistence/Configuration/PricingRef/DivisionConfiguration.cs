@@ -1,6 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using ProductsAndPricingNew.Domain.Entities.PricingRef;
+using ProductsAndPricingNew.Domain.Entities.ReferenceData;
 
 namespace ProductsAndPricingNew.Persistence.Configuration.PricingRef;
 
@@ -35,6 +36,14 @@ internal sealed class DivisionConfiguration : IEntityTypeConfiguration<Division>
         entity.ConfigureAddress(x => x.ContactAddress);
         entity.ConfigureBanner(x => x.AccreditationBanner);
         entity.ConfigureAuditMetadata(x => x.AuditMetadata);
+
+        entity.HasMany(x => x.Texts)
+            .WithOne()
+            .HasForeignKey(x => x.DivisionId)
+            .OnDelete(DeleteBehavior.Cascade);
+
+        entity.Navigation(x => x.Texts)
+            .UsePropertyAccessMode(PropertyAccessMode.Field);
 
         entity.Property(x => x.IsDeleted)
             .HasDefaultValue(false)

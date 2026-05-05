@@ -4,7 +4,6 @@ using ProductsAndPricingNew.Application.Abstractions;
 using ProductsAndPricingNew.Application.Common.Errors;
 using ProductsAndPricingNew.Application.Common.Models;
 using ProductsAndPricingNew.Application.Features.Division.Abstractions;
-using ProductsAndPricingNew.Application.Features.Division.Models;
 using ProductsAndPricingNew.Domain.Common.Extensions;
 using ProductsAndPricingNew.Domain.Entities.Common;
 using ProductsAndPricingNew.Domain.Repositories;
@@ -15,16 +14,16 @@ namespace ProductsAndPricingNew.Application.Features.Division.Commands.CreateDiv
 internal sealed class CreateDivisionCommandHandler : IRequestHandler<CreateDivisionCommand, Result<int>>
 {
     private readonly IDivisionRepository _divisionRepository;
-    private readonly IDivisionQueries _divisionQueries;
+    private readonly IDivisionQuery _divisionQuery;
     private readonly IUnitOfWork _unitOfWork;
 
     public CreateDivisionCommandHandler(
         IDivisionRepository divisionRepository,
-        IDivisionQueries divisionQueries,
+        IDivisionQuery divisionQuery,
         IUnitOfWork unitOfWork)
     {
         _divisionRepository = divisionRepository;
-        _divisionQueries = divisionQueries;
+        _divisionQuery = divisionQuery;
         _unitOfWork = unitOfWork;
     }
 
@@ -32,7 +31,7 @@ internal sealed class CreateDivisionCommandHandler : IRequestHandler<CreateDivis
     {
         string name = request.Name.AsRequiredDomainText();
 
-        bool nameAlreadyExists = await _divisionQueries.ExistsByNameAsync(name, ct: ct);
+        bool nameAlreadyExists = await _divisionQuery.ExistsByNameAsync(name, ct: ct);
         if (nameAlreadyExists)
             return Result.Fail(new ConflictError("Division name already exists"));
 

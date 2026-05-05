@@ -8,16 +8,16 @@ namespace ProductsAndPricingNew.Application.Features.Division.Queries.GetDivisio
 
 internal sealed class GetDivisionByIdQueryHandler : IRequestHandler<GetDivisionByIdQuery, Result<DivisionDetailsDto>>
 {
-    private readonly IDivisionQueries _divisionQueries;
+    private readonly IDivisionQuery _divisionQuery;
 
-    public GetDivisionByIdQueryHandler(IDivisionQueries divisionQueries)
+    public GetDivisionByIdQueryHandler(IDivisionQuery divisionQuery)
     {
-        _divisionQueries = divisionQueries;
+        _divisionQuery = divisionQuery;
     }
 
     public async Task<Result<DivisionDetailsDto>> Handle(GetDivisionByIdQuery request, CancellationToken ct)
     {
-        DivisionDetailsDto? result = await _divisionQueries.GetByIdAsync(request.Id, ct);
+        DivisionDetailsDto? result = await _divisionQuery.GetByIdAsync(request.Id, ct);
         if (result is null)
             return Result.Fail(new NotFoundError($"Division with id {request.Id} was not found"));
 
