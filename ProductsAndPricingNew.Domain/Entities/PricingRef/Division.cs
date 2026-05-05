@@ -43,43 +43,55 @@ public sealed class Division : AggregateRoot<int>
     public void ChangeAccreditationBanner(byte[]? data, string? contentType, string? fileName)
         => AccreditationBanner = ImageFile.Create(data, contentType, fileName);
 
-    public void DefineText(ContentTemplate template, Audience? audience, string content, ContentFormat format)
+    public void ChangeTexts(IEnumerable<TextContentDefinition> texts)
     {
-        DefineText(template, audience, FormattedText.Create(content, format));
+        ArgumentNullException.ThrowIfNull(texts);
+        HashSet<(int ContentTemplateId, int? AudienceId)> incomingKeys = new();
+
+        foreach (TextContentDefinition text in texts)
+        {
+            if (!incomingKeys.Add(text.Key))
+                throw new DomainException("Duplicate text content for the same template and audience.");
+
+            UpsertText(text);
+        }
+
+        foreach (DivisionTextContent existing in _texts.Where(x => !x.IsDeleted).ToList())
+        {
+            (int ContentTemplateId, int? AudienceId) existingKey = (existing.ContentTemplateId, existing.AudienceId);
+
+            if (!incomingKeys.Contains(existingKey))
+                existing.Delete();
+        }
     }
 
-    public void DefineText(ContentTemplate template, Audience? audience, FormattedText text)
+    private void UpsertText(TextContentDefinition definition)
     {
-        ArgumentNullException.ThrowIfNull(template);
-        ArgumentNullException.ThrowIfNull(text);
+        definition.EnsureValidKey();
+        DivisionTextContent? existing = _texts.FirstOrDefault(x => x.Matches(definition.ContentTemplateId, definition.NormalizedAudienceId));
 
-        template.EnsureCanBeUsedFor(ContentTemplateScope.Division);
-        audience?.EnsureActive();
+        if (definition.IsEmpty)
+        {
+            existing?.Delete();
+            return;
+        }
 
-        DivisionTextContent? existing = _texts.FirstOrDefault(x => x.Matches(template.Id, audience?.Id));
+        FormattedText text = FormattedText.Create(definition.Content, definition.Format);
+
         if (existing is null)
         {
-            _texts.Add(new DivisionTextContent(template.Id, audience?.Id, text));
+            _texts.Add(DivisionTextContent.Create(definition, text));
             return;
         }
 
         existing.ChangeText(text);
     }
 
-    public void RemoveText(int contentTemplateId, int? audienceId)
-    {
-        if (contentTemplateId <= 0)
-            throw new DomainException("Content template id must be provided.");
-
-        DivisionTextContent? existing = _texts.FirstOrDefault(x => x.Matches(contentTemplateId, audienceId));
-
-        existing?.Delete();
-    }
-
     public sealed class Builder
     {
         private readonly string _name;
         private readonly string _websiteUrl;
+        private readonly List<TextContentDefinition> _texts = new();
 
         private bool _isActive;
         private string? _termsAndConditions;
@@ -137,6 +149,12 @@ public sealed class Division : AggregateRoot<int>
             return this;
         }
 
+        public Builder Texts(IEnumerable<TextContentDefinition> texts)
+        {
+            _texts.AddRange(texts);
+            return this;
+        }
+
         public Division Build()
         {
             Division division = new(_name, _websiteUrl)
@@ -150,6 +168,7 @@ public sealed class Division : AggregateRoot<int>
                 AccreditationBanner = _accreditationBanner
             };
 
+            division.ChangeTexts(_texts);
             return division;
         }
     }

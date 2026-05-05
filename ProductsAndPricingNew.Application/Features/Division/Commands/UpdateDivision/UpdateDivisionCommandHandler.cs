@@ -5,6 +5,7 @@ using ProductsAndPricingNew.Application.Common.Errors;
 using ProductsAndPricingNew.Application.Common.Models;
 using ProductsAndPricingNew.Application.Features.Division.Abstractions;
 using ProductsAndPricingNew.Domain.Common.Extensions;
+using ProductsAndPricingNew.Domain.Entities.Common;
 using ProductsAndPricingNew.Domain.Repositories;
 using DivisionEntity = ProductsAndPricingNew.Domain.Entities.PricingRef.Division;
 
@@ -50,7 +51,8 @@ internal sealed class UpdateDivisionCommandHandler : IRequestHandler<UpdateDivis
         division.ChangeHeadOfficeTelephone(request.HeadOfficeTelephoneNo);
         division.ChangeContactAddress(address?.CountryId, address?.Street, address?.District, address?.City, address?.PostalCode);
         division.ChangeAccreditationBanner(banner?.Data, banner?.ContentType, banner?.FileName);
-        //division.ReplaceTexts(textChanges);
+        division.ChangeTexts(request.Texts.Select(x => new TextContentDefinition(x.ContentTemplateId, x.AudienceId, x.Content, x.Format)));
+
         await _unitOfWork.SaveChangesAsync(ct);
 
         return Result.Ok(Unit.Value);

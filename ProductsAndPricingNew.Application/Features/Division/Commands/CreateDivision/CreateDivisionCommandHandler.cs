@@ -5,6 +5,7 @@ using ProductsAndPricingNew.Application.Common.Errors;
 using ProductsAndPricingNew.Application.Common.Models;
 using ProductsAndPricingNew.Application.Features.Division.Abstractions;
 using ProductsAndPricingNew.Domain.Common.Extensions;
+using ProductsAndPricingNew.Domain.Entities.Common;
 using ProductsAndPricingNew.Domain.Repositories;
 using DivisionEntity = ProductsAndPricingNew.Domain.Entities.PricingRef.Division;
 
@@ -45,6 +46,7 @@ internal sealed class CreateDivisionCommandHandler : IRequestHandler<CreateDivis
             .HeadOfficeTelephone(request.HeadOfficeTelephoneNo)
             .ContactAddress(address?.CountryId, address?.Street, address?.District, address?.City, address?.PostalCode)
             .AccreditationBanner(banner?.Data, banner?.ContentType, banner?.FileName)
+            .Texts(request.Texts.Select(x => new TextContentDefinition(x.ContentTemplateId, x.AudienceId, x.Content, x.Format)))
             .Build();
 
         await _divisionRepository.AddAsync(division, ct);

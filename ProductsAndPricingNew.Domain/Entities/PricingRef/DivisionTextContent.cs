@@ -1,5 +1,4 @@
 ﻿using ProductsAndPricingNew.Domain.Entities.Common;
-using ProductsAndPricingNew.Domain.Entities.ReferenceData;
 
 namespace ProductsAndPricingNew.Domain.Entities.PricingRef;
 
@@ -11,10 +10,11 @@ public sealed class DivisionTextContent : TextContent
     {
     }
 
-    internal DivisionTextContent(int contentTemplateId, int? audienceId, FormattedText text)
+    private DivisionTextContent(int contentTemplateId, int? audienceId, FormattedText text)
         : base(contentTemplateId, audienceId, text)
     {
     }
 
-    public override ContentTemplateScope OwnerScope => ContentTemplateScope.Division;
+    internal static DivisionTextContent Create(TextContentDefinition definition, FormattedText text)
+        => new(definition.ContentTemplateId, definition.NormalizedAudienceId, text);
 }

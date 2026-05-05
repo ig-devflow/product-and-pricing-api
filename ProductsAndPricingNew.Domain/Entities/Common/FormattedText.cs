@@ -9,6 +9,8 @@ public sealed record FormattedText
     public string? Content { get; private set; }
     public ContentFormat Format { get; private set; } = ContentFormat.None;
 
+    public bool IsEmpty => Content is null && Format == ContentFormat.None;
+
     private FormattedText()
     {
     }
@@ -20,18 +22,28 @@ public sealed record FormattedText
 
         bool hasContent = !string.IsNullOrWhiteSpace(content);
 
-        if (format == ContentFormat.None && hasContent)
+        if (!hasContent)
+        {
+            if (format != ContentFormat.None)
+                throw new DomainException("Content must be provided.");
+
+            Content = null;
+            Format = ContentFormat.None;
+            return;
+        }
+
+        if (format == ContentFormat.None)
             throw new DomainException("Content format must be provided when content is not empty.");
 
-        if (format != ContentFormat.None && !hasContent)
-            throw new DomainException("Content must be provided.");
-
-        Content = content.AsOptionalDomainText();
-        Format = hasContent ? format : ContentFormat.None;
+        Content = content.AsRequiredDomainText();
+        Format = format;
     }
 
     public static FormattedText Create(string? content, ContentFormat format)
-        => new(content, format);
+    {
+        FormattedText text = new(content, format);
+        return text.IsEmpty ? Empty : text;
+    }
 
     public static FormattedText Empty { get; } = new(null, ContentFormat.None);
 }
