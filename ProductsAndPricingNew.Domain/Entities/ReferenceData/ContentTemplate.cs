@@ -6,7 +6,7 @@ namespace ProductsAndPricingNew.Domain.Entities.ReferenceData;
 public sealed class ContentTemplate : Entity<int>
 {
     public string Name { get; private set; } = null!;
-    public string? UsageDescription { get; private set; }
+    public string? Description { get; private set; }
     public ContentTemplateScope Scope { get; private set; }
     public bool IsDeleted { get; private set; }
 

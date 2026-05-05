@@ -1,4 +1,5 @@
 ﻿using ProductsAndPricingNew.Domain.Common.Errors;
+using ProductsAndPricingNew.Domain.Common.Extensions;
 using ProductsAndPricingNew.Domain.Entities.ReferenceData;
 
 namespace ProductsAndPricingNew.Domain.Entities.Common;
@@ -25,7 +26,7 @@ public sealed record FormattedText
         if (format != ContentFormat.None && !hasContent)
             throw new DomainException("Content must be provided.");
 
-        Content = hasContent ? content!.Trim() : null;
+        Content = content.AsOptionalDomainText();
         Format = hasContent ? format : ContentFormat.None;
     }
 

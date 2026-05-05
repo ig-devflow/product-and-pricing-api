@@ -38,22 +38,14 @@ internal sealed class CreateDivisionCommandHandler : IRequestHandler<CreateDivis
         AddressDto? addressDto = request.ContactAddress;
         ImageBannerDto? banner = request.AccreditationBanner;
 
-        Address address = addressDto is not null
-            ? Address.Create(addressDto.CountryId, addressDto.Street, addressDto.District, addressDto.City, addressDto.PostalCode)
-            : Address.Empty;
-
-        ImageFile imageFile = banner is not null
-            ? ImageFile.Create(banner.Data, banner.ContentType, banner.FileName)
-            : ImageFile.Empty;
-
         DivisionEntity division = new DivisionEntity.Builder(name, request.WebsiteUrl)
             .IsActive(request.IsActive)
             .TermsAndConditions(request.TermsAndConditions)
             .GroupsPaymentTerms(request.GroupsPaymentTerms)
             .HeadOfficeEmail(request.HeadOfficeEmail)
             .HeadOfficeTelephone(request.HeadOfficeTelephoneNo)
-            .ContactAddress(address)
-            .AccreditationBanner(imageFile)
+            .ContactAddress(addressDto?.CountryId, addressDto?.Street, addressDto?.District, addressDto?.City, addressDto?.PostalCode)
+            .AccreditationBanner(banner?.Data, banner?.ContentType, banner?.FileName)
             .Build();
 
         await _divisionRepository.AddAsync(division, ct);
