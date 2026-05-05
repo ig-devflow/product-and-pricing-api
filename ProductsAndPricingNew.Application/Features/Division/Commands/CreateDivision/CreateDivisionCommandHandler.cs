@@ -5,7 +5,6 @@ using ProductsAndPricingNew.Application.Common.Errors;
 using ProductsAndPricingNew.Application.Common.Models;
 using ProductsAndPricingNew.Application.Features.Division.Abstractions;
 using ProductsAndPricingNew.Domain.Common.Extensions;
-using ProductsAndPricingNew.Domain.Entities.Common;
 using ProductsAndPricingNew.Domain.Repositories;
 using DivisionEntity = ProductsAndPricingNew.Domain.Entities.PricingRef.Division;
 
@@ -35,7 +34,7 @@ internal sealed class CreateDivisionCommandHandler : IRequestHandler<CreateDivis
         if (nameAlreadyExists)
             return Result.Fail(new ConflictError("Division name already exists"));
 
-        AddressDto? addressDto = request.ContactAddress;
+        AddressDto? address = request.ContactAddress;
         ImageBannerDto? banner = request.AccreditationBanner;
 
         DivisionEntity division = new DivisionEntity.Builder(name, request.WebsiteUrl)
@@ -44,7 +43,7 @@ internal sealed class CreateDivisionCommandHandler : IRequestHandler<CreateDivis
             .GroupsPaymentTerms(request.GroupsPaymentTerms)
             .HeadOfficeEmail(request.HeadOfficeEmail)
             .HeadOfficeTelephone(request.HeadOfficeTelephoneNo)
-            .ContactAddress(addressDto?.CountryId, addressDto?.Street, addressDto?.District, addressDto?.City, addressDto?.PostalCode)
+            .ContactAddress(address?.CountryId, address?.Street, address?.District, address?.City, address?.PostalCode)
             .AccreditationBanner(banner?.Data, banner?.ContentType, banner?.FileName)
             .Build();
 
