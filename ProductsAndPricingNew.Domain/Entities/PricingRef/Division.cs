@@ -36,8 +36,12 @@ public sealed class Division : AggregateRoot<int>
     public void ChangeGroupsPaymentTerms(string? groupsPaymentTerms) => GroupsPaymentTerms = groupsPaymentTerms.AsOptionalDomainText();
     public void ChangeHeadOfficeEmail(string? headOfficeEmail) => HeadOfficeEmail = headOfficeEmail.AsOptionalDomainText();
     public void ChangeHeadOfficeTelephone(string? headOfficeTelephone) => HeadOfficeTelephoneNo = headOfficeTelephone.AsOptionalDomainText();
-    public void ChangeContactAddress(Address address) => ContactAddress = address;
-    public void ChangeAccreditationBanner(ImageFile value) => AccreditationBanner = value;
+
+    public void ChangeContactAddress(int? countryId, string? street, string? district, string? city, string? postalCode)
+        => ContactAddress = Address.Create(countryId, street, district, city, postalCode);
+
+    public void ChangeAccreditationBanner(byte[]? data, string? contentType, string? fileName)
+        => AccreditationBanner = ImageFile.Create(data, contentType, fileName);
 
     public void DefineText(ContentTemplate template, Audience? audience, string content, ContentFormat format)
     {
@@ -52,14 +56,10 @@ public sealed class Division : AggregateRoot<int>
         template.EnsureCanBeUsedFor(ContentTemplateScope.Division);
         audience?.EnsureActive();
 
-        int? audienceId = NormalizeAudienceId(audience?.Id);
-
-        DivisionTextContent? existing = _texts.FirstOrDefault(x =>
-            x.Matches(template.Id, audienceId));
-
+        DivisionTextContent? existing = _texts.FirstOrDefault(x => x.Matches(template.Id, audience?.Id));
         if (existing is null)
         {
-            _texts.Add(new DivisionTextContent(template.Id, audienceId, text));
+            _texts.Add(new DivisionTextContent(template.Id, audience?.Id, text));
             return;
         }
 
@@ -71,14 +71,10 @@ public sealed class Division : AggregateRoot<int>
         if (contentTemplateId <= 0)
             throw new DomainException("Content template id must be provided.");
 
-        DivisionTextContent? existing = _texts.FirstOrDefault(x =>
-            x.Matches(contentTemplateId, audienceId));
+        DivisionTextContent? existing = _texts.FirstOrDefault(x => x.Matches(contentTemplateId, audienceId));
 
         existing?.Delete();
     }
-
-    private static int? NormalizeAudienceId(int? audienceId)
-        => audienceId > 0 ? audienceId : null;
 
     public sealed class Builder
     {
@@ -129,29 +125,30 @@ public sealed class Division : AggregateRoot<int>
             return this;
         }
 
-        public Builder ContactAddress(Address address)
+        public Builder ContactAddress(int? countryId, string? street, string? district, string? city, string? postalCode)
         {
-            _contactAddress = address;
+            _contactAddress = Address.Create(countryId, street, district, city, postalCode);
             return this;
         }
 
-        public Builder AccreditationBanner(ImageFile accreditationBanner)
+        public Builder AccreditationBanner(byte[]? data, string? contentType, string? fileName)
         {
-            _accreditationBanner = accreditationBanner;
+            _accreditationBanner = ImageFile.Create(data, contentType, fileName);
             return this;
         }
 
         public Division Build()
         {
-            Division division = new(_name, _websiteUrl);
-
-            division.ChangeActiveState(_isActive);
-            division.ChangeTermsAndConditions(_termsAndConditions);
-            division.ChangeGroupsPaymentTerms(_groupsPaymentTerms);
-            division.ChangeHeadOfficeEmail(_headOfficeEmail);
-            division.ChangeHeadOfficeTelephone(_headOfficeTelephoneNo);
-            division.ChangeContactAddress(_contactAddress);
-            division.ChangeAccreditationBanner(_accreditationBanner);
+            Division division = new(_name, _websiteUrl)
+            {
+                IsActive = _isActive,
+                TermsAndConditions = _termsAndConditions.AsOptionalDomainText(),
+                GroupsPaymentTerms = _groupsPaymentTerms.AsOptionalDomainText(),
+                HeadOfficeEmail = _headOfficeEmail.AsOptionalDomainText(),
+                HeadOfficeTelephoneNo = _headOfficeTelephoneNo.AsOptionalDomainText(),
+                ContactAddress = _contactAddress,
+                AccreditationBanner = _accreditationBanner
+            };
 
             return division;
         }

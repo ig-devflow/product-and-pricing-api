@@ -43,14 +43,6 @@ internal sealed class UpdateDivisionCommandHandler : IRequestHandler<UpdateDivis
         AddressDto? addressDto = request.ContactAddress;
         ImageBannerDto? banner = request.AccreditationBanner;
 
-        Address address = addressDto is not null
-            ? Address.Create(addressDto.CountryId, addressDto.Street, addressDto.District, addressDto.City, addressDto.PostalCode)
-            : Address.Empty;
-
-        ImageFile imageFile = banner is not null
-            ? ImageFile.Create(banner.Data, banner.ContentType, banner.FileName)
-            : ImageFile.Empty;
-
         division.Rename(name);
         division.ChangeActiveState(request.IsActive);
         division.ChangeTermsAndConditions(request.TermsAndConditions);
@@ -58,8 +50,8 @@ internal sealed class UpdateDivisionCommandHandler : IRequestHandler<UpdateDivis
         division.ChangeWebsite(request.WebsiteUrl);
         division.ChangeHeadOfficeEmail(request.HeadOfficeEmail);
         division.ChangeHeadOfficeTelephone(request.HeadOfficeTelephoneNo);
-        division.ChangeContactAddress(address);
-        division.ChangeAccreditationBanner(imageFile);
+        division.ChangeContactAddress(addressDto?.CountryId, addressDto?.Street, addressDto?.District, addressDto?.City, addressDto?.PostalCode);
+        division.ChangeAccreditationBanner(banner?.Data, banner?.ContentType, banner?.FileName);
         //division.ReplaceTexts(textChanges);
         await _unitOfWork.SaveChangesAsync(ct);
 

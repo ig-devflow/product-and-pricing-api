@@ -19,7 +19,7 @@ internal sealed class ContentTemplateConfiguration : IEntityTypeConfiguration<Co
             .HasMaxLength(200)
             .IsRequired();
 
-        entity.Property(x => x.UsageDescription)
+        entity.Property(x => x.Description)
             .HasMaxLength(500)
             .IsRequired(false);
 

@@ -19,7 +19,7 @@ public sealed class ImageFile : IEquatable<ImageFile>
     public static ImageFile Create(byte[]? data, string? contentType, string? fileName, int? maxBytes = null)
     {
         if (data is null || data.Length == 0)
-            throw new DomainException("Image data is required.");
+            return Empty;
 
         if (maxBytes.HasValue && data.Length > maxBytes)
             throw new DomainException("Image is too large.");
