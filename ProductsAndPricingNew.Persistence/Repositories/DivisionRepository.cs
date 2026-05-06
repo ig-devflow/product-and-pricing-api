@@ -10,9 +10,9 @@ internal sealed class DivisionRepository : EfRepositoryBase<Division, int>, IDiv
     {
     }
 
-    public Task<Division?> GetByIdWithTextsAsync(int id, CancellationToken ct = default)
+    public async Task<Division?> GetByIdWithTextsAsync(int id, CancellationToken ct = default)
     {
-        return Db.Set<Division>()
+        return await Db.Set<Division>()
             .Include(x => x.Texts)
             .SingleOrDefaultAsync(x => x.Id == id && !x.IsDeleted, ct);
     }

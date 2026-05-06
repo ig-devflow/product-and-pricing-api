@@ -8,9 +8,9 @@ internal sealed class TransferPortRepository : EfRepositoryBase<TransferPort, in
 {
     public TransferPortRepository(ProductsAndPricingDbContext db) : base(db) { }
 
-    public override Task<TransferPort?> GetByIdAsync(int id, CancellationToken ct = default)
+    public override async Task<TransferPort?> GetByIdAsync(int id, CancellationToken ct = default)
     {
-        return Set
+        return await Set
             .Include(x => x.Instructions)
             .Include(x => x.Terminals)
             .FirstOrDefaultAsync(x => x.Id == id, ct);

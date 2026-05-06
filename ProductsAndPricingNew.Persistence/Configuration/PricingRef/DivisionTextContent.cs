@@ -36,7 +36,7 @@ internal sealed class DivisionTextContentConfiguration : IEntityTypeConfiguratio
                 .HasColumnName("Format")
                 .HasConversion<short>()
                 .HasColumnType("smallint")
-                .HasDefaultValue(ContentFormat.PlainText)
+                .HasDefaultValue(ContentFormat.None)
                 .IsRequired();
         });
 

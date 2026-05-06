@@ -44,7 +44,7 @@ internal sealed class AuditSaveChangesInterceptor : SaveChangesInterceptor
 
         foreach (EntityEntry<IAuditable> entry in context.ChangeTracker.Entries<IAuditable>())
         {
-            ComplexPropertyEntry<IAuditable, AuditMetadata> audit = entry.ComplexProperty<AuditMetadata>(nameof(IAuditable.AuditMetadata));
+            var audit = entry.ComplexProperty<AuditMetadata>(nameof(IAuditable.AuditMetadata));
 
             if (entry.State == EntityState.Added)
             {

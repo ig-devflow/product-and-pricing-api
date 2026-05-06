@@ -31,11 +31,11 @@ public static class ServiceCollectionExtensions
         services.Scan(scan => scan
             .FromAssemblyOf<DivisionRepository>()
             .AddClasses(classes => classes.Where(type => type.Name.EndsWith("Repository")), publicOnly: false)
-            .AsMatchingInterface()
-            .WithScopedLifetime()
-            .AddClasses(classes => classes.Where(type => type.Name.EndsWith("Queries")), publicOnly: false)
-            .AsMatchingInterface()
-            .WithScopedLifetime());
+                .AsMatchingInterface()
+                .WithScopedLifetime()
+            .AddClasses(classes => classes.Where(type => type.Name.EndsWith("Query")), publicOnly: false)
+                .AsMatchingInterface()
+                .WithScopedLifetime());
 
         services.AddScoped<IUnitOfWork, UnitOfWork>();
 

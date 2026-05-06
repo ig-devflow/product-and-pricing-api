@@ -33,10 +33,10 @@ internal sealed class CreateDivisionCommandHandler : IRequestHandler<CreateDivis
 
         bool nameAlreadyExists = await _divisionQuery.ExistsByNameAsync(name, ct: ct);
         if (nameAlreadyExists)
-            return Result.Fail(new ConflictError("Division name already exists"));
+            return Result.Fail(new ConflictError($"Division name: '{name}' already exists"));
 
-        AddressDto? address = request.ContactAddress;
-        ImageBannerDto? banner = request.AccreditationBanner;
+        var address = request.ContactAddress;
+        var banner = request.AccreditationBanner;
 
         DivisionEntity division = new DivisionEntity.Builder(name, request.WebsiteUrl)
             .IsActive(request.IsActive)

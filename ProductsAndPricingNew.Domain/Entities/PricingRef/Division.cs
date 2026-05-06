@@ -46,7 +46,7 @@ public sealed class Division : AggregateRoot<int>
     public void ChangeTexts(IEnumerable<TextContentDefinition> texts)
     {
         ArgumentNullException.ThrowIfNull(texts);
-        HashSet<(int ContentTemplateId, int? AudienceId)> incomingKeys = new();
+        var incomingKeys = new HashSet<(int ContentTemplateId, int? AudienceId)>();
 
         foreach (TextContentDefinition text in texts)
         {
@@ -58,7 +58,7 @@ public sealed class Division : AggregateRoot<int>
 
         foreach (DivisionTextContent existing in _texts.Where(x => !x.IsDeleted).ToList())
         {
-            (int ContentTemplateId, int? AudienceId) existingKey = (existing.ContentTemplateId, existing.AudienceId);
+            var existingKey = (existing.ContentTemplateId, existing.AudienceId);
 
             if (!incomingKeys.Contains(existingKey))
                 existing.Delete();
@@ -76,7 +76,7 @@ public sealed class Division : AggregateRoot<int>
             return;
         }
 
-        FormattedText text = FormattedText.Create(definition.Content, definition.Format);
+        var text = FormattedText.Create(definition.Content, definition.Format);
 
         if (existing is null)
         {
@@ -103,8 +103,8 @@ public sealed class Division : AggregateRoot<int>
 
         public Builder(string name, string websiteUrl)
         {
-            _name = name;
-            _websiteUrl = websiteUrl;
+            _name = name.AsRequiredDomainText();
+            _websiteUrl = websiteUrl.AsRequiredDomainText();
         }
 
         public Builder IsActive(bool value)
@@ -115,25 +115,25 @@ public sealed class Division : AggregateRoot<int>
 
         public Builder TermsAndConditions(string? value)
         {
-            _termsAndConditions = value;
+            _termsAndConditions = value.AsOptionalDomainText();
             return this;
         }
 
         public Builder GroupsPaymentTerms(string? value)
         {
-            _groupsPaymentTerms = value;
+            _groupsPaymentTerms = value.AsOptionalDomainText();
             return this;
         }
 
         public Builder HeadOfficeEmail(string? value)
         {
-            _headOfficeEmail = value;
+            _headOfficeEmail = value.AsOptionalDomainText();
             return this;
         }
 
         public Builder HeadOfficeTelephone(string? value)
         {
-            _headOfficeTelephoneNo = value;
+            _headOfficeTelephoneNo = value.AsOptionalDomainText();
             return this;
         }
 
@@ -160,10 +160,10 @@ public sealed class Division : AggregateRoot<int>
             Division division = new(_name, _websiteUrl)
             {
                 IsActive = _isActive,
-                TermsAndConditions = _termsAndConditions.AsOptionalDomainText(),
-                GroupsPaymentTerms = _groupsPaymentTerms.AsOptionalDomainText(),
-                HeadOfficeEmail = _headOfficeEmail.AsOptionalDomainText(),
-                HeadOfficeTelephoneNo = _headOfficeTelephoneNo.AsOptionalDomainText(),
+                TermsAndConditions = _termsAndConditions,
+                GroupsPaymentTerms = _groupsPaymentTerms,
+                HeadOfficeEmail = _headOfficeEmail,
+                HeadOfficeTelephoneNo = _headOfficeTelephoneNo,
                 ContactAddress = _contactAddress,
                 AccreditationBanner = _accreditationBanner
             };

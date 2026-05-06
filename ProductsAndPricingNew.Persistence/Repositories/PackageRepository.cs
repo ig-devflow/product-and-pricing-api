@@ -8,9 +8,9 @@ internal sealed class PackageRepository : EfRepositoryBase<Package, int>, IPacka
 {
     public PackageRepository(ProductsAndPricingDbContext db) : base(db) { }
 
-    public override Task<Package?> GetByIdAsync(int id, CancellationToken ct = default)
+    public override async Task<Package?> GetByIdAsync(int id, CancellationToken ct = default)
     {
-        return Set
+        return await Set
             .Include(x => x.Items)
             .FirstOrDefaultAsync(x => x.Id == id, ct);
     }
