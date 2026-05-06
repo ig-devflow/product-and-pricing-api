@@ -37,10 +37,10 @@ internal sealed class UpdateDivisionCommandHandler : IRequestHandler<UpdateDivis
 
         bool nameAlreadyExists = await _divisionQuery.ExistsByNameAsync(name, request.Id, ct);
         if (nameAlreadyExists)
-            return Result.Fail(new ConflictError("Division name already exists"));
+            return Result.Fail(new ConflictError($"Division name: '{name}' already exists"));
 
-        AddressDto? address = request.ContactAddress;
-        ImageBannerDto? banner = request.AccreditationBanner;
+        var address = request.ContactAddress;
+        var banner = request.AccreditationBanner;
 
         division.Rename(name);
         division.ChangeActiveState(request.IsActive);
