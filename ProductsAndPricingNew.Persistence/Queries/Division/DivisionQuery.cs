@@ -144,7 +144,7 @@ internal sealed class DivisionQuery : IDivisionQuery
 
         int page = paging.GetPage();
         int pageSize = paging.GetPageSize();
-        int offset = (page - 1) * pageSize;
+        int offset = paging.GetOffset();
 
         var parameters = new
         {
