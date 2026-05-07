@@ -2,6 +2,7 @@
 using MediatR;
 using ProductsAndPricingNew.Application.Abstractions;
 using ProductsAndPricingNew.Application.Common.Models;
+using ProductsAndPricingNew.Application.Features.Division.Abstractions;
 using ProductsAndPricingNew.Application.Features.Division.Models;
 
 namespace ProductsAndPricingNew.Application.Features.Division.Commands.UpdateDivision;
@@ -17,5 +18,5 @@ public sealed record UpdateDivisionCommand(
     string? HeadOfficeTelephoneNo,
     AddressDto? ContactAddress,
     ImageBannerDto? AccreditationBanner,
-    IReadOnlyCollection<DivisionTextContentInputDto> Texts
-) : ICommand<Result<Unit>>;
+    IReadOnlyCollection<TextContentDto> Texts
+) : ICommand<Result<Unit>>, IDivisionCommandPayload;

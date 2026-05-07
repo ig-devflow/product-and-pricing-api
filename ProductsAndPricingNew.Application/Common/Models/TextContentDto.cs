@@ -2,7 +2,7 @@
 
 namespace ProductsAndPricingNew.Application.Common.Models;
 
-public sealed record DivisionTextContentInputDto(
+public sealed record TextContentDto(
     int ContentTemplateId,
     int? AudienceId,
     string? Content,

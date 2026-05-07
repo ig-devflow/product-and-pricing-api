@@ -1,6 +1,5 @@
 ﻿using Microsoft.AspNetCore.Diagnostics;
 using Microsoft.AspNetCore.Mvc;
-using ProductsAndPricingNew.Domain;
 using ProductsAndPricingNew.Domain.Common.Errors;
 
 namespace ProductsAndPricingNew.AdminApi.Middleware;

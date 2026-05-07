@@ -31,4 +31,9 @@ public readonly record struct PagingFilter
             ? MaxPageSize
             : PageSize.Value;
     }
+
+    public int GetOffset()
+    {
+        return (GetPage() - 1) * GetPageSize();
+    }
 }

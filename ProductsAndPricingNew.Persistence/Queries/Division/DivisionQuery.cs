@@ -4,7 +4,6 @@ using ProductsAndPricingNew.Application.Common.Models;
 using ProductsAndPricingNew.Application.Common.Pagination;
 using ProductsAndPricingNew.Application.Features.Division.Abstractions;
 using ProductsAndPricingNew.Application.Features.Division.Models;
-using ProductsAndPricingNew.Domain.Entities.ReferenceData;
 using ProductsAndPricingNew.Persistence.Queries.Configuration;
 
 namespace ProductsAndPricingNew.Persistence.Queries.Division;
@@ -144,7 +143,7 @@ internal sealed class DivisionQuery : IDivisionQuery
 
         int page = paging.GetPage();
         int pageSize = paging.GetPageSize();
-        int offset = (page - 1) * pageSize;
+        int offset = paging.GetOffset();
 
         var parameters = new
         {

@@ -13,5 +13,5 @@ public sealed record UpdateDivisionRequest(
     string? HeadOfficeTelephoneNo,
     AddressDto? ContactAddress,
     ImageBannerDto? AccreditationBanner,
-    IReadOnlyCollection<DivisionTextContentInputDto> Texts
+    IReadOnlyCollection<TextContentDto> Texts
 );
