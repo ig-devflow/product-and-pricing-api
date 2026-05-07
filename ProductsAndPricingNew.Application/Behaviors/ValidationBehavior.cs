@@ -49,7 +49,7 @@ public sealed class ValidationBehavior<TRequest, TResponse> : IPipelineBehavior<
         }
         catch (DomainException exception)
         {
-            return ResultResponseFactory.Fail<TResponse>(new ValidationError(exception.Message));
+            return ResultResponseFactory.Fail<TResponse>(new DomainRuleViolationError(exception.Message));
         }
     }
 

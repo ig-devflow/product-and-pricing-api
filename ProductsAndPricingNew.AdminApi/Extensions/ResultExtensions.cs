@@ -1,16 +1,14 @@
 ﻿using FluentResults;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.ModelBinding;
+using ProductsAndPricingNew.AdminApi.Errors;
 using ProductsAndPricingNew.Application.Common.Errors;
 
 namespace ProductsAndPricingNew.AdminApi.Extensions;
 
 public static class ResultExtensions
 {
-    public static ActionResult ToActionResult(
-        this Result result,
-        ControllerBase controller)
+    public static ActionResult ToActionResult(this Result result, ControllerBase controller)
     {
         if (result.IsSuccess)
             return controller.NoContent();
@@ -18,10 +16,7 @@ public static class ResultExtensions
         return ToFailureActionResult(result, controller);
     }
 
-    public static ActionResult ToActionResult<T>(
-        this Result<T> result,
-        ControllerBase controller,
-        Func<T, ActionResult>? onSuccess = null)
+    public static ActionResult ToActionResult<T>(this Result<T> result, ControllerBase controller, Func<T, ActionResult>? onSuccess = null)
     {
         if (result.IsSuccess)
         {
@@ -37,90 +32,58 @@ public static class ResultExtensions
         return ToFailureActionResult(result, controller);
     }
 
-    private static ActionResult ToFailureActionResult(
-        ResultBase result,
-        ControllerBase controller)
+    private static ActionResult ToFailureActionResult(ResultBase result, ControllerBase controller)
     {
         ValidationError? validationError = result.Errors
             .OfType<ValidationError>()
             .FirstOrDefault();
 
         if (validationError is not null)
-            return ToValidationProblem(validationError, controller);
-
-        ProblemDetails problem = CreateProblemDetails(result);
-
-        if (result.Errors.Any(error => error is NotFoundError))
-            return controller.NotFound(problem);
-
-        if (result.Errors.Any(error => error is ConflictError))
-            return controller.Conflict(problem);
-
-        return controller.BadRequest(problem);
-    }
-
-    private static ActionResult ToValidationProblem(
-        ValidationError error,
-        ControllerBase controller)
-    {
-        ModelStateDictionary modelState = new();
-
-        foreach ((string field, string[] messages) in error.Errors)
         {
-            foreach (string message in messages)
-                modelState.AddModelError(field, message);
+            ValidationProblemDetails validationProblem = ApiProblemDetails.CreateValidation(controller.HttpContext, validationError.Errors);
+            return ToObjectResult(validationProblem);
         }
 
-        return controller.ValidationProblem(modelState);
+        (int statusCode, string title, string code) = ResolveProblem(result);
+
+        ProblemDetails problem = ApiProblemDetails.Create(
+            controller.HttpContext,
+            statusCode,
+            title,
+            string.Join("; ", result.Errors.Select(error => error.Message)),
+            code);
+
+        return ToObjectResult(problem);
     }
 
-    private static ProblemDetails CreateProblemDetails(ResultBase result)
+    private static ObjectResult ToObjectResult(ProblemDetails problem)
     {
-        int statusCode = GetStatusCode(result);
-
-        ProblemDetails problem = new()
+        ObjectResult result = new(problem)
         {
-            Status = statusCode,
-            Title = GetTitle(statusCode),
-            Detail = string.Join("; ", result.Errors.Select(error => error.Message))
+            StatusCode = problem.Status
         };
 
-        problem.Extensions["errors"] = result.Errors
-            .Select(error => new
-            {
-                code = GetErrorCode(error),
-                message = error.Message
-            })
-            .ToArray();
-
-        return problem;
+        result.ContentTypes.Add(ApiProblemDetails.ProblemJsonContentType);
+        return result;
     }
 
-    private static int GetStatusCode(ResultBase result)
+    private static (int StatusCode, string Title, string Code) ResolveProblem(ResultBase result)
     {
         if (result.Errors.Any(error => error is NotFoundError))
-            return StatusCodes.Status404NotFound;
+            return (StatusCodes.Status404NotFound, "Resource was not found", NotFoundError.Code);
 
         if (result.Errors.Any(error => error is ConflictError))
-            return StatusCodes.Status409Conflict;
+            return (StatusCodes.Status409Conflict, "Request conflicts with current state", ConflictError.Code);
 
-        if (result.Errors.Any(error => error is ValidationError))
-            return StatusCodes.Status400BadRequest;
+        if (result.Errors.Any(error => error is DomainRuleViolationError))
+            return (StatusCodes.Status400BadRequest, "Domain rule violation", DomainRuleViolationError.Code);
 
-        return StatusCodes.Status400BadRequest;
+        return (StatusCodes.Status400BadRequest, "Request failed", GetErrorCode(result.Errors.FirstOrDefault()));
     }
 
-    private static string GetTitle(int statusCode) => statusCode switch
+    private static string GetErrorCode(IError? error)
     {
-        StatusCodes.Status404NotFound => "Resource was not found",
-        StatusCodes.Status409Conflict => "Request conflicts with current state",
-        StatusCodes.Status400BadRequest => "Request validation failed",
-        _ => "Request failed"
-    };
-
-    private static string GetErrorCode(IError error)
-    {
-        if (error.Metadata.TryGetValue("Code", out object? code) &&
+        if (error?.Metadata.TryGetValue("Code", out object? code) == true &&
             code is string stringCode)
         {
             return stringCode;

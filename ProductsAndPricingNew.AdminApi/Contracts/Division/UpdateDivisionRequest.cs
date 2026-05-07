@@ -1,5 +1,4 @@
 ﻿using ProductsAndPricingNew.Application.Common.Models;
-using ProductsAndPricingNew.Application.Features.Division.Models;
 
 namespace ProductsAndPricingNew.AdminApi.Contracts.Division;
 

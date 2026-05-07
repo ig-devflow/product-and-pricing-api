@@ -1,4 +1,5 @@
-﻿using FluentResults;
+﻿using AutoMapper;
+using FluentResults;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using ProductsAndPricingNew.AdminApi.Contracts.Division;
@@ -17,10 +18,12 @@ namespace ProductsAndPricingNew.AdminApi.Controllers;
 public sealed class DivisionController : ControllerBase
 {
     private readonly ISender _sender;
+    private readonly IMapper _mapper;
 
-    public DivisionController(ISender sender)
+    public DivisionController(ISender sender, IMapper mapper)
     {
         _sender = sender;
+        _mapper = mapper;
     }
 
     /// <summary>
@@ -33,11 +36,7 @@ public sealed class DivisionController : ControllerBase
     [ProducesResponseType(typeof(PagedResult<DivisionListItemDto>), StatusCodes.Status200OK)]
     public async Task<ActionResult> GetList([FromQuery] GetDivisionsRequest request, CancellationToken ct)
     {
-        GetDivisionsQuery query = new(
-            Search: request.Search,
-            IsActive: request.IsActive,
-            Paging: new PagingFilter(request.Page, request.PageSize));
-
+        var query = _mapper.Map<GetDivisionsQuery>(request);
         Result<PagedResult<DivisionListItemDto>> result = await _sender.Send(query, ct);
         return result.ToActionResult(this);
     }
@@ -65,22 +64,11 @@ public sealed class DivisionController : ControllerBase
     /// <returns></returns>
     [HttpPost]
     [ProducesResponseType(StatusCodes.Status201Created)]
-    [ProducesResponseType(StatusCodes.Status409Conflict)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(StatusCodes.Status409Conflict)]
     public async Task<ActionResult> Create([FromBody] CreateDivisionRequest request, CancellationToken ct)
     {
-        CreateDivisionCommand command = new(
-            request.Name,
-            request.WebsiteUrl,
-            request.IsActive,
-            request.TermsAndConditions,
-            request.GroupsPaymentTerms,
-            request.HeadOfficeEmail,
-            request.HeadOfficeTelephoneNo,
-            request.ContactAddress,
-            request.AccreditationBanner,
-            request.Texts);
-
+        var command = _mapper.Map<CreateDivisionCommand>(request);
         Result<int> result = await _sender.Send(command, ct);
 
         return result.ToActionResult(
@@ -97,24 +85,12 @@ public sealed class DivisionController : ControllerBase
     /// <returns></returns>
     [HttpPut("{id:int}")]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     [ProducesResponseType(StatusCodes.Status409Conflict)]
-    [ProducesResponseType(StatusCodes.Status400BadRequest)]
     public async Task<ActionResult> Update(int id, [FromBody] UpdateDivisionRequest request, CancellationToken ct)
     {
-        UpdateDivisionCommand command = new(
-            id,
-            request.Name,
-            request.WebsiteUrl,
-            request.IsActive,
-            request.TermsAndConditions,
-            request.GroupsPaymentTerms,
-            request.HeadOfficeEmail,
-            request.HeadOfficeTelephoneNo,
-            request.ContactAddress,
-            request.AccreditationBanner,
-            request.Texts);
-
+        var command = _mapper.Map<UpdateDivisionCommand>(request) with { Id = id };
         Result<Unit> result = await _sender.Send(command, ct);
         return result.ToActionResult(this);
     }
