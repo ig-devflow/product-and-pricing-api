@@ -1,5 +1,6 @@
 ﻿using System.Diagnostics;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.OpenApi;
 using ProductsAndPricingNew.AdminApi.Errors;
 using ProductsAndPricingNew.AdminApi.Infrastructure;
 using ProductsAndPricingNew.AdminApi.Middleware;
@@ -42,7 +43,21 @@ public static class ServiceCollectionExtensions
         });
 
         services.AddEndpointsApiExplorer();
-        services.AddSwaggerGen();
+        services.AddSwaggerGen(options =>
+        {
+            options.SwaggerDoc("v1", new OpenApiInfo
+            {
+                Title = "Products and Pricing Admin API",
+                Version = "v1",
+                Description = "Admin endpoints for Products and Pricing."
+            });
+
+            string xmlFile = $"{typeof(Program).Assembly.GetName().Name}.xml";
+            string xmlPath = Path.Combine(AppContext.BaseDirectory, xmlFile);
+
+            if (File.Exists(xmlPath))
+                options.IncludeXmlComments(xmlPath);
+        });
 
         services.AddProblemDetails();
         services.AddExceptionHandler<GlobalExceptionHandler>();

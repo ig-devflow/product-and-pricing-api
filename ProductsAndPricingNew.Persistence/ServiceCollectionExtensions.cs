@@ -16,7 +16,7 @@ public static class ServiceCollectionExtensions
         services.AddScoped<SoftDeleteInterceptor>();
 
         string connectionString = configuration.GetConnectionString("ProductsAndPricing")
-                                  ?? throw new InvalidOperationException("Connection string 'DefaultConnection' was not found.");
+                                  ?? throw new InvalidOperationException("Connection string 'ProductsAndPricing' was not found.");
 
         services.AddDbContext<ProductsAndPricingDbContext>((sp, options) =>
         {

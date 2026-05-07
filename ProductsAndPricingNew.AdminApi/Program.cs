@@ -14,7 +14,11 @@ WebApplication app = builder.Build();
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
-    app.UseSwaggerUI();
+    app.UseSwaggerUI(options =>
+    {
+        options.SwaggerEndpoint("/swagger/v1/swagger.json", "Products and Pricing Admin API v1");
+        options.DisplayRequestDuration();
+    });
 }
 
 app.UseExceptionHandler();

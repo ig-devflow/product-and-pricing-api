@@ -13,8 +13,13 @@ using ProductsAndPricingNew.Application.Features.Division.Queries.GetDivisions;
 
 namespace ProductsAndPricingNew.AdminApi.Controllers;
 
+/// <summary>
+/// Provides endpoints for managing divisions.
+/// </summary>
 [ApiController]
-[Route("api/divisions")]
+[ApiExplorerSettings(GroupName = "v1")]
+[Route("api/v1/divisions")]
+[Produces("application/json")]
 public sealed class DivisionController : ControllerBase
 {
     private readonly ISender _sender;
@@ -27,11 +32,12 @@ public sealed class DivisionController : ControllerBase
     }
 
     /// <summary>
-    /// 
+    /// Gets a paged list of divisions.
     /// </summary>
-    /// <param name="request"></param>
-    /// <param name="ct"></param>
-    /// <returns></returns>
+    /// <param name="request">Filtering and paging options.</param>
+    /// <param name="ct">Cancellation token.</param>
+    /// <returns>A paged list of divisions.</returns>
+    /// <response code="200">Returns the requested page of divisions.</response>
     [HttpGet]
     [ProducesResponseType(typeof(PagedResult<DivisionListItemDto>), StatusCodes.Status200OK)]
     public async Task<ActionResult> GetList([FromQuery] GetDivisionsRequest request, CancellationToken ct)
@@ -42,14 +48,16 @@ public sealed class DivisionController : ControllerBase
     }
 
     /// <summary>
-    /// 
+    /// Gets a division by identifier.
     /// </summary>
-    /// <param name="id"></param>
-    /// <param name="ct"></param>
-    /// <returns></returns>
-    [HttpGet("{id:int}")]
+    /// <param name="id">Division identifier.</param>
+    /// <param name="ct">Cancellation token.</param>
+    /// <returns>Division details.</returns>
+    /// <response code="200">Returns the division details.</response>
+    /// <response code="404">Division was not found.</response>
+    [HttpGet("{id:int}", Name = nameof(GetById))]
     [ProducesResponseType(typeof(DivisionDetailsDto), StatusCodes.Status200OK)]
-    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status404NotFound)]
     public async Task<ActionResult> GetById(int id, CancellationToken ct)
     {
         Result<DivisionDetailsDto> result = await _sender.Send(new GetDivisionByIdQuery(id), ct);
@@ -57,15 +65,19 @@ public sealed class DivisionController : ControllerBase
     }
 
     /// <summary>
-    /// 
+    /// Creates a division.
     /// </summary>
-    /// <param name="request"></param>
-    /// <param name="ct"></param>
-    /// <returns></returns>
+    /// <param name="request">Division creation payload.</param>
+    /// <param name="ct">Cancellation token.</param>
+    /// <returns>The created division identifier.</returns>
+    /// <response code="201">Division was created.</response>
+    /// <response code="400">Request validation failed.</response>
+    /// <response code="409">Division conflicts with current state, for example duplicate name.</response>
     [HttpPost]
-    [ProducesResponseType(StatusCodes.Status201Created)]
-    [ProducesResponseType(StatusCodes.Status400BadRequest)]
-    [ProducesResponseType(StatusCodes.Status409Conflict)]
+    [Consumes("application/json")]
+    [ProducesResponseType(typeof(object), StatusCodes.Status201Created)]
+    [ProducesResponseType(typeof(ValidationProblemDetails), StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status409Conflict)]
     public async Task<ActionResult> Create([FromBody] CreateDivisionRequest request, CancellationToken ct)
     {
         var command = _mapper.Map<CreateDivisionCommand>(request);
@@ -77,17 +89,22 @@ public sealed class DivisionController : ControllerBase
     }
 
     /// <summary>
-    /// 
+    /// Updates an existing division.
     /// </summary>
-    /// <param name="id"></param>
-    /// <param name="request"></param>
-    /// <param name="ct"></param>
-    /// <returns></returns>
+    /// <param name="id">Division identifier.</param>
+    /// <param name="request">Division update payload.</param>
+    /// <param name="ct">Cancellation token.</param>
+    /// <returns>No content when update succeeds.</returns>
+    /// <response code="204">Division was updated.</response>
+    /// <response code="400">Request validation failed.</response>
+    /// <response code="404">Division was not found.</response>
+    /// <response code="409">Division conflicts with current state, for example duplicate name or concurrency conflict.</response>
     [HttpPut("{id:int}")]
+    [Consumes("application/json")]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
-    [ProducesResponseType(StatusCodes.Status400BadRequest)]
-    [ProducesResponseType(StatusCodes.Status404NotFound)]
-    [ProducesResponseType(StatusCodes.Status409Conflict)]
+    [ProducesResponseType(typeof(ValidationProblemDetails), StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status404NotFound)]
+    [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status409Conflict)]
     public async Task<ActionResult> Update(int id, [FromBody] UpdateDivisionRequest request, CancellationToken ct)
     {
         var command = _mapper.Map<UpdateDivisionCommand>(request) with { Id = id };
