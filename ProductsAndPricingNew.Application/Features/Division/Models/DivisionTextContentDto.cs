@@ -1,6 +1,6 @@
 ﻿using ProductsAndPricingNew.Domain.Entities.ReferenceData;
 
-namespace ProductsAndPricingNew.Application.Common.Models;
+namespace ProductsAndPricingNew.Application.Features.Division.Models;
 
 public sealed record DivisionTextContentDto(
     int Id,

@@ -59,8 +59,7 @@ internal sealed class DivisionTextContentConfiguration : IEntityTypeConfiguratio
             x.DivisionId,
             x.ContentTemplateId,
             x.AudienceId
-        })
-            .IsUnique()
-            .HasFilter("[IsDeleted] = 0");
+        }).IsUnique()
+          .HasFilter("[IsDeleted] = 0");
     }
 }
