@@ -51,7 +51,9 @@ internal sealed class DivisionConfiguration : IEntityTypeConfiguration<Division>
 
         entity.Property(x => x.Version).IsRowVersion();
 
-        entity.HasIndex(x => x.Name).IsUnique();
+        entity.HasIndex(x => x.Name)
+            .IsUnique()
+            .HasFilter("[IsDeleted] = 0");
 
         entity.Ignore(x => x.DomainEvents);
     }

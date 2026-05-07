@@ -60,9 +60,9 @@ internal sealed class DivisionQuery : IDivisionQuery
                 d.City,
                 d.PostalCode,
                 d.CountryId,
-                d.AccreditationBannerData,
-                d.AccreditationBannerContentType,
-                d.AccreditationBannerFileName
+                d.BannerData AS AccreditationBannerData,
+                d.BannerContentType AS AccreditationBannerContentType,
+                d.BannerFileName AS AccreditationBannerFileName
             FROM PricingRef.Division d
             WHERE d.Id = @Id
               AND d.IsDeleted = 0;
