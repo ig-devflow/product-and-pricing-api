@@ -1,8 +1,7 @@
 ﻿using ProductsAndPricingNew.Domain.Common.Exceptions;
 using ProductsAndPricingNew.Domain.Common.Primitives;
-using ProductsAndPricingNew.Domain.SharedKernel.ValueObjects;
 
-namespace ProductsAndPricingNew.Domain.ReferenceData;
+namespace ProductsAndPricingNew.Domain.SharedKernel.ValueObjects;
 
 public abstract class TextContent : Entity<int>
 {

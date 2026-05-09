@@ -1,6 +1,7 @@
 ﻿using ProductsAndPricingNew.Domain.Common.Exceptions;
+using ProductsAndPricingNew.Domain.ReferenceData;
 
-namespace ProductsAndPricingNew.Domain.ReferenceData;
+namespace ProductsAndPricingNew.Domain.SharedKernel.ValueObjects;
 
 public readonly record struct TextContentDefinition
 {
@@ -27,6 +28,22 @@ public readonly record struct TextContentDefinition
             EnsureValidKey();
             return (ContentTemplateId, NormalizedAudienceId);
         }
+    }
+
+    public void EnsureValid()
+    {
+        EnsureValidKey();
+
+        bool hasContent = !string.IsNullOrWhiteSpace(Content);
+
+        if (!hasContent && Format != ContentFormat.None)
+            throw new DomainException("Content format must be None when content is empty.");
+
+        if (hasContent && Format == ContentFormat.None)
+            throw new DomainException("Content format must be provided when content is not empty.");
+
+        if (!Enum.IsDefined(Format))
+            throw new DomainException($"Unsupported content format '{Format}'.");
     }
 
     public void EnsureValidKey()
