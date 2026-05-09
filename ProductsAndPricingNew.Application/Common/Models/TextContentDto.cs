@@ -1,4 +1,4 @@
-﻿using ProductsAndPricingNew.Domain.Entities.ReferenceData;
+﻿using ProductsAndPricingNew.Domain.ReferenceData;
 
 namespace ProductsAndPricingNew.Application.Common.Models;
 

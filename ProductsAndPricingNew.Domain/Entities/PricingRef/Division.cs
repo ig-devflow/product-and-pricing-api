@@ -1,8 +1,8 @@
-﻿using ProductsAndPricingNew.Domain.Base;
-using ProductsAndPricingNew.Domain.Common.Errors;
-using ProductsAndPricingNew.Domain.Common.Extensions;
-using ProductsAndPricingNew.Domain.Entities.Common;
-using ProductsAndPricingNew.Domain.Entities.ReferenceData;
+﻿using ProductsAndPricingNew.Domain.Common.Exceptions;
+using ProductsAndPricingNew.Domain.Common.Primitives;
+using ProductsAndPricingNew.Domain.Common.Text;
+using ProductsAndPricingNew.Domain.ReferenceData;
+using ProductsAndPricingNew.Domain.SharedKernel.ValueObjects;
 
 namespace ProductsAndPricingNew.Domain.Entities.PricingRef;
 
@@ -14,28 +14,42 @@ public sealed class Division : AggregateRoot<int>
     public bool IsActive { get; private set; }
     public string? TermsAndConditions { get; private set; }
     public string? GroupsPaymentTerms { get; private set; }
-    public string? WebsiteUrl { get; private set; }
+    public string WebsiteUrl { get; private set; } = null!;
     public string? HeadOfficeEmail { get; private set; }
     public string? HeadOfficeTelephoneNo { get; private set; }
     public Address ContactAddress { get; private set; } = Address.Empty;
     public ImageFile AccreditationBanner { get; private set; } = ImageFile.Empty;
-    public IReadOnlyCollection<DivisionTextContent> Texts => _texts;
+    public IReadOnlyCollection<DivisionTextContent> Texts => _texts.AsReadOnly();
 
-    private Division() { }
+    private Division()
+    {
+    }
 
     private Division(string name, string websiteUrl)
     {
-        Rename(name);
-        ChangeWebsite(websiteUrl);
+        Name = name;
+        WebsiteUrl = websiteUrl;
     }
 
-    public void Rename(string name) => Name = name.AsRequiredDomainText();
-    public void ChangeWebsite(string website) => WebsiteUrl = website.AsRequiredDomainText();
+    public void Rename(string name)
+        => Name = name.AsRequiredDomainText(nameof(Name), Rules.NameMaxLength);
+
+    public void ChangeWebsite(string website)
+        => WebsiteUrl = website.AsRequiredDomainText(nameof(WebsiteUrl), Rules.WebsiteUrlMaxLength);
+
     public void ChangeActiveState(bool isActive) => IsActive = isActive;
-    public void ChangeTermsAndConditions(string? termsAndConditions) => TermsAndConditions = termsAndConditions.AsOptionalDomainText();
-    public void ChangeGroupsPaymentTerms(string? groupsPaymentTerms) => GroupsPaymentTerms = groupsPaymentTerms.AsOptionalDomainText();
-    public void ChangeHeadOfficeEmail(string? headOfficeEmail) => HeadOfficeEmail = headOfficeEmail.AsOptionalDomainText();
-    public void ChangeHeadOfficeTelephone(string? headOfficeTelephone) => HeadOfficeTelephoneNo = headOfficeTelephone.AsOptionalDomainText();
+
+    public void ChangeTermsAndConditions(string? termsAndConditions)
+        => TermsAndConditions = termsAndConditions.AsOptionalDomainText(nameof(TermsAndConditions), Rules.TermsAndConditionsMaxLength);
+
+    public void ChangeGroupsPaymentTerms(string? groupsPaymentTerms)
+        => GroupsPaymentTerms = groupsPaymentTerms.AsOptionalDomainText(nameof(GroupsPaymentTerms), Rules.GroupsPaymentTermsMaxLength);
+
+    public void ChangeHeadOfficeEmail(string? headOfficeEmail)
+        => HeadOfficeEmail = headOfficeEmail.AsOptionalDomainText(nameof(HeadOfficeEmail), Rules.HeadOfficeEmailMaxLength);
+
+    public void ChangeHeadOfficeTelephone(string? headOfficeTelephone)
+        => HeadOfficeTelephoneNo = headOfficeTelephone.AsOptionalDomainText(nameof(HeadOfficeTelephoneNo), Rules.HeadOfficeTelephoneMaxLength);
 
     public void ChangeContactAddress(int? countryId, string? street, string? district, string? city, string? postalCode)
         => ContactAddress = Address.Create(countryId, street, district, city, postalCode);
@@ -63,6 +77,8 @@ public sealed class Division : AggregateRoot<int>
             if (!incomingKeys.Contains(existingKey))
                 existing.Delete();
         }
+
+        EnsureNoDuplicateActiveTextKeys();
     }
 
     private void UpsertText(TextContentDefinition definition)
@@ -87,6 +103,17 @@ public sealed class Division : AggregateRoot<int>
         existing.ChangeText(text);
     }
 
+    private void EnsureNoDuplicateActiveTextKeys()
+    {
+        HashSet<(int ContentTemplateId, int? AudienceId)> activeKeys = new();
+
+        foreach (DivisionTextContent text in _texts.Where(x => !x.IsDeleted))
+        {
+            if (!activeKeys.Add((text.ContentTemplateId, text.AudienceId)))
+                throw new DomainException("Duplicate text content for the same template and audience.");
+        }
+    }
+
     public sealed class Builder
     {
         private readonly string _name;
@@ -103,8 +130,8 @@ public sealed class Division : AggregateRoot<int>
 
         public Builder(string name, string websiteUrl)
         {
-            _name = name.AsRequiredDomainText();
-            _websiteUrl = websiteUrl.AsRequiredDomainText();
+            _name = name.AsRequiredDomainText(nameof(Name), Rules.NameMaxLength);
+            _websiteUrl = websiteUrl.AsRequiredDomainText(nameof(WebsiteUrl), Rules.WebsiteUrlMaxLength);
         }
 
         public Builder IsActive(bool value)
@@ -115,25 +142,25 @@ public sealed class Division : AggregateRoot<int>
 
         public Builder TermsAndConditions(string? value)
         {
-            _termsAndConditions = value.AsOptionalDomainText();
+            _termsAndConditions = value.AsOptionalDomainText(nameof(TermsAndConditions), Rules.TermsAndConditionsMaxLength);
             return this;
         }
 
         public Builder GroupsPaymentTerms(string? value)
         {
-            _groupsPaymentTerms = value.AsOptionalDomainText();
+            _groupsPaymentTerms = value.AsOptionalDomainText(nameof(GroupsPaymentTerms), Rules.GroupsPaymentTermsMaxLength);
             return this;
         }
 
         public Builder HeadOfficeEmail(string? value)
         {
-            _headOfficeEmail = value.AsOptionalDomainText();
+            _headOfficeEmail = value.AsOptionalDomainText(nameof(HeadOfficeEmail), Rules.HeadOfficeEmailMaxLength);
             return this;
         }
 
         public Builder HeadOfficeTelephone(string? value)
         {
-            _headOfficeTelephoneNo = value.AsOptionalDomainText();
+            _headOfficeTelephoneNo = value.AsOptionalDomainText(nameof(HeadOfficeTelephone), Rules.HeadOfficeTelephoneMaxLength);
             return this;
         }
 
@@ -171,5 +198,15 @@ public sealed class Division : AggregateRoot<int>
             division.ChangeTexts(_texts);
             return division;
         }
+    }
+
+    public static class Rules
+    {
+        public const int NameMaxLength = 100;
+        public const int WebsiteUrlMaxLength = 255;
+        public const int HeadOfficeEmailMaxLength = 50;
+        public const int HeadOfficeTelephoneMaxLength = 50;
+        public const int TermsAndConditionsMaxLength = 4000;
+        public const int GroupsPaymentTermsMaxLength = 4000;
     }
 }

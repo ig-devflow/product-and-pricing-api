@@ -16,7 +16,7 @@ internal sealed class AccountCategoryConfiguration : IEntityTypeConfiguration<Ac
         entity.Property(x => x.DivisionId).IsRequired();
 
         entity.Property(x => x.Name)
-            .HasMaxLength(100)
+            .HasMaxLength(CategoryBase.Rules.NameMaxLength)
             .IsRequired();
 
         entity.Property(x => x.IsActive).IsRequired();

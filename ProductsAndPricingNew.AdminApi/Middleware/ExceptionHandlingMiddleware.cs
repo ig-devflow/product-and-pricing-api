@@ -3,7 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using ProductsAndPricingNew.AdminApi.Errors;
 using ProductsAndPricingNew.Application.Common.Errors;
-using ProductsAndPricingNew.Domain.Common.Errors;
+using ProductsAndPricingNew.Domain.Common.Exceptions;
 
 namespace ProductsAndPricingNew.AdminApi.Middleware;
 

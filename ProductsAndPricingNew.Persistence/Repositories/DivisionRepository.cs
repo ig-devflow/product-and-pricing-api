@@ -1,6 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using ProductsAndPricingNew.Domain.Abstractions;
 using ProductsAndPricingNew.Domain.Entities.PricingRef;
-using ProductsAndPricingNew.Domain.Repositories;
 
 namespace ProductsAndPricingNew.Persistence.Repositories;
 

@@ -1,4 +1,4 @@
-﻿using ProductsAndPricingNew.Domain.Entities.Common;
+﻿using ProductsAndPricingNew.Domain.SharedKernel.ValueObjects;
 
 namespace ProductsAndPricingNew.Domain.Abstractions;
 

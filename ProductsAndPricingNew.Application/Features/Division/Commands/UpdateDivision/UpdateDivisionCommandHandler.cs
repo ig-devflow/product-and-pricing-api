@@ -2,11 +2,10 @@
 using MediatR;
 using ProductsAndPricingNew.Application.Abstractions;
 using ProductsAndPricingNew.Application.Common.Errors;
-using ProductsAndPricingNew.Application.Common.Models;
 using ProductsAndPricingNew.Application.Features.Division.Abstractions;
-using ProductsAndPricingNew.Domain.Common.Extensions;
-using ProductsAndPricingNew.Domain.Entities.Common;
-using ProductsAndPricingNew.Domain.Repositories;
+using ProductsAndPricingNew.Domain.Abstractions;
+using ProductsAndPricingNew.Domain.Common.Text;
+using ProductsAndPricingNew.Domain.ReferenceData;
 using DivisionEntity = ProductsAndPricingNew.Domain.Entities.PricingRef.Division;
 
 namespace ProductsAndPricingNew.Application.Features.Division.Commands.UpdateDivision;
@@ -33,10 +32,10 @@ internal sealed class UpdateDivisionCommandHandler : IRequestHandler<UpdateDivis
         if (division is null)
             return Result.Fail(new NotFoundError($"Division with id {request.Id} was not found"));
 
-        string name = request.Name.AsRequiredDomainText();
+        string name = request.Name.AsRequiredText();
 
-        bool nameAlreadyExists = await _divisionQuery.ExistsByNameAsync(name, request.Id, ct);
-        if (nameAlreadyExists)
+        bool isNameTaken = await _divisionQuery.ExistsByNameAsync(name, request.Id, ct);
+        if (isNameTaken)
             return Result.Fail(new ConflictError($"Division name: '{name}' already exists"));
 
         var address = request.ContactAddress;

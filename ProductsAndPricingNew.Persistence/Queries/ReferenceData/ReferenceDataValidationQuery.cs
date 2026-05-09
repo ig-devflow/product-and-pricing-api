@@ -1,8 +1,7 @@
 ﻿using System.Data.Common;
 using Dapper;
-using ProductsAndPricingNew.Application.Common.Validation;
 using ProductsAndPricingNew.Application.Common.Validation.Abstractions;
-using ProductsAndPricingNew.Domain.Entities.ReferenceData;
+using ProductsAndPricingNew.Domain.ReferenceData;
 using ProductsAndPricingNew.Persistence.Queries.Configuration;
 
 namespace ProductsAndPricingNew.Persistence.Queries.ReferenceData;
@@ -16,7 +15,7 @@ internal sealed class ReferenceDataValidationQuery : IReferenceDataValidationQue
         _connectionFactory = connectionFactory;
     }
 
-    public async Task<IReadOnlySet<int>> GetExistingCountryIdsAsync(IReadOnlyCollection<int> ids, CancellationToken ct = default)
+    public async Task<IReadOnlySet<int>> GetActiveCountryIdsAsync(IReadOnlyCollection<int> ids, CancellationToken ct = default)
     {
         int[] normalizedIds = GetDistinctPositiveIds(ids);
 
@@ -26,7 +25,8 @@ internal sealed class ReferenceDataValidationQuery : IReferenceDataValidationQue
         const string sql = """
             SELECT c.Id
             FROM ReferenceData.Country c
-            WHERE c.Id IN @Ids;
+            WHERE c.Id IN @Ids
+              AND c.IsDeleted = 0;
             """;
 
         await using DbConnection connection = _connectionFactory.CreateConnection();

@@ -15,7 +15,7 @@ internal sealed class AddOnConfiguration : IEntityTypeConfiguration<AddOn>
 
         entity.Property(x => x.DivisionId).IsRequired();
         entity.Property(x => x.Name)
-            .HasMaxLength(100)
+            .HasMaxLength(AddOn.Rules.NameMaxLength)
             .IsRequired();
 
         entity.Property(x => x.IsActive).IsRequired();
@@ -31,16 +31,7 @@ internal sealed class AddOnConfiguration : IEntityTypeConfiguration<AddOn>
 
         entity.Property(x => x.OfferingsClosureDate);
 
-        entity.ComplexProperty(x => x.FinanceCodes, complex =>
-        {
-            complex.Property(p => p.GeneralLedgerCode)
-                .HasColumnName("GeneralLedgerCode")
-                .HasMaxLength(10);
-
-            complex.Property(p => p.CostCentreCode)
-                .HasColumnName("CostCentreCode")
-                .HasMaxLength(10);
-        });
+        entity.ConfigureFinanceCodes(x => x.FinanceCodes);
 
         entity.HasIndex(x => new { x.DivisionId, x.Name });
         entity.HasIndex(x => x.AccountCategoryId);

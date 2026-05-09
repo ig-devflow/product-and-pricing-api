@@ -3,7 +3,7 @@ using MediatR;
 using ProductsAndPricingNew.Application.Common.Pagination;
 using ProductsAndPricingNew.Application.Features.Division.Abstractions;
 using ProductsAndPricingNew.Application.Features.Division.Models;
-using ProductsAndPricingNew.Domain.Common.Extensions;
+using ProductsAndPricingNew.Domain.Common.Text;
 
 namespace ProductsAndPricingNew.Application.Features.Division.Queries.GetDivisions;
 
@@ -18,8 +18,7 @@ internal sealed class GetDivisionsQueryHandler : IRequestHandler<GetDivisionsQue
 
     public async Task<Result<PagedResult<DivisionListItemDto>>> Handle(GetDivisionsQuery request, CancellationToken ct)
     {
-
-        string? normalizedSearch = request.Search.AsOptionalDomainText();
+        string? normalizedSearch = request.Search.AsOptionalText();
 
         PagedResult<DivisionListItemDto> result = await _divisionQuery.GetListAsync(
             normalizedSearch,

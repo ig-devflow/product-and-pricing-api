@@ -1,7 +1,6 @@
 ﻿using FluentValidation;
-using ProductsAndPricingNew.Application.Common.Validation;
 using ProductsAndPricingNew.Application.Common.Validation.Abstractions;
-using ProductsAndPricingNew.Application.Features.Division.Abstractions;
+using ProductsAndPricingNew.Application.Features.Division.Validation;
 
 namespace ProductsAndPricingNew.Application.Features.Division.Commands.UpdateDivision;
 

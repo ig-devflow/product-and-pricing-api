@@ -1,6 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
-using ProductsAndPricingNew.Domain.Entities.ReferenceData;
+using ProductsAndPricingNew.Domain.ReferenceData;
 
 namespace ProductsAndPricingNew.Persistence.Configuration.ReferenceData;
 
@@ -16,11 +16,11 @@ internal sealed class ContentTemplateConfiguration : IEntityTypeConfiguration<Co
             .ValueGeneratedOnAdd();
 
         entity.Property(x => x.Name)
-            .HasMaxLength(200)
+            .HasMaxLength(ContentTemplate.Rules.NameMaxLength)
             .IsRequired();
 
         entity.Property(x => x.Description)
-            .HasMaxLength(500)
+            .HasMaxLength(ContentTemplate.Rules.DescriptionMaxLength)
             .IsRequired(false);
 
         entity.Property(x => x.Scope)

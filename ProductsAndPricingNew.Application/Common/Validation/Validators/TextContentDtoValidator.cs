@@ -1,7 +1,7 @@
 ﻿using FluentValidation;
 using ProductsAndPricingNew.Application.Common.Models;
 using ProductsAndPricingNew.Application.Common.Validation.Abstractions;
-using ProductsAndPricingNew.Domain.Entities.ReferenceData;
+using ProductsAndPricingNew.Domain.ReferenceData;
 
 namespace ProductsAndPricingNew.Application.Common.Validation.Validators;
 

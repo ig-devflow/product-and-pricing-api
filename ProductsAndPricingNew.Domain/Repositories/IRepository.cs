@@ -1,4 +1,4 @@
-﻿using ProductsAndPricingNew.Domain.Base;
+﻿using ProductsAndPricingNew.Domain.Common.Primitives;
 
 namespace ProductsAndPricingNew.Domain.Repositories;
 

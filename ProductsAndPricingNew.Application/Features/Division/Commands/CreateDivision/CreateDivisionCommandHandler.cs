@@ -2,10 +2,11 @@
 using MediatR;
 using ProductsAndPricingNew.Application.Abstractions;
 using ProductsAndPricingNew.Application.Common.Errors;
+using ProductsAndPricingNew.Application.Common.Models;
 using ProductsAndPricingNew.Application.Features.Division.Abstractions;
-using ProductsAndPricingNew.Domain.Common.Extensions;
-using ProductsAndPricingNew.Domain.Entities.Common;
-using ProductsAndPricingNew.Domain.Repositories;
+using ProductsAndPricingNew.Domain.Abstractions;
+using ProductsAndPricingNew.Domain.Common.Text;
+using ProductsAndPricingNew.Domain.ReferenceData;
 using DivisionEntity = ProductsAndPricingNew.Domain.Entities.PricingRef.Division;
 
 namespace ProductsAndPricingNew.Application.Features.Division.Commands.CreateDivision;
@@ -28,14 +29,14 @@ internal sealed class CreateDivisionCommandHandler : IRequestHandler<CreateDivis
 
     public async Task<Result<int>> Handle(CreateDivisionCommand request, CancellationToken ct)
     {
-        string name = request.Name.AsRequiredDomainText();
+        string name = request.Name.AsRequiredText();
 
-        bool nameAlreadyExists = await _divisionQuery.ExistsByNameAsync(name, ct: ct);
-        if (nameAlreadyExists)
+        bool isNameTaken = await _divisionQuery.ExistsByNameAsync(name, ct: ct);
+        if (isNameTaken)
             return Result.Fail(new ConflictError($"Division name: '{name}' already exists"));
 
-        var address = request.ContactAddress;
-        var banner = request.AccreditationBanner;
+        AddressDto? address = request.ContactAddress;
+        ImageBannerDto? banner = request.AccreditationBanner;
 
         DivisionEntity division = new DivisionEntity.Builder(name, request.WebsiteUrl)
             .IsActive(request.IsActive)

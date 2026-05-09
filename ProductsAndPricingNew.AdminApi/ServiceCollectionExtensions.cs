@@ -4,6 +4,7 @@ using Microsoft.OpenApi;
 using ProductsAndPricingNew.AdminApi.Errors;
 using ProductsAndPricingNew.AdminApi.Infrastructure;
 using ProductsAndPricingNew.AdminApi.Middleware;
+using ProductsAndPricingNew.Application.Abstractions;
 using ProductsAndPricingNew.Domain.Abstractions;
 
 namespace ProductsAndPricingNew.AdminApi;
@@ -59,7 +60,6 @@ public static class ServiceCollectionExtensions
                 options.IncludeXmlComments(xmlPath);
         });
 
-        services.AddProblemDetails();
         services.AddExceptionHandler<GlobalExceptionHandler>();
 
         services.AddHttpContextAccessor();

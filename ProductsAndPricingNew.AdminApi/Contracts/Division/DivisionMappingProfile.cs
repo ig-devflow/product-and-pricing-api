@@ -1,4 +1,6 @@
 ﻿using AutoMapper;
+using ProductsAndPricingNew.AdminApi.Contracts.Common;
+using ProductsAndPricingNew.Application.Common.Models;
 using ProductsAndPricingNew.Application.Common.Pagination;
 using ProductsAndPricingNew.Application.Features.Division.Commands.CreateDivision;
 using ProductsAndPricingNew.Application.Features.Division.Commands.UpdateDivision;
@@ -17,7 +19,7 @@ public sealed class DivisionMappingProfile : Profile
                 new PagingFilter(src.Page, src.PageSize)));
 
         CreateMap<CreateDivisionRequest, CreateDivisionCommand>()
-            .ConstructUsing(src => new CreateDivisionCommand(
+            .ConstructUsing((src, ctx) => new CreateDivisionCommand(
                 src.Name,
                 src.WebsiteUrl,
                 src.IsActive,
@@ -25,12 +27,12 @@ public sealed class DivisionMappingProfile : Profile
                 src.GroupsPaymentTerms,
                 src.HeadOfficeEmail,
                 src.HeadOfficeTelephoneNo,
-                src.ContactAddress,
-                src.AccreditationBanner,
-                src.Texts));
+                ctx.Mapper.Map<AddressDto?>(src.ContactAddress),
+                ctx.Mapper.Map<ImageBannerDto?>(src.AccreditationBanner),
+                ctx.Mapper.Map<IReadOnlyCollection<TextContentDto>>(src.Texts)));
 
         CreateMap<UpdateDivisionRequest, UpdateDivisionCommand>()
-            .ConstructUsing(src => new UpdateDivisionCommand(
+            .ConstructUsing((src, ctx) => new UpdateDivisionCommand(
                 0,
                 src.Name,
                 src.WebsiteUrl,
@@ -39,8 +41,8 @@ public sealed class DivisionMappingProfile : Profile
                 src.GroupsPaymentTerms,
                 src.HeadOfficeEmail,
                 src.HeadOfficeTelephoneNo,
-                src.ContactAddress,
-                src.AccreditationBanner,
-                src.Texts));
+                ctx.Mapper.Map<AddressDto?>(src.ContactAddress),
+                ctx.Mapper.Map<ImageBannerDto?>(src.AccreditationBanner),
+                ctx.Mapper.Map<IReadOnlyCollection<TextContentDto>>(src.Texts)));
     }
 }

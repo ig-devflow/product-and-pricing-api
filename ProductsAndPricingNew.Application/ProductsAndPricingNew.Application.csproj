@@ -21,4 +21,8 @@
       <Folder Include="Utils\" />
     </ItemGroup>
 
+    <ItemGroup>
+      <Compile Remove="Features\Division\Abstractions\DivisionCommandValidatorBase.cs" />
+    </ItemGroup>
+
 </Project>

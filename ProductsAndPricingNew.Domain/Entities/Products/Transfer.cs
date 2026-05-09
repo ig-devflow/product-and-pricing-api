@@ -1,6 +1,6 @@
-﻿using ProductsAndPricingNew.Domain.Base;
-using ProductsAndPricingNew.Domain.Common.Errors;
-using ProductsAndPricingNew.Domain.Common.Extensions;
+﻿using ProductsAndPricingNew.Domain.Common.Exceptions;
+using ProductsAndPricingNew.Domain.Common.Text;
+using ProductsAndPricingNew.Domain.Common.Primitives;
 
 namespace ProductsAndPricingNew.Domain.Entities.Products;
 
@@ -34,7 +34,7 @@ public sealed class Transfer : AggregateRoot<int>, IProductDefinition
     public DateOnly? OfferingsClosureDate { get; private set; }
     public FinanceCodes FinanceCodes { get; private set; }
 
-    public void Rename(string name) => Name = name.AsRequiredDomainText();
+    public void Rename(string name) => Name = name.AsRequiredDomainText(nameof(Name), Rules.NameMaxLength);
 
     public void Activate() => IsActive = true;
     public void Deactivate() => IsActive = false;
@@ -89,4 +89,9 @@ public sealed class Transfer : AggregateRoot<int>, IProductDefinition
 
     public void ChangeFinanceCodes(FinanceCodes codes) => FinanceCodes = codes;
     public void ChangeOfferingsClosureDate(DateOnly? value) => OfferingsClosureDate = value;
+
+    public static class Rules
+    {
+        public const int NameMaxLength = 100;
+    }
 }

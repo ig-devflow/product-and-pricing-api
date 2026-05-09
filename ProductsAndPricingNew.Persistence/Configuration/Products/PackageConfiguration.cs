@@ -17,7 +17,7 @@ internal sealed class PackageConfiguration : IEntityTypeConfiguration<Package>
         entity.Property(x => x.UnitTypeId).IsRequired();
 
         entity.Property(x => x.Name)
-            .HasMaxLength(100)
+            .HasMaxLength(Package.Rules.NameMaxLength)
             .IsRequired();
 
         entity.Property(x => x.IsActive).IsRequired();
@@ -37,16 +37,7 @@ internal sealed class PackageConfiguration : IEntityTypeConfiguration<Package>
         entity.Property(x => x.ProductCategoryId);
         entity.Property(x => x.OfferingsClosureDate);
 
-        entity.ComplexProperty(x => x.FinanceCodes, finance =>
-        {
-            finance.Property(x => x.GeneralLedgerCode)
-                .HasColumnName("GeneralLedgerCode")
-                .HasMaxLength(10);
-
-            finance.Property(x => x.CostCentreCode)
-                .HasColumnName("CostCentreCode")
-                .HasMaxLength(10);
-        });
+        entity.ConfigureFinanceCodes(x => x.FinanceCodes);
 
         entity.HasIndex(x => new { x.DivisionId, x.Name });
         entity.HasIndex(x => x.AccountCategoryId);

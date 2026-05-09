@@ -3,7 +3,6 @@ using MediatR;
 using ProductsAndPricingNew.Application.Abstractions;
 using ProductsAndPricingNew.Application.Common.Models;
 using ProductsAndPricingNew.Application.Features.Division.Abstractions;
-using ProductsAndPricingNew.Application.Features.Division.Models;
 
 namespace ProductsAndPricingNew.Application.Features.Division.Commands.UpdateDivision;
 

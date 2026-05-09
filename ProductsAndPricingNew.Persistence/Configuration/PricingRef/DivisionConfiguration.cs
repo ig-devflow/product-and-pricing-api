@@ -1,7 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using ProductsAndPricingNew.Domain.Entities.PricingRef;
-using ProductsAndPricingNew.Domain.Entities.ReferenceData;
 
 namespace ProductsAndPricingNew.Persistence.Configuration.PricingRef;
 
@@ -15,23 +14,26 @@ internal sealed class DivisionConfiguration : IEntityTypeConfiguration<Division>
         entity.Property(x => x.Id).ValueGeneratedOnAdd();
 
         entity.Property(x => x.Name)
-            .HasMaxLength(100)
+            .HasMaxLength(Division.Rules.NameMaxLength)
             .IsRequired();
 
         entity.Property(x => x.IsActive).IsRequired();
 
-        entity.Property(x => x.TermsAndConditions);
-        entity.Property(x => x.GroupsPaymentTerms);
+        entity.Property(x => x.TermsAndConditions)
+            .HasMaxLength(Division.Rules.TermsAndConditionsMaxLength);
+
+        entity.Property(x => x.GroupsPaymentTerms)
+            .HasMaxLength(Division.Rules.GroupsPaymentTermsMaxLength);
 
         entity.Property(x => x.WebsiteUrl)
-            .HasMaxLength(255)
+            .HasMaxLength(Division.Rules.WebsiteUrlMaxLength)
             .IsRequired();
 
         entity.Property(x => x.HeadOfficeEmail)
-            .HasMaxLength(50);
+            .HasMaxLength(Division.Rules.HeadOfficeEmailMaxLength);
 
         entity.Property(x => x.HeadOfficeTelephoneNo)
-            .HasMaxLength(50);
+            .HasMaxLength(Division.Rules.HeadOfficeTelephoneMaxLength);
 
         entity.ConfigureAddress(x => x.ContactAddress);
         entity.ConfigureBanner(x => x.AccreditationBanner);

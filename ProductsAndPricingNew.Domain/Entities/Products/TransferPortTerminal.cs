@@ -1,6 +1,6 @@
 ﻿using ProductsAndPricingNew.Domain.Abstractions;
-using ProductsAndPricingNew.Domain.Common.Errors;
-using ProductsAndPricingNew.Domain.Common.Extensions;
+using ProductsAndPricingNew.Domain.Common.Exceptions;
+using ProductsAndPricingNew.Domain.Common.Text;
 
 namespace ProductsAndPricingNew.Domain.Entities.Products;
 
@@ -23,8 +23,13 @@ public sealed class TransferPortTerminal : ISoftDeletable
         IsDeleted = false;
     }
 
-    internal void Rename(string name) => Name = name.AsRequiredDomainText();
+    internal void Rename(string name) => Name = name.AsRequiredDomainText(nameof(Name), Rules.NameMaxLength);
     internal void ChangeOrder(int order) => Order = order;
     internal void Delete() => IsDeleted = true;
     internal void Restore() => IsDeleted = false;
+
+    public static class Rules
+    {
+        public const int NameMaxLength = 100;
+    }
 }

@@ -4,7 +4,7 @@ using FluentValidation;
 using FluentValidation.Results;
 using MediatR;
 using ProductsAndPricingNew.Application.Common.Errors;
-using ProductsAndPricingNew.Domain.Common.Errors;
+using ProductsAndPricingNew.Domain.Common.Exceptions;
 
 namespace ProductsAndPricingNew.Application.Behaviors;
 
