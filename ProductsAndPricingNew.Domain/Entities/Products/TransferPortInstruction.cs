@@ -1,7 +1,7 @@
 ﻿using ProductsAndPricingNew.Domain.Abstractions;
-using ProductsAndPricingNew.Domain.Base;
-using ProductsAndPricingNew.Domain.Common.Errors;
-using ProductsAndPricingNew.Domain.Common.Extensions;
+using ProductsAndPricingNew.Domain.Common.Exceptions;
+using ProductsAndPricingNew.Domain.Common.Text;
+using ProductsAndPricingNew.Domain.Common.Primitives;
 
 namespace ProductsAndPricingNew.Domain.Entities.Products;
 
@@ -24,13 +24,15 @@ public sealed class TransferPortInstruction : Entity<int>, ISoftDeletable
 
     internal void UpdateInstructions(string instructions)
     {
-        string normalizedInstructions = instructions.AsRequiredDomainText();
-
-        if (normalizedInstructions.Length > 4000)
-            throw new DomainException("Instructions cannot exceed 4000 characters");
-
+        string normalizedInstructions = instructions.AsRequiredDomainText(nameof(Instructions), Rules.InstructionsMaxLength);
         Instructions = normalizedInstructions;
     }
 
     internal void Delete() => IsDeleted = true;
+
+    public static class Rules
+    {
+        public const int NameMaxLength = 100;
+        public const int InstructionsMaxLength = 4000;
+    }
 }

@@ -18,7 +18,7 @@ internal sealed class TransferConfiguration : IEntityTypeConfiguration<Transfer>
         entity.Property(x => x.UnitTypeId).IsRequired();
 
         entity.Property(x => x.Name)
-            .HasMaxLength(100)
+            .HasMaxLength(Transfer.Rules.NameMaxLength)
             .IsRequired();
 
         entity.Property(x => x.IsActive).IsRequired();
@@ -33,16 +33,7 @@ internal sealed class TransferConfiguration : IEntityTypeConfiguration<Transfer>
         entity.Property(x => x.ProductCategoryId);
         entity.Property(x => x.OfferingsClosureDate);
 
-        entity.ComplexProperty(x => x.FinanceCodes, complex =>
-        {
-            complex.Property(p => p.GeneralLedgerCode)
-                .HasColumnName("GeneralLedgerCode")
-                .HasMaxLength(10);
-
-            complex.Property(p => p.CostCentreCode)
-                .HasColumnName("CostCentreCode")
-                .HasMaxLength(10);
-        });
+        entity.ConfigureFinanceCodes(x => x.FinanceCodes);
 
         entity.HasIndex(x => new { x.DivisionId, x.Name });
         entity.HasIndex(x => x.TransferTypeId);

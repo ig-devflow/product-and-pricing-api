@@ -1,16 +1,15 @@
 ﻿using FluentValidation;
 using ProductsAndPricingNew.Application.Common.Models;
 using ProductsAndPricingNew.Application.Common.Validation.Abstractions;
+using ProductsAndPricingNew.Domain.SharedKernel.ValueObjects;
 
 namespace ProductsAndPricingNew.Application.Common.Validation.Validators;
 
 internal sealed class AddressDtoValidator : AbstractValidator<AddressDto>
 {
-    private const int AddressFieldMaxLength = 50;
-
-    public AddressDtoValidator(IReferenceDataValidationQuery referenceData, bool requireCountry = true)
+    public AddressDtoValidator(IReferenceDataValidationQuery referenceData)
     {
-        if (requireCountry)
+        When(HasAnyAddressField, () =>
         {
             RuleFor(x => x.CountryId)
                 .Cascade(CascadeMode.Stop)
@@ -18,44 +17,43 @@ internal sealed class AddressDtoValidator : AbstractValidator<AddressDto>
                 .WithMessage("CountryId is required when address is provided.")
                 .GreaterThan(0)
                 .WithMessage("CountryId must be greater than 0.")
-                .MustAsync((countryId, ct) => CountryExistsAsync(referenceData, countryId, ct))
-                .WithMessage("CountryId must reference an existing country.");
-        }
-        else
-        {
-            RuleFor(x => x.CountryId)
-                .Cascade(CascadeMode.Stop)
-                .GreaterThan(0)
-                .WithMessage("CountryId must be greater than 0.")
-                .MustAsync((countryId, ct) => CountryExistsAsync(referenceData, countryId, ct))
-                .WithMessage("CountryId must reference an existing country.")
-                .When(x => x.CountryId.HasValue);
-        }
+                .MustAsync((countryId, ct) => CountryIsActiveAsync(referenceData, countryId, ct))
+                .WithMessage("CountryId must reference an active country.");
+        });
 
         RuleFor(x => x.Street)
-            .MaximumLength(AddressFieldMaxLength)
-            .WithMessage($"Street must not exceed {AddressFieldMaxLength} characters.");
+            .MaximumLength(Address.Rules.AddressFieldMaxLength)
+            .WithMessage($"Street must not exceed {Address.Rules.AddressFieldMaxLength} characters.");
 
         RuleFor(x => x.District)
-            .MaximumLength(AddressFieldMaxLength)
-            .WithMessage($"District must not exceed {AddressFieldMaxLength} characters.");
+            .MaximumLength(Address.Rules.AddressFieldMaxLength)
+            .WithMessage($"District must not exceed {Address.Rules.AddressFieldMaxLength} characters.");
 
         RuleFor(x => x.City)
-            .MaximumLength(AddressFieldMaxLength)
-            .WithMessage($"City must not exceed {AddressFieldMaxLength} characters.");
+            .MaximumLength(Address.Rules.AddressFieldMaxLength)
+            .WithMessage($"City must not exceed {Address.Rules.AddressFieldMaxLength} characters.");
 
         RuleFor(x => x.PostalCode)
-            .MaximumLength(AddressFieldMaxLength)
-            .WithMessage($"Postal code must not exceed {AddressFieldMaxLength} characters.");
+            .MaximumLength(Address.Rules.AddressFieldMaxLength)
+            .WithMessage($"Postal code must not exceed {Address.Rules.AddressFieldMaxLength} characters.");
     }
 
-    private static async Task<bool> CountryExistsAsync(IReferenceDataValidationQuery referenceData, int? countryId, CancellationToken ct)
+    private static bool HasAnyAddressField(AddressDto address)
+    {
+        return address.CountryId.HasValue
+            || !string.IsNullOrWhiteSpace(address.Street)
+            || !string.IsNullOrWhiteSpace(address.District)
+            || !string.IsNullOrWhiteSpace(address.City)
+            || !string.IsNullOrWhiteSpace(address.PostalCode);
+    }
+
+    private static async Task<bool> CountryIsActiveAsync(IReferenceDataValidationQuery referenceData, int? countryId, CancellationToken ct)
     {
         if (countryId is null or <= 0)
             return true;
 
-        IReadOnlySet<int> existingCountryIds = await referenceData.GetExistingCountryIdsAsync(new[] { countryId.Value }, ct);
+        IReadOnlySet<int> activeCountryIds = await referenceData.GetActiveCountryIdsAsync(new[] { countryId.Value }, ct);
 
-        return existingCountryIds.Contains(countryId.Value);
+        return activeCountryIds.Contains(countryId.Value);
     }
 }

@@ -6,4 +6,14 @@
         <Nullable>enable</Nullable>
     </PropertyGroup>
 
+    <ItemGroup>
+      <Compile Remove="Entities\Common\Address.cs" />
+      <Compile Remove="Entities\ReferenceData\Audience.cs" />
+      <Compile Remove="Entities\Common\AuditInfo.cs" />
+      <Compile Remove="Entities\ReferenceData\ContentFormat.cs" />
+      <Compile Remove="Entities\ReferenceData\ContentTemplate.cs" />
+      <Compile Remove="Entities\ReferenceData\ContentTemplateScope.cs" />
+      <Compile Remove="Entities\Common\TextContent.cs" />
+    </ItemGroup>
+
 </Project>

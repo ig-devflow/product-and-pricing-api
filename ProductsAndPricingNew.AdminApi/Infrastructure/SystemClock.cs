@@ -1,4 +1,4 @@
-﻿using ProductsAndPricingNew.Domain.Abstractions;
+﻿using ProductsAndPricingNew.Application.Abstractions;
 
 namespace ProductsAndPricingNew.AdminApi.Infrastructure;
 

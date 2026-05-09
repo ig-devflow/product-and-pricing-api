@@ -1,15 +1,13 @@
 ﻿using FluentValidation;
 using ProductsAndPricingNew.Application.Common.Models;
+using ProductsAndPricingNew.Application.Common.Validation.Limits;
+using ProductsAndPricingNew.Domain.SharedKernel.ValueObjects;
 
 namespace ProductsAndPricingNew.Application.Common.Validation.Validators;
 
 internal sealed class ImageBannerDtoValidator : AbstractValidator<ImageBannerDto>
 {
-    private const int BannerContentTypeMaxLength = 100;
-    private const int BannerFileNameMaxLength = 255;
-    private static readonly HashSet<string> AllowedImageContentTypes = new(StringComparer.OrdinalIgnoreCase) { "image/png", "image/jpeg", "image/jpg", "image/webp", "image/svg+xml" };
-
-    public ImageBannerDtoValidator(string displayName = "Image", int maxBytes = ValidationDefaults.MaxAccreditationBannerBytes)
+    public ImageBannerDtoValidator(string displayName = "Image", int maxBytes = UploadValidationLimits.MaxAccreditationBannerBytes)
     {
         RuleFor(x => x.Data)
             .Must(data => data is null || data.Length <= maxBytes)
@@ -21,19 +19,16 @@ internal sealed class ImageBannerDtoValidator : AbstractValidator<ImageBannerDto
                 .Cascade(CascadeMode.Stop)
                 .NotEmpty()
                 .WithMessage("Content type is required.")
-                .MaximumLength(BannerContentTypeMaxLength)
-                .WithMessage($"Content type must not exceed {BannerContentTypeMaxLength} characters.")
-                .Must(contentType => !string.IsNullOrWhiteSpace(contentType) && AllowedImageContentTypes.Contains(contentType.Trim()))
+                .MaximumLength(ImageFile.Rules.ContentTypeMaxLength)
+                .WithMessage($"Content type must not exceed {ImageFile.Rules.ContentTypeMaxLength} characters.")
+                .Must(ImageFile.IsSupportedContentType)
                 .WithMessage("Content type must be PNG/JPEG/WEBP/SVG.");
 
             RuleFor(x => x.FileName)
-                .MaximumLength(BannerFileNameMaxLength)
-                .WithMessage($"FileName must not exceed {BannerFileNameMaxLength} characters.");
+                .MaximumLength(ImageFile.Rules.FileNameMaxLength)
+                .WithMessage($"FileName must not exceed {ImageFile.Rules.FileNameMaxLength} characters.");
         });
     }
 
-    private static int ToMegabytes(int bytes)
-    {
-        return bytes / 1024 / 1024;
-    }
+    private static int ToMegabytes(int bytes) => bytes / 1024 / 1024;
 }

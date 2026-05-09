@@ -1,8 +1,9 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.ChangeTracking;
 using Microsoft.EntityFrameworkCore.Diagnostics;
+using ProductsAndPricingNew.Application.Abstractions;
 using ProductsAndPricingNew.Domain.Abstractions;
-using ProductsAndPricingNew.Domain.Entities.Common;
+using ProductsAndPricingNew.Domain.SharedKernel.ValueObjects;
 
 namespace ProductsAndPricingNew.Persistence.Interceptors;
 

@@ -40,7 +40,7 @@ internal sealed class TransferPortConfiguration : IEntityTypeConfiguration<Trans
             owned.Property(x => x.DivisionId).IsRequired();
 
             owned.Property(x => x.Instructions)
-                .HasMaxLength(4000)
+                .HasMaxLength(TransferPortInstruction.Rules.InstructionsMaxLength)
                 .IsRequired();
 
             owned.Property(x => x.IsDeleted).IsRequired();
@@ -63,7 +63,7 @@ internal sealed class TransferPortConfiguration : IEntityTypeConfiguration<Trans
             owned.Property(x => x.Number).IsRequired();
 
             owned.Property(x => x.Name)
-                .HasMaxLength(200)
+                .HasMaxLength(TransferPortTerminal.Rules.NameMaxLength)
                 .IsRequired();
 
             owned.Property(x => x.Order).IsRequired();

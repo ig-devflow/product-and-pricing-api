@@ -41,4 +41,10 @@ public readonly struct FinanceCodes : IEquatable<FinanceCodes>
     {
         return !left.Equals(right);
     }
+
+    public static class Rules
+    {
+        public const int GeneralLedgerCodeMaxLength = 100;
+        public const int CostCentreCodeMaxLength = 100;
+    }
 }

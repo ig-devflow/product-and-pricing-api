@@ -1,6 +1,6 @@
-﻿using ProductsAndPricingNew.Domain.Base;
-using ProductsAndPricingNew.Domain.Common.Errors;
-using ProductsAndPricingNew.Domain.Common.Extensions;
+﻿using ProductsAndPricingNew.Domain.Common.Exceptions;
+using ProductsAndPricingNew.Domain.Common.Text;
+using ProductsAndPricingNew.Domain.Common.Primitives;
 
 namespace ProductsAndPricingNew.Domain.Entities.Products;
 
@@ -37,7 +37,7 @@ public sealed class Package : AggregateRoot<int>, IProductDefinition
 
     public IReadOnlyCollection<PackageItem> Items => _items.AsReadOnly();
 
-    public void Rename(string name) => Name = name.AsRequiredDomainText();
+    public void Rename(string name) => Name = name.AsRequiredDomainText(nameof(Name), Rules.NameMaxLength);
 
     public void ChangeDescription(string? description)
     {
@@ -138,6 +138,11 @@ public sealed class Package : AggregateRoot<int>, IProductDefinition
 
         if (total > 100m)
             throw new DomainException("Package breakdown total cannot exceed 100%");
+    }
+
+    public static class Rules
+    {
+        public const int NameMaxLength = 100;
     }
 }
 

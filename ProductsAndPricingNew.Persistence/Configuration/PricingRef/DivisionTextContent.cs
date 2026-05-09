@@ -1,7 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using ProductsAndPricingNew.Domain.Entities.PricingRef;
-using ProductsAndPricingNew.Domain.Entities.ReferenceData;
+using ProductsAndPricingNew.Domain.ReferenceData;
 
 namespace ProductsAndPricingNew.Persistence.Configuration.PricingRef;
 

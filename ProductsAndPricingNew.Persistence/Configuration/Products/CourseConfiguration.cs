@@ -13,7 +13,7 @@ internal sealed class CourseConfiguration : IEntityTypeConfiguration<Course>
         entity.HasKey(x => x.Id);
         entity.Property(x => x.Id).ValueGeneratedOnAdd();
 
-        entity.Property(x => x.Name).HasMaxLength(100).IsRequired();
+        entity.Property(x => x.Name).HasMaxLength(Course.Rules.NameMaxLength).IsRequired();
         entity.Property(x => x.DivisionId).IsRequired();
         entity.Property(x => x.IsActive).IsRequired();
         entity.Property(x => x.CourseLanguageId).IsRequired();
@@ -25,16 +25,7 @@ internal sealed class CourseConfiguration : IEntityTypeConfiguration<Course>
         entity.Property(x => x.ProductCategoryId);
         entity.Property(x => x.OfferingsClosureDate);
 
-        entity.ComplexProperty(x => x.FinanceCodes, complex =>
-        {
-            complex.Property(p => p.GeneralLedgerCode)
-                .HasColumnName("GeneralLedgerCode")
-                .HasMaxLength(10);
-
-            complex.Property(p => p.CostCentreCode)
-                .HasColumnName("CostCentreCode")
-                .HasMaxLength(10);
-        });
+        entity.ConfigureFinanceCodes(x => x.FinanceCodes);
 
         entity.HasIndex(x => new { x.DivisionId, x.Name });
 

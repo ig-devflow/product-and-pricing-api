@@ -1,6 +1,5 @@
-﻿using ProductsAndPricingNew.Domain.Base;
-using ProductsAndPricingNew.Domain.Common.Errors;
-using ProductsAndPricingNew.Domain.Common.Extensions;
+﻿using ProductsAndPricingNew.Domain.Common.Text;
+using ProductsAndPricingNew.Domain.Common.Primitives;
 
 namespace ProductsAndPricingNew.Domain.Entities.Products;
 
@@ -26,7 +25,7 @@ public sealed class Accommodation : AggregateRoot<int>
         Rename(name);
     }
 
-    public void Rename(string name) => Name = name.AsRequiredDomainText();
+    public void Rename(string name) => Name = name.AsRequiredDomainText(nameof(Name), Rules.NameMaxLength);
 
     public void Activate()
     {
@@ -58,5 +57,10 @@ public sealed class Accommodation : AggregateRoot<int>
     {
         IsCommitted = committed;
         IsNonCommitted = nonCommitted;
+    }
+
+    public static class Rules
+    {
+        public const int NameMaxLength = 100;
     }
 }

@@ -1,4 +1,5 @@
-﻿using ProductsAndPricingNew.Domain.Entities.Common;
+﻿using ProductsAndPricingNew.Domain.ReferenceData;
+using ProductsAndPricingNew.Domain.SharedKernel.ValueObjects;
 
 namespace ProductsAndPricingNew.Domain.Entities.PricingRef;
 
