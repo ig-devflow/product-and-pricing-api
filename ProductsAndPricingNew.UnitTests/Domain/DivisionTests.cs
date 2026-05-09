@@ -1,6 +1,7 @@
 ﻿using ProductsAndPricingNew.Domain.Common.Exceptions;
 using ProductsAndPricingNew.Domain.Entities.PricingRef;
 using ProductsAndPricingNew.Domain.ReferenceData;
+using ProductsAndPricingNew.Domain.SharedKernel.ValueObjects;
 
 namespace ProductsAndPricingNew.UnitTests.Domain;
 
@@ -56,7 +57,7 @@ public sealed class DivisionTests
             new(1, 0, "Also public copy", ContentFormat.PlainText)
         ];
 
-        Assert.Throws<DomainException>(() => division.ChangeTexts(texts));
+        Assert.Throws<DomainException>(() => division.ReplaceTexts(texts));
     }
 
     [Fact]
@@ -64,7 +65,7 @@ public sealed class DivisionTests
     {
         Division division = CreateDivision(new TextContentDefinition(1, null, "Old copy", ContentFormat.PlainText));
 
-        division.ChangeTexts([new TextContentDefinition(1, null, "New copy", ContentFormat.PlainText)]);
+        division.ReplaceTexts([new TextContentDefinition(1, null, "New copy", ContentFormat.PlainText)]);
 
         DivisionTextContent text = Assert.Single(division.Texts);
         Assert.False(text.IsDeleted);
@@ -78,7 +79,7 @@ public sealed class DivisionTests
             new TextContentDefinition(1, null, "Keep me", ContentFormat.PlainText),
             new TextContentDefinition(2, null, "Delete me", ContentFormat.PlainText));
 
-        division.ChangeTexts([new TextContentDefinition(1, null, "Keep me", ContentFormat.PlainText)]);
+        division.ReplaceTexts([new TextContentDefinition(1, null, "Keep me", ContentFormat.PlainText)]);
 
         DivisionTextContent deletedText = division.Texts.Single(x => x.ContentTemplateId == 2);
         Assert.True(deletedText.IsDeleted);
@@ -89,11 +90,11 @@ public sealed class DivisionTests
     {
         Division division = CreateDivision(new TextContentDefinition(1, null, "Original copy", ContentFormat.PlainText));
 
-        division.ChangeTexts(Array.Empty<TextContentDefinition>());
+        division.ReplaceTexts(Array.Empty<TextContentDefinition>());
         DivisionTextContent deletedText = Assert.Single(division.Texts);
         Assert.True(deletedText.IsDeleted);
 
-        division.ChangeTexts([new TextContentDefinition(1, null, "Restored copy", ContentFormat.PlainText)]);
+        division.ReplaceTexts([new TextContentDefinition(1, null, "Restored copy", ContentFormat.PlainText)]);
 
         DivisionTextContent restoredText = Assert.Single(division.Texts);
         Assert.False(restoredText.IsDeleted);

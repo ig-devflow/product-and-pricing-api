@@ -1,4 +1,4 @@
-﻿INSERT INTO [PricingRef].[ContentTemplate] ([Name], [Description], [Scope], [IsDeleted])
+﻿INSERT INTO [ReferenceData].[ContentTemplate] ([Name], [Description], [Scope], [IsDeleted])
 VALUES
     (N'Visa Letter Note - Individuals', N'Visa letter for Individual bookings', 1, 0),
     (N'Visa Letter Note - Groups', N'Visa letter for Groups bookings', 1, 0),

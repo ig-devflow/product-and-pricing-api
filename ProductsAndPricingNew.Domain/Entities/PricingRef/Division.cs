@@ -1,7 +1,6 @@
 ﻿using ProductsAndPricingNew.Domain.Common.Exceptions;
 using ProductsAndPricingNew.Domain.Common.Primitives;
 using ProductsAndPricingNew.Domain.Common.Text;
-using ProductsAndPricingNew.Domain.ReferenceData;
 using ProductsAndPricingNew.Domain.SharedKernel.ValueObjects;
 
 namespace ProductsAndPricingNew.Domain.Entities.PricingRef;
@@ -57,13 +56,15 @@ public sealed class Division : AggregateRoot<int>
     public void ChangeAccreditationBanner(byte[]? data, string? contentType, string? fileName)
         => AccreditationBanner = ImageFile.Create(data, contentType, fileName);
 
-    public void ChangeTexts(IEnumerable<TextContentDefinition> texts)
+    public void ReplaceTexts(IEnumerable<TextContentDefinition> texts)
     {
         ArgumentNullException.ThrowIfNull(texts);
         var incomingKeys = new HashSet<(int ContentTemplateId, int? AudienceId)>();
 
         foreach (TextContentDefinition text in texts)
         {
+            text.EnsureValid();
+
             if (!incomingKeys.Add(text.Key))
                 throw new DomainException("Duplicate text content for the same template and audience.");
 
@@ -195,7 +196,7 @@ public sealed class Division : AggregateRoot<int>
                 AccreditationBanner = _accreditationBanner
             };
 
-            division.ChangeTexts(_texts);
+            division.ReplaceTexts(_texts);
             return division;
         }
     }

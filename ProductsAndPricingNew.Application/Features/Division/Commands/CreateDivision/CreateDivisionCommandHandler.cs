@@ -6,7 +6,7 @@ using ProductsAndPricingNew.Application.Common.Models;
 using ProductsAndPricingNew.Application.Features.Division.Abstractions;
 using ProductsAndPricingNew.Domain.Abstractions;
 using ProductsAndPricingNew.Domain.Common.Text;
-using ProductsAndPricingNew.Domain.ReferenceData;
+using ProductsAndPricingNew.Domain.SharedKernel.ValueObjects;
 using DivisionEntity = ProductsAndPricingNew.Domain.Entities.PricingRef.Division;
 
 namespace ProductsAndPricingNew.Application.Features.Division.Commands.CreateDivision;
