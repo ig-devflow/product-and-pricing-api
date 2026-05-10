@@ -19,4 +19,10 @@ public sealed class Country : Entity<int>, ISoftDeletable
         if (IsDeleted)
             throw new DomainException($"Country '{Name}' is deleted.");
     }
+
+    public static class Rules
+    {
+        public const int CodeMaxLength = 2;
+        public const int NameMaxLength = 100;
+    }
 }

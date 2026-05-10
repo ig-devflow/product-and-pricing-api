@@ -20,4 +20,11 @@ public sealed class Currency : Entity<int>, ISoftDeletable
         if (IsDeleted)
             throw new DomainException($"Currency '{IsoCode}' is deleted.");
     }
+
+    public static class Rules
+    {
+        public const int IsoCodeMaxLength = 3;
+        public const int NameMaxLength = 100;
+        public const int SymbolMaxLength = 1;
+    }
 }
