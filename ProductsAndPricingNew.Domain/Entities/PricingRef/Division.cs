@@ -1,6 +1,8 @@
 ﻿using ProductsAndPricingNew.Domain.Common.Exceptions;
 using ProductsAndPricingNew.Domain.Common.Primitives;
 using ProductsAndPricingNew.Domain.Common.Text;
+using ProductsAndPricingNew.Domain.ReferenceData;
+using ProductsAndPricingNew.Domain.SharedKernel.TextContent;
 using ProductsAndPricingNew.Domain.SharedKernel.ValueObjects;
 
 namespace ProductsAndPricingNew.Domain.Entities.PricingRef;
@@ -34,7 +36,7 @@ public sealed class Division : AggregateRoot<int>
         => Name = name.AsRequiredDomainText(nameof(Name), Rules.NameMaxLength);
 
     public void ChangeWebsite(string website)
-        => WebsiteUrl = website.AsRequiredDomainText(nameof(WebsiteUrl), Rules.WebsiteUrlMaxLength);
+        => WebsiteUrl = NormalizeWebsiteUrl(website);
 
     public void ChangeActiveState(bool isActive) => IsActive = isActive;
 
@@ -48,13 +50,13 @@ public sealed class Division : AggregateRoot<int>
         => HeadOfficeEmail = headOfficeEmail.AsOptionalDomainText(nameof(HeadOfficeEmail), Rules.HeadOfficeEmailMaxLength);
 
     public void ChangeHeadOfficeTelephone(string? headOfficeTelephone)
-        => HeadOfficeTelephoneNo = headOfficeTelephone.AsOptionalDomainText(nameof(HeadOfficeTelephoneNo), Rules.HeadOfficeTelephoneMaxLength);
+        => HeadOfficeTelephoneNo = headOfficeTelephone.AsOptionalDomainText(nameof(HeadOfficeTelephoneNo), Rules.HeadOfficeTelephoneNoMaxLength);
 
     public void ChangeContactAddress(int? countryId, string? street, string? district, string? city, string? postalCode)
         => ContactAddress = Address.Create(countryId, street, district, city, postalCode);
 
     public void ChangeAccreditationBanner(byte[]? data, string? contentType, string? fileName)
-        => AccreditationBanner = ImageFile.Create(data, contentType, fileName);
+        => AccreditationBanner = ImageFile.Create(data, contentType, fileName, Rules.AccreditationBannerMaxBytes);
 
     public void ReplaceTexts(IEnumerable<TextContentDefinition> texts)
     {
@@ -132,7 +134,7 @@ public sealed class Division : AggregateRoot<int>
         public Builder(string name, string websiteUrl)
         {
             _name = name.AsRequiredDomainText(nameof(Name), Rules.NameMaxLength);
-            _websiteUrl = websiteUrl.AsRequiredDomainText(nameof(WebsiteUrl), Rules.WebsiteUrlMaxLength);
+            _websiteUrl = NormalizeWebsiteUrl(websiteUrl);
         }
 
         public Builder IsActive(bool value)
@@ -161,7 +163,7 @@ public sealed class Division : AggregateRoot<int>
 
         public Builder HeadOfficeTelephone(string? value)
         {
-            _headOfficeTelephoneNo = value.AsOptionalDomainText(nameof(HeadOfficeTelephone), Rules.HeadOfficeTelephoneMaxLength);
+            _headOfficeTelephoneNo = value.AsOptionalDomainText(nameof(HeadOfficeTelephoneNo), Rules.HeadOfficeTelephoneNoMaxLength);
             return this;
         }
 
@@ -173,7 +175,7 @@ public sealed class Division : AggregateRoot<int>
 
         public Builder AccreditationBanner(byte[]? data, string? contentType, string? fileName)
         {
-            _accreditationBanner = ImageFile.Create(data, contentType, fileName);
+            _accreditationBanner = ImageFile.Create(data, contentType, fileName, Rules.AccreditationBannerMaxBytes);
             return this;
         }
 
@@ -201,13 +203,29 @@ public sealed class Division : AggregateRoot<int>
         }
     }
 
+    private static string NormalizeWebsiteUrl(string websiteUrl)
+    {
+        string normalized = websiteUrl.AsRequiredDomainText(nameof(WebsiteUrl), Rules.WebsiteUrlMaxLength);
+
+        if (!Uri.TryCreate(normalized, UriKind.Absolute, out Uri? uri) ||
+            uri.Scheme is not ("http" or "https") ||
+            string.IsNullOrWhiteSpace(uri.Host))
+        {
+            throw new DomainException("WebsiteUrl must be a valid http or https URL.");
+        }
+
+        return normalized;
+    }
+
     public static class Rules
     {
         public const int NameMaxLength = 100;
         public const int WebsiteUrlMaxLength = 255;
         public const int HeadOfficeEmailMaxLength = 50;
-        public const int HeadOfficeTelephoneMaxLength = 50;
+        public const int HeadOfficeTelephoneNoMaxLength = 50;
+        public const int HeadOfficeTelephoneMaxLength = HeadOfficeTelephoneNoMaxLength;
         public const int TermsAndConditionsMaxLength = 4000;
         public const int GroupsPaymentTermsMaxLength = 4000;
+        public const int AccreditationBannerMaxBytes = 5 * 1024 * 1024;
     }
 }

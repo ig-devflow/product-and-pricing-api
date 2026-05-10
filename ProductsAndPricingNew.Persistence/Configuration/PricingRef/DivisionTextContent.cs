@@ -1,7 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
-using ProductsAndPricingNew.Domain.Entities.PricingRef;
 using ProductsAndPricingNew.Domain.ReferenceData;
+using ProductsAndPricingNew.Domain.SharedKernel.ValueObjects;
 
 namespace ProductsAndPricingNew.Persistence.Configuration.PricingRef;
 
@@ -29,7 +29,7 @@ internal sealed class DivisionTextContentConfiguration : IEntityTypeConfiguratio
         {
             text.Property(x => x.Content)
                 .HasColumnName("Content")
-                .HasColumnType("nvarchar(max)")
+                .HasMaxLength(FormattedText.Rules.ContentMaxLength)
                 .IsRequired();
 
             text.Property(x => x.Format)

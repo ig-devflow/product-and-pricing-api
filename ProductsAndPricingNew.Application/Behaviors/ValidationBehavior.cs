@@ -24,27 +24,27 @@ public sealed class ValidationBehavior<TRequest, TResponse> : IPipelineBehavior<
         RequestHandlerDelegate<TResponse> next,
         CancellationToken ct)
     {
-        if (_validators.Count > 0)
-        {
-            ValidationContext<TRequest> context = new(request);
-
-            ValidationResult[] validationResults = await Task.WhenAll(
-                _validators.Select(validator => validator.ValidateAsync(context, ct)));
-
-            List<ValidationFailure> failures = validationResults
-                .SelectMany(result => result.Errors)
-                .Where(failure => failure is not null)
-                .ToList();
-
-            if (failures.Count > 0)
-            {
-                ValidationError error = new(BuildValidationErrors(failures));
-                return ResultResponseFactory.Fail<TResponse>(error);
-            }
-        }
-
         try
         {
+            if (_validators.Count > 0)
+            {
+                ValidationContext<TRequest> context = new(request);
+
+                ValidationResult[] validationResults = await Task.WhenAll(
+                    _validators.Select(validator => validator.ValidateAsync(context, ct)));
+
+                List<ValidationFailure> failures = validationResults
+                    .SelectMany(result => result.Errors)
+                    .Where(failure => failure is not null)
+                    .ToList();
+
+                if (failures.Count > 0)
+                {
+                    ValidationError error = new(BuildValidationErrors(failures));
+                    return ResultResponseFactory.Fail<TResponse>(error);
+                }
+            }
+
             return await next(ct);
         }
         catch (DomainException exception)

@@ -48,8 +48,8 @@ internal abstract class DivisionCommandValidatorBase<TCommand> : AbstractValidat
 
         RuleFor(x => x.HeadOfficeTelephoneNo)
             .Cascade(CascadeMode.Stop)
-            .MaximumLength(DivisionAggregate.Rules.HeadOfficeTelephoneMaxLength)
-            .WithMessage($"Head office telephone must not exceed {DivisionAggregate.Rules.HeadOfficeTelephoneMaxLength} characters.")
+            .MaximumLength(DivisionAggregate.Rules.HeadOfficeTelephoneNoMaxLength)
+            .WithMessage($"Head office telephone must not exceed {DivisionAggregate.Rules.HeadOfficeTelephoneNoMaxLength} characters.")
             .IsValidPhone()
             .When(x => !string.IsNullOrWhiteSpace(x.HeadOfficeTelephoneNo));
 

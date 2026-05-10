@@ -5,6 +5,7 @@ using ProductsAndPricingNew.Application.Common.Errors;
 using ProductsAndPricingNew.Application.Features.Division.Abstractions;
 using ProductsAndPricingNew.Domain.Abstractions;
 using ProductsAndPricingNew.Domain.Common.Text;
+using ProductsAndPricingNew.Domain.SharedKernel.TextContent;
 using ProductsAndPricingNew.Domain.SharedKernel.ValueObjects;
 using DivisionEntity = ProductsAndPricingNew.Domain.Entities.PricingRef.Division;
 

@@ -35,7 +35,7 @@ public sealed record FormattedText
         if (format == ContentFormat.None)
             throw new DomainException("Content format must be provided when content is not empty.");
 
-        Content = content.AsRequiredDomainText(nameof(Content));
+        Content = content.AsRequiredDomainText(nameof(Content), Rules.ContentMaxLength);
         Format = format;
     }
 
@@ -46,4 +46,9 @@ public sealed record FormattedText
     }
 
     public static FormattedText Empty { get; } = new(null, ContentFormat.None);
+
+    public static class Rules
+    {
+        public const int ContentMaxLength = 10_000;
+    }
 }
