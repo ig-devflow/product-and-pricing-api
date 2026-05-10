@@ -29,7 +29,7 @@ internal sealed class CreateDivisionCommandHandler : IRequestHandler<CreateDivis
 
     public async Task<Result<int>> Handle(CreateDivisionCommand request, CancellationToken ct)
     {
-        string name = request.Name.AsRequiredText();
+        string name = request.Name.AsRequiredText(nameof(request.Name));
 
         bool isNameTaken = await _divisionQuery.ExistsByNameAsync(name, ct: ct);
         if (isNameTaken)

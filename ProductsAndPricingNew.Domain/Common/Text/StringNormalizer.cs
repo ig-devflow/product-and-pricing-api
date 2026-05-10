@@ -16,12 +16,12 @@ public static class StringDomainExtensions
         return Normalize(value);
     }
 
-    public static string AsRequiredText(this string? value)
+    public static string AsRequiredText(this string? value, string fieldName)
     {
         string? normalized = value.AsOptionalText();
 
         if (normalized is null)
-            throw new ArgumentNullException("Text is required.");
+            throw new ArgumentNullException($"{fieldName} is required.");
 
         return normalized;
     }
