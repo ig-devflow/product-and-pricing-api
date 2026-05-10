@@ -8,6 +8,7 @@ namespace ProductsAndPricingNew.UnitTests.TestSupport.Builders;
 internal sealed class DivisionBuilder
 {
     private int? _id;
+    private byte[] _version = [1, 2, 3, 4, 5, 6, 7, 8];
     private string _name = "Division";
     private string _websiteUrl = "https://example.com";
     private bool _isActive = true;
@@ -19,6 +20,7 @@ internal sealed class DivisionBuilder
     private byte[]? _bannerData = [1, 2, 3];
     private string? _bannerContentType = "image/png";
     private string? _bannerFileName = "banner.png";
+
     private IReadOnlyCollection<TextContentDefinition> _texts =
     [
         new(100, null, "Text", ContentFormat.PlainText)
@@ -27,6 +29,12 @@ internal sealed class DivisionBuilder
     public DivisionBuilder WithId(int id)
     {
         _id = id;
+        return this;
+    }
+
+    public DivisionBuilder WithVersion(byte[] version)
+    {
+        _version = version;
         return this;
     }
 
@@ -78,6 +86,8 @@ internal sealed class DivisionBuilder
         if (_id.HasValue)
             SetId(division, _id.Value);
 
+        SetVersion(division, _version);
+
         return division;
     }
 
@@ -86,5 +96,12 @@ internal sealed class DivisionBuilder
         typeof(Entity<int>)
             .GetProperty(nameof(Entity<int>.Id))!
             .SetValue(division, id);
+    }
+
+    internal static void SetVersion(Division division, byte[] version)
+    {
+        typeof(AggregateRoot<int>)
+            .GetProperty(nameof(AggregateRoot<int>.Version))!
+            .SetValue(division, version);
     }
 }

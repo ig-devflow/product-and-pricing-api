@@ -62,7 +62,8 @@ internal sealed class DivisionQuery : IDivisionQuery
                 d.CountryId,
                 d.BannerData AS AccreditationBannerData,
                 d.BannerContentType AS AccreditationBannerContentType,
-                d.BannerFileName AS AccreditationBannerFileName
+                d.BannerFileName AS AccreditationBannerFileName,
+                d.Version
             FROM PricingRef.Division d
             WHERE d.Id = @Id
               AND d.IsDeleted = 0;
@@ -112,7 +113,8 @@ internal sealed class DivisionQuery : IDivisionQuery
             row.HeadOfficeTelephoneNo,
             MapBanner(row),
             MapAddress(row),
-            texts);
+            texts,
+            ToBase64Version(row.Version));
     }
 
     public async Task<PagedResult<DivisionListItemDto>> GetListAsync(
@@ -214,6 +216,8 @@ internal sealed class DivisionQuery : IDivisionQuery
             row.CountryId);
     }
 
+    internal static string ToBase64Version(byte[]? version) => Convert.ToBase64String(version ?? []);
+
     private sealed class DivisionDetailsRow
     {
         public int Id { get; init; }
@@ -232,6 +236,7 @@ internal sealed class DivisionQuery : IDivisionQuery
         public byte[]? AccreditationBannerData { get; init; }
         public string? AccreditationBannerContentType { get; init; }
         public string? AccreditationBannerFileName { get; init; }
+        public byte[]? Version { get; init; }
     }
 
     private sealed class DivisionListItemRow

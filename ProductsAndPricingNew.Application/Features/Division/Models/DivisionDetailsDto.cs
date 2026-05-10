@@ -13,5 +13,6 @@ public sealed record DivisionDetailsDto(
     string? HeadOfficeTelephoneNo,
     ImageBannerDto? AccreditationBanner,
     AddressDto? ContactAddress,
-    IReadOnlyCollection<DivisionTextContentDto> Texts
+    IReadOnlyCollection<DivisionTextContentDto> Texts,
+    string Version
 );

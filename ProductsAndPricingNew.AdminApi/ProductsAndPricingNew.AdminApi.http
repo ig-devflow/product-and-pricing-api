@@ -9,3 +9,22 @@ GET {{ProductsAndPricingNew.AdminApi_HostAddress}}/api/v1/divisions/1
 Accept: application/json
 
 ###
+
+PUT {{ProductsAndPricingNew.AdminApi_HostAddress}}/api/v1/divisions/1
+Content-Type: application/json
+
+{
+  "name": "Division",
+  "websiteUrl": "https://example.com",
+  "isActive": true,
+  "termsAndConditions": null,
+  "groupsPaymentTerms": null,
+  "headOfficeEmail": null,
+  "headOfficeTelephoneNo": null,
+  "contactAddress": null,
+  "accreditationBanner": null,
+  "texts": [],
+  "version": "AAAAAAAAB9E="
+}
+
+###

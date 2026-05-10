@@ -35,8 +35,8 @@ internal sealed class CreateDivisionCommandHandler : IRequestHandler<CreateDivis
         if (isNameTaken)
             return Result.Fail(new ConflictError($"Division name: '{name}' already exists"));
 
-        AddressDto? address = request.ContactAddress;
-        ImageBannerDto? banner = request.AccreditationBanner;
+        var address = request.ContactAddress;
+        var banner = request.AccreditationBanner;
 
         DivisionEntity division = new DivisionEntity.Builder(name, request.WebsiteUrl)
             .IsActive(request.IsActive)

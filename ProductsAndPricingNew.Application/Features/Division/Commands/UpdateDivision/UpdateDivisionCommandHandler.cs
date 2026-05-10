@@ -33,6 +33,9 @@ internal sealed class UpdateDivisionCommandHandler : IRequestHandler<UpdateDivis
         if (division is null)
             return Result.Fail(new NotFoundError($"Division with id {request.Id} was not found"));
 
+        if (!division.HasVersion(request.Version))
+            return Result.Fail(new ConflictError("Division was modified by another user. Reload it and try again."));
+
         string name = request.Name.AsRequiredText();
 
         bool isNameTaken = await _divisionQuery.ExistsByNameAsync(name, request.Id, ct);

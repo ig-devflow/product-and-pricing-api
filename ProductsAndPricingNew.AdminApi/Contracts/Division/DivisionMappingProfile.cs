@@ -43,6 +43,7 @@ public sealed class DivisionMappingProfile : Profile
                 src.HeadOfficeTelephoneNo,
                 ctx.Mapper.Map<AddressDto?>(src.ContactAddress),
                 ctx.Mapper.Map<ImageBannerDto?>(src.AccreditationBanner),
-                ctx.Mapper.Map<IReadOnlyCollection<TextContentDto>>(src.Texts)));
+                ctx.Mapper.Map<IReadOnlyCollection<TextContentDto>>(src.Texts),
+                src.Version));
     }
 }
