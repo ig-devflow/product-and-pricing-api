@@ -45,7 +45,7 @@ public readonly record struct TextContentDefinition
             throw new DomainException($"Unsupported content format '{Format}'.");
     }
 
-    public void EnsureValidKey()
+    private void EnsureValidKey()
     {
         if (ContentTemplateId <= 0)
             throw new DomainException("Content template id must be provided.");

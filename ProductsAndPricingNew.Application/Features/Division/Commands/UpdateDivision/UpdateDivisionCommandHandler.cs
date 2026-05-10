@@ -6,7 +6,6 @@ using ProductsAndPricingNew.Application.Features.Division.Abstractions;
 using ProductsAndPricingNew.Domain.Abstractions;
 using ProductsAndPricingNew.Domain.Common.Text;
 using ProductsAndPricingNew.Domain.SharedKernel.TextContent;
-using ProductsAndPricingNew.Domain.SharedKernel.ValueObjects;
 using DivisionEntity = ProductsAndPricingNew.Domain.Entities.PricingRef.Division;
 
 namespace ProductsAndPricingNew.Application.Features.Division.Commands.UpdateDivision;
@@ -36,7 +35,7 @@ internal sealed class UpdateDivisionCommandHandler : IRequestHandler<UpdateDivis
         if (!division.HasVersion(request.Version))
             return Result.Fail(new ConflictError("Division was modified by another user. Reload it and try again."));
 
-        string name = request.Name.AsRequiredText();
+        string name = request.Name.AsRequiredText(nameof(request.Name));
 
         bool isNameTaken = await _divisionQuery.ExistsByNameAsync(name, request.Id, ct);
         if (isNameTaken)
