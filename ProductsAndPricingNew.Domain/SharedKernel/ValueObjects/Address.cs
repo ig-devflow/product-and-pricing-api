@@ -5,6 +5,12 @@ namespace ProductsAndPricingNew.Domain.SharedKernel.ValueObjects;
 
 public sealed record Address
 {
+    public int? CountryId { get; }
+    public string? Street { get; }
+    public string? District { get; }
+    public string? City { get; }
+    public string? PostalCode { get; }
+
     private Address()
     {
     }
@@ -22,12 +28,6 @@ public sealed record Address
         City = city.AsOptionalDomainText(nameof(City), Rules.AddressFieldMaxLength);
         PostalCode = postalCode.AsOptionalDomainText(nameof(PostalCode), Rules.AddressFieldMaxLength);
     }
-
-    public int? CountryId { get; }
-    public string? Street { get; }
-    public string? District { get; }
-    public string? City { get; }
-    public string? PostalCode { get; }
 
     public bool IsEmpty =>
         CountryId is null &&
@@ -55,9 +55,6 @@ public sealed record Address
 
         return address;
     }
-
-    // private static string? NormalizeField(string? value, string fieldName)
-    //     => StringNormalizer.NormalizeOptional(value, fieldName, Rules.AddressFieldMaxLength);
 
     public static class Rules
     {

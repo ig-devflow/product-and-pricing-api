@@ -58,7 +58,7 @@ internal abstract class DivisionCommandValidatorBase<TCommand> : AbstractValidat
             .When(x => x.ContactAddress is not null);
 
         RuleFor(x => x.AccreditationBanner!)
-            .SetValidator(new ImageBannerDtoValidator("Accreditation banner"))
+            .SetValidator(new ImageBannerDtoValidator("Accreditation banner", DivisionAggregate.Rules.AccreditationBannerMaxBytes))
             .When(x => x.AccreditationBanner is not null);
 
         RuleFor(x => x.Texts)
@@ -77,7 +77,7 @@ internal abstract class DivisionCommandValidatorBase<TCommand> : AbstractValidat
         if (texts is null)
             return true;
 
-        HashSet<(int ContentTemplateId, int? AudienceId)> keys = new();
+        var keys = new HashSet<(int ContentTemplateId, int? AudienceId)>();
 
         foreach (TextContentDto text in texts)
         {

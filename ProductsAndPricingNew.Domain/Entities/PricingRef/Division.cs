@@ -86,7 +86,6 @@ public sealed class Division : AggregateRoot<int>
 
     private void UpsertText(TextContentDefinition definition)
     {
-        definition.EnsureValidKey();
         DivisionTextContent? existing = _texts.FirstOrDefault(x => x.Matches(definition.ContentTemplateId, definition.NormalizedAudienceId));
 
         if (definition.IsEmpty)
@@ -108,13 +107,27 @@ public sealed class Division : AggregateRoot<int>
 
     private void EnsureNoDuplicateActiveTextKeys()
     {
-        HashSet<(int ContentTemplateId, int? AudienceId)> activeKeys = new();
+        var activeKeys = new HashSet<(int ContentTemplateId, int? AudienceId)>();
 
         foreach (DivisionTextContent text in _texts.Where(x => !x.IsDeleted))
         {
             if (!activeKeys.Add((text.ContentTemplateId, text.AudienceId)))
                 throw new DomainException("Duplicate text content for the same template and audience.");
         }
+    }
+
+    private static string NormalizeWebsiteUrl(string websiteUrl)
+    {
+        string normalized = websiteUrl.AsRequiredDomainText(nameof(WebsiteUrl), Rules.WebsiteUrlMaxLength);
+
+        if (!Uri.TryCreate(normalized, UriKind.Absolute, out Uri? uri) ||
+            uri.Scheme is not ("http" or "https") ||
+            string.IsNullOrWhiteSpace(uri.Host))
+        {
+            throw new DomainException("WebsiteUrl must be a valid http or https URL.");
+        }
+
+        return normalized;
     }
 
     public sealed class Builder
@@ -203,27 +216,13 @@ public sealed class Division : AggregateRoot<int>
         }
     }
 
-    private static string NormalizeWebsiteUrl(string websiteUrl)
-    {
-        string normalized = websiteUrl.AsRequiredDomainText(nameof(WebsiteUrl), Rules.WebsiteUrlMaxLength);
-
-        if (!Uri.TryCreate(normalized, UriKind.Absolute, out Uri? uri) ||
-            uri.Scheme is not ("http" or "https") ||
-            string.IsNullOrWhiteSpace(uri.Host))
-        {
-            throw new DomainException("WebsiteUrl must be a valid http or https URL.");
-        }
-
-        return normalized;
-    }
-
     public static class Rules
     {
         public const int NameMaxLength = 100;
         public const int WebsiteUrlMaxLength = 255;
         public const int HeadOfficeEmailMaxLength = 50;
         public const int HeadOfficeTelephoneNoMaxLength = 50;
-        public const int HeadOfficeTelephoneMaxLength = HeadOfficeTelephoneNoMaxLength;
+        public const int HeadOfficeTelephoneMaxLength = 50;
         public const int TermsAndConditionsMaxLength = 4000;
         public const int GroupsPaymentTermsMaxLength = 4000;
         public const int AccreditationBannerMaxBytes = 5 * 1024 * 1024;

@@ -8,9 +8,7 @@ namespace ProductsAndPricingNew.Persistence.Configuration;
 
 internal static class ConfigurationExtensions
 {
-    public static void ConfigureAuditMetadata<TEntity>(
-        this EntityTypeBuilder<TEntity> builder,
-        Expression<Func<TEntity, AuditMetadata>> propertyExpression)
+    public static void ConfigureAuditMetadata<TEntity>(this EntityTypeBuilder<TEntity> builder, Expression<Func<TEntity, AuditMetadata>> propertyExpression)
         where TEntity : class
     {
         builder.ComplexProperty(propertyExpression, audit =>
@@ -33,9 +31,7 @@ internal static class ConfigurationExtensions
         });
     }
 
-    public static void ConfigureAddress<TEntity>(
-        this EntityTypeBuilder<TEntity> builder,
-        Expression<Func<TEntity, Address>> propertyExpression)
+    public static void ConfigureAddress<TEntity>(this EntityTypeBuilder<TEntity> builder, Expression<Func<TEntity, Address>> propertyExpression)
         where TEntity : class
     {
         builder.ComplexProperty(propertyExpression, address =>
@@ -61,9 +57,7 @@ internal static class ConfigurationExtensions
         });
     }
 
-    public static void ConfigureBanner<TEntity>(
-        this EntityTypeBuilder<TEntity> builder,
-        Expression<Func<TEntity, ImageFile>> propertyExpression)
+    public static void ConfigureBanner<TEntity>(this EntityTypeBuilder<TEntity> builder, Expression<Func<TEntity, ImageFile>> propertyExpression)
         where TEntity : class
     {
         builder.ComplexProperty(propertyExpression, image =>
@@ -84,9 +78,7 @@ internal static class ConfigurationExtensions
         });
     }
 
-    public static void ConfigureFinanceCodes<TEntity>(
-        this EntityTypeBuilder<TEntity> builder,
-        Expression<Func<TEntity, FinanceCodes>> propertyExpression)
+    public static void ConfigureFinanceCodes<TEntity>(this EntityTypeBuilder<TEntity> builder, Expression<Func<TEntity, FinanceCodes>> propertyExpression)
         where TEntity : class
     {
         builder.ComplexProperty(propertyExpression, financeCodes =>

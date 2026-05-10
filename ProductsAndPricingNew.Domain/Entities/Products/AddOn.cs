@@ -6,6 +6,18 @@ namespace ProductsAndPricingNew.Domain.Entities.Products;
 
 public sealed class AddOn : AggregateRoot<int>, IProductDefinition
 {
+    public int DivisionId { get; private set; }
+    public int UnitTypeId { get; private set; }
+    public string Name { get; private set; } = null!;
+    public bool IsActive { get; private set; }
+    public int AddOnTypeId { get; private set; }
+    public int? MinimumAge { get; private set; }
+    public int? AccountCategoryId { get; private set; }
+    public int? ProductCategoryId { get; private set; }
+    public int? OneToOneLessonsPerWeek { get; private set; }
+    public DateOnly? OfferingsClosureDate { get; private set; }
+    public FinanceCodes FinanceCodes { get; private set; }
+
     private AddOn() { }
 
     public AddOn(int id, int divisionId, string name, int addOnTypeId, int unitTypeId)
@@ -19,19 +31,6 @@ public sealed class AddOn : AggregateRoot<int>, IProductDefinition
 
         Rename(name);
     }
-
-    public int DivisionId { get; private set; }
-    public int UnitTypeId { get; private set; }
-    public string Name { get; private set; } = null!;
-    public bool IsActive { get; private set; }
-    public int AddOnTypeId { get; private set; }
-    public int? MinimumAge { get; private set; }
-    public int? AccountCategoryId { get; private set; }
-    public int? ProductCategoryId { get; private set; }
-    public int? OneToOneLessonsPerWeek { get; private set; }
-
-    public DateOnly? OfferingsClosureDate { get; private set; }
-    public FinanceCodes FinanceCodes { get; private set; }
 
     public void Rename(string name) => Name = name.AsRequiredDomainText(nameof(Name), Rules.NameMaxLength);
     public void Activate() => IsActive = true;

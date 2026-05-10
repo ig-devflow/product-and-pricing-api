@@ -21,7 +21,7 @@ public static class StringDomainExtensions
         string? normalized = value.AsOptionalText();
 
         if (normalized is null)
-            throw new ArgumentNullException($"Text is required.");
+            throw new ArgumentNullException("Text is required.");
 
         return normalized;
     }

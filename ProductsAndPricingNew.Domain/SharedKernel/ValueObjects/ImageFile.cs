@@ -33,7 +33,7 @@ public sealed class ImageFile : IEquatable<ImageFile>
         string normalizedContentType = contentType.AsRequiredDomainText(nameof(ContentType), Rules.ContentTypeMaxLength).ToLowerInvariant();
         string normalizedFileName = fileName.AsRequiredDomainText(nameof(FileName), Rules.FileNameMaxLength);
 
-        if (normalizedContentType is not "image/png" and not "image/jpeg" and not "image/jpg" and not "image/webp" and not "image/svg+xml")
+        if (!IsSupportedContentType(normalizedContentType))
             throw new DomainException("Unsupported image content type.");
 
         return new ImageFile(data, normalizedContentType, normalizedFileName);
