@@ -8,7 +8,7 @@ namespace ProductsAndPricingNew.Application.Common.Validation.Validators;
 
 internal sealed class TextContentDtoValidator : AbstractValidator<TextContentDto>
 {
-    public TextContentDtoValidator(IReferenceDataValidationQuery referenceData, ContentTemplateScope scope)
+    public TextContentDtoValidator(IReferenceDataValidationQuery referenceData, ContentTemplateScope scope = ContentTemplateScope.None)
     {
         RuleFor(x => x.ContentTemplateId)
             .Cascade(CascadeMode.Stop)
