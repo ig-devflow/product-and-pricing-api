@@ -6,9 +6,9 @@ namespace ProductsAndPricingNew.Domain.ReferenceData;
 
 public sealed class Country : Entity<int>, ISoftDeletable
 {
-    public string Code { get; private set; } = null!;
-    public string Name { get; private set; } = null!;
-    public bool IsDeleted { get; private set; }
+    public string Code { get; init; }
+    public string Name { get; init; }
+    public bool IsDeleted { get; init; }
 
     private Country()
     {

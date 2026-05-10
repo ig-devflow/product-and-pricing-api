@@ -6,8 +6,8 @@ namespace ProductsAndPricingNew.Domain.ReferenceData;
 
 public sealed class Audience : Entity<int>, ISoftDeletable
 {
-    public string Name { get; private set; } = null!;
-    public bool IsDeleted { get; private set; }
+    public string Name { get; init; }
+    public bool IsDeleted { get; init; }
 
     private Audience()
     {

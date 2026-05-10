@@ -5,6 +5,11 @@ namespace ProductsAndPricingNew.Domain.SharedKernel.TextContent;
 
 public readonly record struct TextContentDefinition
 {
+    public int ContentTemplateId { get; }
+    public int? AudienceId { get; }
+    public string? Content { get; }
+    public ContentFormat Format { get; }
+
     public TextContentDefinition(int contentTemplateId, int? audienceId, string? content, ContentFormat format)
     {
         ContentTemplateId = contentTemplateId;
@@ -13,14 +18,8 @@ public readonly record struct TextContentDefinition
         Format = format;
     }
 
-    public int ContentTemplateId { get; }
-    public int? AudienceId { get; }
-    public string? Content { get; }
-    public ContentFormat Format { get; }
-
     public int? NormalizedAudienceId => AudienceId > 0 ? AudienceId : null;
     public bool IsEmpty => string.IsNullOrWhiteSpace(Content);
-
     public (int ContentTemplateId, int? AudienceId) Key
     {
         get

@@ -6,10 +6,10 @@ namespace ProductsAndPricingNew.Domain.ReferenceData;
 
 public sealed class Currency : Entity<int>, ISoftDeletable
 {
-    public string Name { get; }
-    public string IsoCode { get; } = null!;
-    public char Symbol { get; }
-    public bool IsDeleted { get; }
+    public string Name { get; init; }
+    public string IsoCode { get; init; }
+    public char Symbol { get; init; }
+    public bool IsDeleted { get; init; }
 
     private Currency()
     {

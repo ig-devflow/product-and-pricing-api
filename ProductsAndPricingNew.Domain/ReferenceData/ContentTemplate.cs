@@ -6,16 +6,16 @@ namespace ProductsAndPricingNew.Domain.ReferenceData;
 
 public sealed class ContentTemplate : Entity<int>, ISoftDeletable
 {
-    public string Name { get; private set; } = null!;
-    public string? Description { get; private set; }
-    public ContentTemplateScope Scope { get; private set; }
-    public bool IsDeleted { get; private set; }
+    public string Name { get; init; }
+    public string? Description { get; init; }
+    public ContentTemplateScope Scope { get; init; }
+    public bool IsDeleted { get; init; }
 
     private ContentTemplate()
     {
     }
 
-    public void EnsureCanBeUsedFor(ContentTemplateScope ownerScope)
+    public void EnsureActive(ContentTemplateScope ownerScope)
     {
         if (IsDeleted)
             throw new DomainException($"Content template '{Name}' is deleted.");

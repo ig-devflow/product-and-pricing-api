@@ -5,7 +5,7 @@ namespace ProductsAndPricingNew.Domain.ReferenceData;
 
 public sealed class DivisionTextContent : TextContent
 {
-    public int DivisionId { get; private set; }
+    public int DivisionId { get; init; }
 
     private DivisionTextContent()
     {
