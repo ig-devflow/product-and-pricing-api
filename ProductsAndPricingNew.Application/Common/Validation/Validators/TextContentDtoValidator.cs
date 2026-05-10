@@ -2,6 +2,7 @@
 using ProductsAndPricingNew.Application.Common.Models;
 using ProductsAndPricingNew.Application.Common.Validation.Abstractions;
 using ProductsAndPricingNew.Domain.ReferenceData;
+using ProductsAndPricingNew.Domain.SharedKernel.ValueObjects;
 
 namespace ProductsAndPricingNew.Application.Common.Validation.Validators;
 
@@ -26,6 +27,10 @@ internal sealed class TextContentDtoValidator : AbstractValidator<TextContentDto
 
         RuleFor(x => x.Format)
             .IsInEnum();
+
+        RuleFor(x => x.Content)
+            .MaximumLength(FormattedText.Rules.ContentMaxLength)
+            .WithMessage($"Content must not exceed {FormattedText.Rules.ContentMaxLength} characters.");
 
         RuleFor(x => x)
             .Must(HaveConsistentContentAndFormat)

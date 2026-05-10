@@ -25,6 +25,9 @@ internal sealed class ImageBannerDtoValidator : AbstractValidator<ImageBannerDto
                 .WithMessage("Content type must be PNG/JPEG/WEBP/SVG.");
 
             RuleFor(x => x.FileName)
+                .Cascade(CascadeMode.Stop)
+                .NotEmpty()
+                .WithMessage("FileName is required.")
                 .MaximumLength(ImageFile.Rules.FileNameMaxLength)
                 .WithMessage($"FileName must not exceed {ImageFile.Rules.FileNameMaxLength} characters.");
         });

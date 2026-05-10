@@ -31,7 +31,7 @@ public sealed class ImageFile : IEquatable<ImageFile>
             throw new DomainException("Image is too large.");
 
         string normalizedContentType = contentType.AsRequiredDomainText(nameof(ContentType), Rules.ContentTypeMaxLength).ToLowerInvariant();
-        string? normalizedFileName = fileName.AsOptionalDomainText(nameof(FileName), Rules.FileNameMaxLength);
+        string normalizedFileName = fileName.AsRequiredDomainText(nameof(FileName), Rules.FileNameMaxLength);
 
         if (normalizedContentType is not "image/png" and not "image/jpeg" and not "image/jpg" and not "image/webp" and not "image/svg+xml")
             throw new DomainException("Unsupported image content type.");

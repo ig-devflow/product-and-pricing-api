@@ -1,4 +1,4 @@
-﻿using ProductsAndPricingNew.Domain.ReferenceData;
+﻿using ProductsAndPricingNew.Domain.SharedKernel.TextContent;
 using ProductsAndPricingNew.Domain.SharedKernel.ValueObjects;
 
 namespace ProductsAndPricingNew.Domain.Entities.PricingRef;

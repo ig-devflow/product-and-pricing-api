@@ -1,7 +1,7 @@
-﻿using ProductsAndPricingNew.Domain.ReferenceData;
+﻿using ProductsAndPricingNew.Domain.SharedKernel.TextContent;
 using ProductsAndPricingNew.Domain.SharedKernel.ValueObjects;
 
-namespace ProductsAndPricingNew.Domain.Entities.PricingRef;
+namespace ProductsAndPricingNew.Domain.ReferenceData;
 
 public sealed class DivisionTextContent : TextContent
 {
