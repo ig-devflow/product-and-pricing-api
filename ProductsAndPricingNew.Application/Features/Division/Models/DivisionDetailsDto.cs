@@ -1,4 +1,4 @@
-﻿using ProductsAndPricingNew.Application.Common.Models;
+using ProductsAndPricingNew.Application.Common.Models;
 
 namespace ProductsAndPricingNew.Application.Features.Division.Models;
 
@@ -14,5 +14,9 @@ public sealed record DivisionDetailsDto(
     ImageBannerDto? AccreditationBanner,
     AddressDto? ContactAddress,
     IReadOnlyCollection<DivisionTextContentDto> Texts,
-    string Version
+    string Version,
+    DateOnly CreatedAt,
+    string? CreatedByName,
+    DateOnly UpdatedAt,
+    string? UpdatedByName
 );
