@@ -1,4 +1,4 @@
-﻿using System.Data.Common;
+using System.Data.Common;
 using Dapper;
 using ProductsAndPricingNew.Application.Common.Models;
 using ProductsAndPricingNew.Application.Common.Pagination;
@@ -62,8 +62,19 @@ internal sealed class DivisionQuery : IDivisionQuery
                 d.CountryId,
                 d.BannerData AS AccreditationBannerData,
                 d.BannerContentType AS AccreditationBannerContentType,
-                d.BannerFileName AS AccreditationBannerFileName
+                d.BannerFileName AS AccreditationBannerFileName,
+                d.Version,
+                d.CreatedAt,
+                d.UpdatedAt,
+                createdEditor.FirstName AS CreatedByFirstName,
+                createdEditor.LastName AS CreatedByLastName,
+                updatedEditor.FirstName AS UpdatedByFirstName,
+                updatedEditor.LastName AS UpdatedByLastName
             FROM PricingRef.Division d
+            LEFT JOIN Edit.Editor createdEditor
+                ON createdEditor.Id = d.CreatedById
+            LEFT JOIN Edit.Editor updatedEditor
+                ON updatedEditor.Id = d.UpdatedById
             WHERE d.Id = @Id
               AND d.IsDeleted = 0;
 
@@ -101,18 +112,7 @@ internal sealed class DivisionQuery : IDivisionQuery
 
         List<DivisionTextContentDto> texts = (await grid.ReadAsync<DivisionTextContentDto>()).AsList();
 
-        return new DivisionDetailsDto(
-            row.Id,
-            row.Name,
-            row.IsActive,
-            row.TermsAndConditions,
-            row.GroupsPaymentTerms,
-            row.WebsiteUrl,
-            row.HeadOfficeEmail,
-            row.HeadOfficeTelephoneNo,
-            MapBanner(row),
-            MapAddress(row),
-            texts);
+        return MapDetailsRow(row, texts);
     }
 
     public async Task<PagedResult<DivisionListItemDto>> GetListAsync(
@@ -124,18 +124,64 @@ internal sealed class DivisionQuery : IDivisionQuery
         const string sql = """
            SELECT COUNT(1)
            FROM PricingRef.Division d
+           LEFT JOIN ReferenceData.Country c
+               ON c.Id = d.CountryId
+              AND c.IsDeleted = 0
+           LEFT JOIN Edit.Editor createdEditor
+               ON createdEditor.Id = d.CreatedById
+           LEFT JOIN Edit.Editor updatedEditor
+               ON updatedEditor.Id = d.UpdatedById
            WHERE d.IsDeleted = 0
              AND (@IsActive IS NULL OR d.IsActive = @IsActive)
-             AND (@Search IS NULL OR d.Name LIKE '%' + @Search + '%');
+             AND (
+                 @Search IS NULL
+                 OR d.Name LIKE '%' + @Search + '%'
+                 OR d.WebsiteUrl LIKE '%' + @Search + '%'
+                 OR d.HeadOfficeEmail LIKE '%' + @Search + '%'
+                 OR d.City LIKE '%' + @Search + '%'
+                 OR c.Name LIKE '%' + @Search + '%'
+                 OR createdEditor.FirstName LIKE '%' + @Search + '%'
+                 OR createdEditor.LastName LIKE '%' + @Search + '%'
+                 OR updatedEditor.FirstName LIKE '%' + @Search + '%'
+                 OR updatedEditor.LastName LIKE '%' + @Search + '%'
+             );
 
            SELECT
                d.Id,
                d.Name,
-               d.IsActive
+               d.IsActive,
+               d.WebsiteUrl,
+               d.HeadOfficeEmail,
+               d.City,
+               c.Name AS CountryName,
+               d.CreatedAt,
+               d.UpdatedAt,
+               createdEditor.FirstName AS CreatedByFirstName,
+               createdEditor.LastName AS CreatedByLastName,
+               updatedEditor.FirstName AS UpdatedByFirstName,
+               updatedEditor.LastName AS UpdatedByLastName
            FROM PricingRef.Division d
+           LEFT JOIN ReferenceData.Country c
+               ON c.Id = d.CountryId
+              AND c.IsDeleted = 0
+           LEFT JOIN Edit.Editor createdEditor
+               ON createdEditor.Id = d.CreatedById
+           LEFT JOIN Edit.Editor updatedEditor
+               ON updatedEditor.Id = d.UpdatedById
            WHERE d.IsDeleted = 0
              AND (@IsActive IS NULL OR d.IsActive = @IsActive)
-             AND (@Search IS NULL OR d.Name LIKE '%' + @Search + '%')
+             AND (
+                 @Search IS NULL
+                 OR d.Name LIKE '%' + @Search + '%'
+                 OR d.WebsiteUrl LIKE '%' + @Search + '%'
+                 OR d.HeadOfficeEmail LIKE '%' + @Search + '%'
+                 OR d.City LIKE '%' + @Search + '%'
+                 OR c.Name LIKE '%' + @Search + '%'
+                 OR createdEditor.FirstName LIKE '%' + @Search + '%'
+                 OR createdEditor.LastName LIKE '%' + @Search + '%'
+                 OR updatedEditor.FirstName LIKE '%' + @Search + '%'
+                 OR updatedEditor.LastName LIKE '%' + @Search + '%'
+             )
            ORDER BY d.Name, d.Id
            OFFSET @Offset ROWS
            FETCH NEXT @PageSize ROWS ONLY;
@@ -147,7 +193,7 @@ internal sealed class DivisionQuery : IDivisionQuery
 
         var parameters = new
         {
-            Search = search,
+            Search = string.IsNullOrWhiteSpace(search) ? null : search.Trim(),
             IsActive = isActive,
             Offset = offset,
             PageSize = pageSize
@@ -164,12 +210,7 @@ internal sealed class DivisionQuery : IDivisionQuery
         int totalCount = await grid.ReadSingleAsync<int>();
 
         IEnumerable<DivisionListItemRow> rows = await grid.ReadAsync<DivisionListItemRow>();
-        List<DivisionListItemDto> items = new();
-
-        foreach (DivisionListItemRow row in rows)
-        {
-            items.Add(new DivisionListItemDto(row.Id, row.Name, row.IsActive));
-        }
+        List<DivisionListItemDto> items = rows.Select(MapListItemRow).ToList();
 
         return new PagedResult<DivisionListItemDto>(
             Items: items,
@@ -177,6 +218,51 @@ internal sealed class DivisionQuery : IDivisionQuery
             Page: page,
             PageSize: pageSize);
     }
+
+    internal static DivisionDetailsDto MapDetailsRow(DivisionDetailsRow row, IReadOnlyCollection<DivisionTextContentDto> texts)
+    {
+        return new DivisionDetailsDto(
+            row.Id,
+            row.Name,
+            row.IsActive,
+            row.TermsAndConditions,
+            row.GroupsPaymentTerms,
+            row.WebsiteUrl,
+            row.HeadOfficeEmail,
+            row.HeadOfficeTelephoneNo,
+            MapBanner(row),
+            MapAddress(row),
+            texts,
+            ToBase64Version(row.Version),
+            ToDateOnly(row.CreatedAt),
+            BuildEditorName(row.CreatedByFirstName, row.CreatedByLastName),
+            ToDateOnly(row.UpdatedAt),
+            BuildEditorName(row.UpdatedByFirstName, row.UpdatedByLastName));
+    }
+
+    internal static DivisionListItemDto MapListItemRow(DivisionListItemRow row)
+    {
+        return new DivisionListItemDto(
+            row.Id,
+            row.Name,
+            row.IsActive,
+            row.WebsiteUrl,
+            row.HeadOfficeEmail,
+            row.City,
+            row.CountryName,
+            ToDateOnly(row.CreatedAt),
+            BuildEditorName(row.CreatedByFirstName, row.CreatedByLastName),
+            ToDateOnly(row.UpdatedAt),
+            BuildEditorName(row.UpdatedByFirstName, row.UpdatedByLastName));
+    }
+
+    internal static string? BuildEditorName(string? firstName, string? lastName)
+    {
+        string name = string.Join(" ", new[] { firstName, lastName }.Select(value => value!.Trim()));
+        return string.IsNullOrWhiteSpace(name) ? null : name;
+    }
+
+    private static DateOnly ToDateOnly(DateTimeOffset value) => DateOnly.FromDateTime(value.DateTime);
 
     private static ImageBannerDto? MapBanner(DivisionDetailsRow row)
     {
@@ -214,7 +300,9 @@ internal sealed class DivisionQuery : IDivisionQuery
             row.CountryId);
     }
 
-    private sealed class DivisionDetailsRow
+    internal static string ToBase64Version(byte[]? version) => Convert.ToBase64String(version ?? []);
+
+    internal sealed class DivisionDetailsRow
     {
         public int Id { get; init; }
         public string Name { get; init; } = null!;
@@ -232,12 +320,29 @@ internal sealed class DivisionQuery : IDivisionQuery
         public byte[]? AccreditationBannerData { get; init; }
         public string? AccreditationBannerContentType { get; init; }
         public string? AccreditationBannerFileName { get; init; }
+        public byte[]? Version { get; init; }
+        public DateTimeOffset CreatedAt { get; init; }
+        public DateTimeOffset UpdatedAt { get; init; }
+        public string? CreatedByFirstName { get; init; }
+        public string? CreatedByLastName { get; init; }
+        public string? UpdatedByFirstName { get; init; }
+        public string? UpdatedByLastName { get; init; }
     }
 
-    private sealed class DivisionListItemRow
+    internal sealed class DivisionListItemRow
     {
         public int Id { get; init; }
         public string Name { get; init; } = null!;
         public bool IsActive { get; init; }
+        public string? WebsiteUrl { get; init; }
+        public string? HeadOfficeEmail { get; init; }
+        public string? City { get; init; }
+        public string? CountryName { get; init; }
+        public DateTimeOffset CreatedAt { get; init; }
+        public DateTimeOffset UpdatedAt { get; init; }
+        public string? CreatedByFirstName { get; init; }
+        public string? CreatedByLastName { get; init; }
+        public string? UpdatedByFirstName { get; init; }
+        public string? UpdatedByLastName { get; init; }
     }
 }

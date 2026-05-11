@@ -23,11 +23,41 @@ public sealed class UpdateDivisionCommandHandlerTests
     }
 
     [Fact]
+    public async Task Handle_WhenVersionDoesNotMatch_ReturnsConflict()
+    {
+        byte[] currentVersion = [1, 2, 3, 4, 5, 6, 7, 8];
+        byte[] staleVersion = [8, 7, 6, 5, 4, 3, 2, 1];
+
+        Division division = new DivisionBuilder()
+            .WithVersion(currentVersion)
+            .Build();
+
+        DivisionRepositoryFake repository = new DivisionRepositoryFake()
+            .WithDivision(1, division);
+
+        UnitOfWorkFake unitOfWork = new();
+        UpdateDivisionCommandHandler handler = CreateHandler(repository, unitOfWork: unitOfWork);
+
+        UpdateDivisionCommand command = new UpdateDivisionCommandBuilder()
+            .WithId(1)
+            .WithVersion(staleVersion)
+            .Build();
+
+        var result = await handler.Handle(command, CancellationToken.None);
+
+        ResultAssertions.AssertFailedWith<ConflictError>(result);
+        Assert.Equal(0, unitOfWork.SaveChangesCalls);
+    }
+
+    [Fact]
     public async Task Handle_WhenNameBelongsToAnotherDivision_ReturnsConflict()
     {
         DivisionRepositoryFake repository = new DivisionRepositoryFake()
             .WithDivision(1, new DivisionBuilder().Build());
-        DivisionQueryFake query = new DivisionQueryFake().WithExistingName("Division", 2);
+
+        DivisionQueryFake query = new DivisionQueryFake()
+            .WithExistingName("Division", 2);
+
         UpdateDivisionCommandHandler handler = CreateHandler(repository, query);
 
         var result = await handler.Handle(new UpdateDivisionCommandBuilder().WithId(1).Build(), CancellationToken.None);
@@ -39,8 +69,12 @@ public sealed class UpdateDivisionCommandHandlerTests
     public async Task Handle_WhenValidCommand_UpdatesDivision()
     {
         Division division = new DivisionBuilder().Build();
-        DivisionRepositoryFake repository = new DivisionRepositoryFake().WithDivision(1, division);
+
+        DivisionRepositoryFake repository = new DivisionRepositoryFake()
+            .WithDivision(1, division);
+
         UpdateDivisionCommandHandler handler = CreateHandler(repository);
+
         UpdateDivisionCommand command = new UpdateDivisionCommandBuilder()
             .WithId(1)
             .WithName("Updated division")
@@ -52,6 +86,7 @@ public sealed class UpdateDivisionCommandHandlerTests
             .WithContactAddress(new AddressDtoBuilder().WithCountryId(2).WithStreet("New street").Build())
             .WithAccreditationBanner(new ImageBannerDtoBuilder().WithContentType("image/webp").WithFileName("updated.webp").Build())
             .Build();
+
         command = command with { IsActive = false };
 
         var result = await handler.Handle(command, CancellationToken.None);
@@ -76,8 +111,12 @@ public sealed class UpdateDivisionCommandHandlerTests
         Division division = new DivisionBuilder()
             .WithTexts(new TextContentDefinition(100, null, "Old text", ContentFormat.PlainText))
             .Build();
-        DivisionRepositoryFake repository = new DivisionRepositoryFake().WithDivision(1, division);
+
+        DivisionRepositoryFake repository = new DivisionRepositoryFake()
+            .WithDivision(1, division);
+
         UpdateDivisionCommandHandler handler = CreateHandler(repository);
+
         UpdateDivisionCommand command = new UpdateDivisionCommandBuilder()
             .WithId(1)
             .WithTexts(new TextContentDtoBuilder().WithContentTemplateId(101).WithContent("New text").Build())
@@ -95,8 +134,12 @@ public sealed class UpdateDivisionCommandHandlerTests
         Division division = new DivisionBuilder()
             .WithContactAddress(1, "Street")
             .Build();
-        DivisionRepositoryFake repository = new DivisionRepositoryFake().WithDivision(1, division);
+
+        DivisionRepositoryFake repository = new DivisionRepositoryFake()
+            .WithDivision(1, division);
+
         UpdateDivisionCommandHandler handler = CreateHandler(repository);
+
         UpdateDivisionCommand command = new UpdateDivisionCommandBuilder()
             .WithId(1)
             .WithContactAddress(null)
@@ -113,8 +156,12 @@ public sealed class UpdateDivisionCommandHandlerTests
         Division division = new DivisionBuilder()
             .WithAccreditationBanner([1], "image/png", "banner.png")
             .Build();
-        DivisionRepositoryFake repository = new DivisionRepositoryFake().WithDivision(1, division);
+
+        DivisionRepositoryFake repository = new DivisionRepositoryFake()
+            .WithDivision(1, division);
+
         UpdateDivisionCommandHandler handler = CreateHandler(repository);
+
         UpdateDivisionCommand command = new UpdateDivisionCommandBuilder()
             .WithId(1)
             .WithAccreditationBanner(null)
@@ -130,6 +177,7 @@ public sealed class UpdateDivisionCommandHandlerTests
     {
         DivisionRepositoryFake repository = new DivisionRepositoryFake()
             .WithDivision(1, new DivisionBuilder().Build());
+
         UnitOfWorkFake unitOfWork = new();
         UpdateDivisionCommandHandler handler = CreateHandler(repository, unitOfWork: unitOfWork);
 
@@ -143,7 +191,10 @@ public sealed class UpdateDivisionCommandHandlerTests
     {
         DivisionRepositoryFake repository = new DivisionRepositoryFake()
             .WithDivision(1, new DivisionBuilder().Build());
-        DivisionQueryFake query = new DivisionQueryFake().WithExistingName("Division", 2);
+
+        DivisionQueryFake query = new DivisionQueryFake()
+            .WithExistingName("Division", 2);
+
         UnitOfWorkFake unitOfWork = new();
         UpdateDivisionCommandHandler handler = CreateHandler(repository, query, unitOfWork);
 

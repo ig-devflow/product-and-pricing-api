@@ -1,4 +1,4 @@
-﻿using ProductsAndPricingNew.Application.Common.Models;
+using ProductsAndPricingNew.Application.Common.Models;
 
 namespace ProductsAndPricingNew.Application.Features.Division.Models;
 
@@ -13,5 +13,10 @@ public sealed record DivisionDetailsDto(
     string? HeadOfficeTelephoneNo,
     ImageBannerDto? AccreditationBanner,
     AddressDto? ContactAddress,
-    IReadOnlyCollection<DivisionTextContentDto> Texts
+    IReadOnlyCollection<DivisionTextContentDto> Texts,
+    string Version,
+    DateOnly CreatedAt,
+    string? CreatedByName,
+    DateOnly UpdatedAt,
+    string? UpdatedByName
 );

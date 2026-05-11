@@ -257,9 +257,53 @@ public sealed class DivisionCommandValidatorTests
         AssertInvalid(result, "Division id is required.");
     }
 
+    [Theory]
+    [InlineData(null)]
+    [InlineData("")]
+    [InlineData(" ")]
+    public async Task UpdateDivisionCommand_WithMissingVersion_IsInvalid(string? version)
+    {
+        ValidationResult result = await ValidateUpdateAsync(new UpdateDivisionCommandBuilder()
+            .WithVersion(version)
+            .Build());
+
+        AssertInvalid(result, "Version is required.");
+    }
+
+    [Theory]
+    [InlineData("abc")]
+    [InlineData("not-base64")]
+    [InlineData("AQID")]
+    public async Task UpdateDivisionCommand_WithInvalidVersion_IsInvalid(string version)
+    {
+        ValidationResult result = await ValidateUpdateAsync(new UpdateDivisionCommandBuilder()
+            .WithVersion(version)
+            .Build());
+
+        AssertInvalid(result, "Version must be a valid row version token.");
+    }
+
+    [Fact]
+    public async Task UpdateDivisionCommand_WithValidRowVersion_IsValid()
+    {
+        string version = Convert.ToBase64String(new byte[8]);
+
+        ValidationResult result = await ValidateUpdateAsync(new UpdateDivisionCommandBuilder()
+            .WithVersion(version)
+            .Build());
+
+        Assert.True(result.IsValid);
+    }
+
     private static Task<ValidationResult> ValidateCreateAsync(CreateDivisionCommand command)
     {
         CreateDivisionCommandValidator validator = new(ValidReferenceData());
+        return validator.ValidateAsync(command);
+    }
+
+    private static Task<ValidationResult> ValidateUpdateAsync(UpdateDivisionCommand command)
+    {
+        UpdateDivisionCommandValidator validator = new(ValidReferenceData());
         return validator.ValidateAsync(command);
     }
 

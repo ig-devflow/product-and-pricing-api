@@ -2,7 +2,6 @@
 using MediatR;
 using ProductsAndPricingNew.Application.Abstractions;
 using ProductsAndPricingNew.Application.Common.Errors;
-using ProductsAndPricingNew.Application.Common.Models;
 using ProductsAndPricingNew.Application.Features.Division.Abstractions;
 using ProductsAndPricingNew.Domain.Abstractions;
 using ProductsAndPricingNew.Domain.Common.Text;
@@ -29,14 +28,14 @@ internal sealed class CreateDivisionCommandHandler : IRequestHandler<CreateDivis
 
     public async Task<Result<int>> Handle(CreateDivisionCommand request, CancellationToken ct)
     {
-        string name = request.Name.AsRequiredText();
+        string name = request.Name.AsRequiredText(nameof(request.Name));
 
         bool isNameTaken = await _divisionQuery.ExistsByNameAsync(name, ct: ct);
         if (isNameTaken)
             return Result.Fail(new ConflictError($"Division name: '{name}' already exists"));
 
-        AddressDto? address = request.ContactAddress;
-        ImageBannerDto? banner = request.AccreditationBanner;
+        var address = request.ContactAddress;
+        var banner = request.AccreditationBanner;
 
         DivisionEntity division = new DivisionEntity.Builder(name, request.WebsiteUrl)
             .IsActive(request.IsActive)
