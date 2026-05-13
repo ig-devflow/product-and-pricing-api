@@ -1,11 +1,11 @@
 ﻿using FluentValidation;
 using ProductsAndPricingNew.Application.Common.Models;
 using ProductsAndPricingNew.Application.Common.Validation.Abstractions;
-using ProductsAndPricingNew.Application.Common.Validation.Extensions;
 using ProductsAndPricingNew.Application.Common.Validation.Validators;
 using ProductsAndPricingNew.Application.Features.Division.Abstractions;
-using DivisionAggregate = ProductsAndPricingNew.Domain.Entities.PricingRef.Division;
 using ProductsAndPricingNew.Domain.ReferenceData;
+using ProductsAndPricingNew.Domain.SharedKernel.ValueObjects;
+using DivisionAggregate = ProductsAndPricingNew.Domain.Entities.PricingRef.Division;
 
 namespace ProductsAndPricingNew.Application.Features.Division.Validation;
 
@@ -27,9 +27,10 @@ internal abstract class DivisionCommandValidatorBase<TCommand> : AbstractValidat
             .Cascade(CascadeMode.Stop)
             .NotEmpty()
             .WithMessage("Website is required.")
-            .MaximumLength(DivisionAggregate.Rules.WebsiteUrlMaxLength)
-            .WithMessage($"Website must not exceed {DivisionAggregate.Rules.WebsiteUrlMaxLength} characters.")
-            .IsValidHttpUrl();
+            .MaximumLength(WebsiteUrl.Rules.MaxLength)
+            .WithMessage($"Website must not exceed {WebsiteUrl.Rules.MaxLength} characters.")
+            .Must(WebsiteUrl.IsValid)
+            .WithMessage("Enter a valid website address.");
 
         RuleFor(x => x.TermsAndConditions)
             .MaximumLength(DivisionAggregate.Rules.TermsAndConditionsMaxLength)
@@ -41,17 +42,17 @@ internal abstract class DivisionCommandValidatorBase<TCommand> : AbstractValidat
 
         RuleFor(x => x.HeadOfficeEmail)
             .Cascade(CascadeMode.Stop)
-            .MaximumLength(DivisionAggregate.Rules.HeadOfficeEmailMaxLength)
-            .WithMessage($"Head office email must not exceed {DivisionAggregate.Rules.HeadOfficeEmailMaxLength} characters.")
-            .IsValidEmail()
-            .When(x => !string.IsNullOrWhiteSpace(x.HeadOfficeEmail));
+            .MaximumLength(EmailAddress.Rules.MaxLength)
+            .WithMessage($"Head office email must not exceed {EmailAddress.Rules.MaxLength} characters.")
+            .Must(EmailAddress.IsValid)
+            .WithMessage("Invalid email.");
 
         RuleFor(x => x.HeadOfficeTelephoneNo)
             .Cascade(CascadeMode.Stop)
-            .MaximumLength(DivisionAggregate.Rules.HeadOfficeTelephoneNoMaxLength)
-            .WithMessage($"Head office telephone must not exceed {DivisionAggregate.Rules.HeadOfficeTelephoneNoMaxLength} characters.")
-            .IsValidPhone()
-            .When(x => !string.IsNullOrWhiteSpace(x.HeadOfficeTelephoneNo));
+            .MaximumLength(TelephoneNumber.Rules.MaxLength)
+            .WithMessage($"Head office telephone must not exceed {TelephoneNumber.Rules.MaxLength} characters.")
+            .Must(TelephoneNumber.IsValid)
+            .WithMessage($"Phone must include area/country code and contain {TelephoneNumber.Rules.MinDigits}-{TelephoneNumber.Rules.MaxDigits} digits.");
 
         RuleFor(x => x.ContactAddress!)
             .SetValidator(new AddressDtoValidator(referenceData))

@@ -31,7 +31,7 @@ internal sealed class AddOnConfiguration : IEntityTypeConfiguration<AddOn>
 
         entity.Property(x => x.OfferingsClosureDate);
 
-        entity.ConfigureFinanceCodes(x => x.FinanceCodes);
+        //entity.ConfigureFinanceCodes(x => x.FinanceCodes);
 
         entity.HasIndex(x => new { x.DivisionId, x.Name });
         entity.HasIndex(x => x.AccountCategoryId);

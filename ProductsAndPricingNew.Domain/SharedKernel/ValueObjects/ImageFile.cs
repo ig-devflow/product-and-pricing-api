@@ -3,9 +3,9 @@ using ProductsAndPricingNew.Domain.Common.Text;
 
 namespace ProductsAndPricingNew.Domain.SharedKernel.ValueObjects;
 
-public sealed class ImageFile : IEquatable<ImageFile>
+public sealed class ImageFile : IEquatable<ImageFile>, IEmptyValueObject
 {
-    private readonly byte[]? _data;
+    private byte[]? _data;
 
     public byte[]? Data => _data?.ToArray();
     public string? ContentType { get; }
@@ -39,6 +39,7 @@ public sealed class ImageFile : IEquatable<ImageFile>
         return new ImageFile(data, normalizedContentType, normalizedFileName);
     }
 
+    public bool IsEmpty => _data is null || _data.Length == 0;
     public static ImageFile Empty { get; } = new(null, null, null);
 
     public static bool IsSupportedContentType(string? contentType)

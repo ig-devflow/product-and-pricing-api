@@ -1,6 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using ProductsAndPricingNew.Domain.Entities.PricingRef;
+using ProductsAndPricingNew.Domain.SharedKernel.ValueObjects;
 
 namespace ProductsAndPricingNew.Persistence.Configuration.PricingRef;
 
@@ -25,16 +26,9 @@ internal sealed class DivisionConfiguration : IEntityTypeConfiguration<Division>
         entity.Property(x => x.GroupsPaymentTerms)
             .HasMaxLength(Division.Rules.GroupsPaymentTermsMaxLength);
 
-        entity.Property(x => x.WebsiteUrl)
-            .HasMaxLength(Division.Rules.WebsiteUrlMaxLength)
-            .IsRequired();
-
-        entity.Property(x => x.HeadOfficeEmail)
-            .HasMaxLength(Division.Rules.HeadOfficeEmailMaxLength);
-
-        entity.Property(x => x.HeadOfficeTelephoneNo)
-            .HasMaxLength(Division.Rules.HeadOfficeTelephoneMaxLength);
-
+        entity.ConfigureWebsiteUrl(x => x.WebsiteUrl, required: true);
+        entity.ConfigureEmailAddress(x => x.HeadOfficeEmail);
+        entity.ConfigureTelephoneNumber(x => x.HeadOfficeTelephoneNo);
         entity.ConfigureAddress(x => x.ContactAddress);
         entity.ConfigureBanner(x => x.AccreditationBanner);
         entity.ConfigureAuditMetadata(x => x.AuditMetadata);

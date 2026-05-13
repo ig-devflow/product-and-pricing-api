@@ -95,11 +95,11 @@ public sealed class UpdateDivisionCommandHandlerTests
         Assert.Equal(Unit.Value, result.Value);
         Assert.Equal("Updated division", division.Name);
         Assert.False(division.IsActive);
-        Assert.Equal("https://updated.example.com", division.WebsiteUrl);
+        Assert.Equal("https://updated.example.com", division.WebsiteUrl.Value);
         Assert.Equal("Updated terms", division.TermsAndConditions);
         Assert.Equal("Updated payment terms", division.GroupsPaymentTerms);
-        Assert.Equal("updated@example.com", division.HeadOfficeEmail);
-        Assert.Equal("+1 555 987 6543", division.HeadOfficeTelephoneNo);
+        Assert.Equal("updated@example.com", division.HeadOfficeEmail.ToString());
+        Assert.Equal("+1 555 987 6543", division.HeadOfficeTelephoneNo.ToString());
         Assert.Equal(2, division.ContactAddress.CountryId);
         Assert.Equal("New street", division.ContactAddress.Street);
         Assert.Equal("image/webp", division.AccreditationBanner.ContentType);

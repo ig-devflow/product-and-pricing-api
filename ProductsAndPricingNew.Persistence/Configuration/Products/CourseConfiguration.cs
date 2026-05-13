@@ -25,7 +25,7 @@ internal sealed class CourseConfiguration : IEntityTypeConfiguration<Course>
         entity.Property(x => x.ProductCategoryId);
         entity.Property(x => x.OfferingsClosureDate);
 
-        entity.ConfigureFinanceCodes(x => x.FinanceCodes);
+        //entity.ConfigureFinanceCodes(x => x.FinanceCodes);
 
         entity.HasIndex(x => new { x.DivisionId, x.Name });
 

@@ -16,7 +16,7 @@ public sealed class Package : AggregateRoot<int>, IProductDefinition
         DivisionId = divisionId;
         UnitTypeId = unitTypeId;
         IsActive = true;
-        FinanceCodes = new FinanceCodes(null, null);
+        // FinanceCodes = new FinanceCodes(null, null);
 
         Rename(name);
     }
@@ -33,7 +33,7 @@ public sealed class Package : AggregateRoot<int>, IProductDefinition
     public int? AccountCategoryId { get; private set; }
     public int? ProductCategoryId { get; private set; }
     public DateOnly? OfferingsClosureDate { get; private set; }
-    public FinanceCodes FinanceCodes { get; private set; }
+    //public FinanceCodes FinanceCodes { get; private set; }
 
     public IReadOnlyCollection<PackageItem> Items => _items.AsReadOnly();
 
@@ -92,7 +92,7 @@ public sealed class Package : AggregateRoot<int>, IProductDefinition
         ProductCategoryId = productCategoryId;
     }
 
-    public void ChangeFinanceCodes(FinanceCodes codes) => FinanceCodes = codes;
+    //public void ChangeFinanceCodes(FinanceCodes codes) => FinanceCodes = codes;
     public void ChangeOfferingsClosureDate(DateOnly? value) => OfferingsClosureDate = value;
 
     public void AddItem(ProductRef product, decimal percentage)

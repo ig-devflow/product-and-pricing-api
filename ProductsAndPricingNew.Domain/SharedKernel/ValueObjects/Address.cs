@@ -3,7 +3,7 @@ using ProductsAndPricingNew.Domain.Common.Text;
 
 namespace ProductsAndPricingNew.Domain.SharedKernel.ValueObjects;
 
-public sealed record Address
+public sealed record Address : IEmptyValueObject
 {
     public int? CountryId { get; }
     public string? Street { get; }

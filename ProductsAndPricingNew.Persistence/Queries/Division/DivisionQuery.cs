@@ -193,7 +193,7 @@ internal sealed class DivisionQuery : IDivisionQuery
 
         var parameters = new
         {
-            Search = string.IsNullOrWhiteSpace(search) ? null : search.Trim(),
+            Search = search,
             IsActive = isActive,
             Offset = offset,
             PageSize = pageSize

@@ -2,6 +2,7 @@ using ProductsAndPricingNew.Domain.Common.Exceptions;
 using ProductsAndPricingNew.Domain.Entities.PricingRef;
 using ProductsAndPricingNew.Domain.ReferenceData;
 using ProductsAndPricingNew.Domain.SharedKernel.TextContent;
+using ProductsAndPricingNew.Domain.SharedKernel.ValueObjects;
 
 namespace ProductsAndPricingNew.UnitTests.Domain.Divisions;
 
@@ -22,12 +23,12 @@ public sealed class DivisionTests
             .Build();
 
         Assert.Equal("Division", division.Name);
-        Assert.Equal("https://example.com", division.WebsiteUrl);
+        Assert.Equal("https://example.com", division.WebsiteUrl.ToString());
         Assert.True(division.IsActive);
         Assert.Equal("Terms and conditions", division.TermsAndConditions);
         Assert.Equal("Groups payment terms", division.GroupsPaymentTerms);
-        Assert.Equal("office@example.com", division.HeadOfficeEmail);
-        Assert.Equal("+1 555 1234567", division.HeadOfficeTelephoneNo);
+        Assert.Equal("office@example.com", division.HeadOfficeEmail.ToString());
+        Assert.Equal("+1 555 1234567", division.HeadOfficeTelephoneNo.ToString());
         Assert.Equal(1, division.ContactAddress.CountryId);
         Assert.Equal("Street", division.ContactAddress.Street);
         Assert.Equal("image/png", division.AccreditationBanner.ContentType);
@@ -74,14 +75,14 @@ public sealed class DivisionTests
 
         division.ChangeWebsite(" https://new.example.com ");
 
-        Assert.Equal("https://new.example.com", division.WebsiteUrl);
+        Assert.Equal("https://new.example.com", division.WebsiteUrl.ToString());
     }
 
     [Fact]
     public void ChangeWebsite_WithTooLongWebsite_Throws()
     {
         Division division = CreateDivision();
-        string tooLong = new('A', Division.Rules.WebsiteUrlMaxLength + 1);
+        string tooLong = new('A', WebsiteUrl.Rules.MaxLength + 1);
 
         Assert.Throws<DomainException>(() => division.ChangeWebsite(tooLong));
     }
