@@ -1,8 +1,6 @@
-using ProductsAndPricingNew.Domain.Entities.PricingRef;
-
 namespace ProductsAndPricingNew.Application.Common.Validation.Limits;
 
-internal static class ValidationLimits
+internal static class ValidationLimitDefaults
 {
     public const int MaxFileBytes = 5 * 1024 * 1024;
 }

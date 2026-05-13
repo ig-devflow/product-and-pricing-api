@@ -1,5 +1,6 @@
 ﻿using FluentValidation;
 using ProductsAndPricingNew.Application.Common.Validation.Abstractions;
+using ProductsAndPricingNew.Application.Common.Validation.Extensions;
 using ProductsAndPricingNew.Application.Features.Division.Validation;
 
 namespace ProductsAndPricingNew.Application.Features.Division.Commands.UpdateDivision;
@@ -16,23 +17,7 @@ internal sealed class UpdateDivisionCommandValidator : DivisionCommandValidatorB
             .Cascade(CascadeMode.Stop)
             .NotEmpty()
             .WithMessage("Version is required.")
-            .Must(BeValidRowVersion)
+            .IsValidRowVersion()
             .WithMessage("Version must be a valid row version token.");
-    }
-
-    private static bool BeValidRowVersion(string? version)
-    {
-        if (string.IsNullOrWhiteSpace(version))
-            return false;
-
-        try
-        {
-            byte[] bytes = Convert.FromBase64String(version);
-            return bytes.Length == 8;
-        }
-        catch (FormatException)
-        {
-            return false;
-        }
     }
 }

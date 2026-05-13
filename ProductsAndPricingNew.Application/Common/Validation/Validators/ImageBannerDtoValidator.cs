@@ -7,7 +7,7 @@ namespace ProductsAndPricingNew.Application.Common.Validation.Validators;
 
 internal sealed class ImageBannerDtoValidator : AbstractValidator<ImageBannerDto>
 {
-    public ImageBannerDtoValidator(string displayName = "Image", int maxBytes = ValidationLimits.MaxFileBytes)
+    public ImageBannerDtoValidator(string displayName = "Image", int maxBytes = ValidationLimitDefaults.MaxFileBytes)
     {
         RuleFor(x => x.Data)
             .Must(data => data is null || data.Length <= maxBytes)

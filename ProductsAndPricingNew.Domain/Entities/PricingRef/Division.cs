@@ -15,9 +15,9 @@ public sealed class Division : AggregateRoot<int>
     public bool IsActive { get; private set; }
     public string? TermsAndConditions { get; private set; }
     public string? GroupsPaymentTerms { get; private set; }
-    public string WebsiteUrl { get; private set; } = null!;
-    public string? HeadOfficeEmail { get; private set; }
-    public string? HeadOfficeTelephoneNo { get; private set; }
+    public WebsiteUrl WebsiteUrl { get; private set; } = WebsiteUrl.Empty;
+    public EmailAddress HeadOfficeEmail { get; private set; } = EmailAddress.Empty;
+    public TelephoneNumber HeadOfficeTelephoneNo { get; private set; } = TelephoneNumber.Empty;
     public Address ContactAddress { get; private set; } = Address.Empty;
     public ImageFile AccreditationBanner { get; private set; } = ImageFile.Empty;
     public IReadOnlyCollection<DivisionTextContent> Texts => _texts.AsReadOnly();
@@ -26,7 +26,7 @@ public sealed class Division : AggregateRoot<int>
     {
     }
 
-    private Division(string name, string websiteUrl)
+    private Division(string name, WebsiteUrl websiteUrl)
     {
         Name = name;
         WebsiteUrl = websiteUrl;
@@ -36,7 +36,7 @@ public sealed class Division : AggregateRoot<int>
         => Name = name.AsRequiredDomainText(nameof(Name), Rules.NameMaxLength);
 
     public void ChangeWebsite(string website)
-        => WebsiteUrl = NormalizeWebsiteUrl(website);
+        => WebsiteUrl = WebsiteUrl.Create(website).EnsureNotEmpty(nameof(WebsiteUrl));
 
     public void ChangeActiveState(bool isActive) => IsActive = isActive;
 
@@ -47,10 +47,10 @@ public sealed class Division : AggregateRoot<int>
         => GroupsPaymentTerms = groupsPaymentTerms.AsOptionalDomainText(nameof(GroupsPaymentTerms), Rules.GroupsPaymentTermsMaxLength);
 
     public void ChangeHeadOfficeEmail(string? headOfficeEmail)
-        => HeadOfficeEmail = headOfficeEmail.AsOptionalDomainText(nameof(HeadOfficeEmail), Rules.HeadOfficeEmailMaxLength);
+        => HeadOfficeEmail = EmailAddress.Create(headOfficeEmail);
 
     public void ChangeHeadOfficeTelephone(string? headOfficeTelephone)
-        => HeadOfficeTelephoneNo = headOfficeTelephone.AsOptionalDomainText(nameof(HeadOfficeTelephoneNo), Rules.HeadOfficeTelephoneNoMaxLength);
+        => HeadOfficeTelephoneNo = TelephoneNumber.Create(headOfficeTelephone);
 
     public void ChangeContactAddress(int? countryId, string? street, string? district, string? city, string? postalCode)
         => ContactAddress = Address.Create(countryId, street, district, city, postalCode);
@@ -116,38 +116,24 @@ public sealed class Division : AggregateRoot<int>
         }
     }
 
-    private static string NormalizeWebsiteUrl(string websiteUrl)
-    {
-        string normalized = websiteUrl.AsRequiredDomainText(nameof(WebsiteUrl), Rules.WebsiteUrlMaxLength);
-
-        if (!Uri.TryCreate(normalized, UriKind.Absolute, out Uri? uri) ||
-            uri.Scheme is not ("http" or "https") ||
-            string.IsNullOrWhiteSpace(uri.Host))
-        {
-            throw new DomainException("WebsiteUrl must be a valid http or https URL.");
-        }
-
-        return normalized;
-    }
-
     public sealed class Builder
     {
         private readonly string _name;
-        private readonly string _websiteUrl;
+        private readonly WebsiteUrl _websiteUrl;
         private readonly List<TextContentDefinition> _texts = new();
 
         private bool _isActive;
         private string? _termsAndConditions;
         private string? _groupsPaymentTerms;
-        private string? _headOfficeEmail;
-        private string? _headOfficeTelephoneNo;
+        private EmailAddress _headOfficeEmail = EmailAddress.Empty;
+        private TelephoneNumber _headOfficeTelephoneNo = TelephoneNumber.Empty;
         private Address _contactAddress = Address.Empty;
         private ImageFile _accreditationBanner = ImageFile.Empty;
 
         public Builder(string name, string websiteUrl)
         {
             _name = name.AsRequiredDomainText(nameof(Name), Rules.NameMaxLength);
-            _websiteUrl = NormalizeWebsiteUrl(websiteUrl);
+            _websiteUrl = WebsiteUrl.Create(websiteUrl).EnsureNotEmpty(nameof(WebsiteUrl));
         }
 
         public Builder IsActive(bool value)
@@ -170,13 +156,13 @@ public sealed class Division : AggregateRoot<int>
 
         public Builder HeadOfficeEmail(string? value)
         {
-            _headOfficeEmail = value.AsOptionalDomainText(nameof(HeadOfficeEmail), Rules.HeadOfficeEmailMaxLength);
+            _headOfficeEmail = EmailAddress.Create(value);
             return this;
         }
 
         public Builder HeadOfficeTelephone(string? value)
         {
-            _headOfficeTelephoneNo = value.AsOptionalDomainText(nameof(HeadOfficeTelephoneNo), Rules.HeadOfficeTelephoneNoMaxLength);
+            _headOfficeTelephoneNo = TelephoneNumber.Create(value);
             return this;
         }
 
@@ -219,10 +205,6 @@ public sealed class Division : AggregateRoot<int>
     public static class Rules
     {
         public const int NameMaxLength = 100;
-        public const int WebsiteUrlMaxLength = 255;
-        public const int HeadOfficeEmailMaxLength = 50;
-        public const int HeadOfficeTelephoneNoMaxLength = 50;
-        public const int HeadOfficeTelephoneMaxLength = 50;
         public const int TermsAndConditionsMaxLength = 4000;
         public const int GroupsPaymentTermsMaxLength = 4000;
         public const int AccreditationBannerMaxBytes = 5 * 1024 * 1024;

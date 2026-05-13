@@ -5,6 +5,7 @@ using ProductsAndPricingNew.AdminApi.Errors;
 using ProductsAndPricingNew.AdminApi.Infrastructure;
 using ProductsAndPricingNew.AdminApi.Middleware;
 using ProductsAndPricingNew.Application.Abstractions;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace ProductsAndPricingNew.AdminApi;
 

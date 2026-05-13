@@ -16,7 +16,7 @@ public sealed class AddOn : AggregateRoot<int>, IProductDefinition
     public int? ProductCategoryId { get; private set; }
     public int? OneToOneLessonsPerWeek { get; private set; }
     public DateOnly? OfferingsClosureDate { get; private set; }
-    public FinanceCodes FinanceCodes { get; private set; }
+    //public FinanceCodes FinanceCodes { get; private set; }
 
     private AddOn() { }
 
@@ -27,7 +27,7 @@ public sealed class AddOn : AggregateRoot<int>, IProductDefinition
         AddOnTypeId = addOnTypeId;
         UnitTypeId = unitTypeId;
         IsActive = true;
-        FinanceCodes = new FinanceCodes(null, null);
+        //FinanceCodes = new FinanceCodes(null, null);
 
         Rename(name);
     }
@@ -76,7 +76,7 @@ public sealed class AddOn : AggregateRoot<int>, IProductDefinition
         ProductCategoryId = productCategoryId;
     }
 
-    public void ChangeFinanceCodes(FinanceCodes codes) => FinanceCodes = codes;
+    //public void ChangeFinanceCodes(FinanceCodes codes) => FinanceCodes = codes;
     public void ChangeOfferingsClosureDate(DateOnly? value) => OfferingsClosureDate = value;
 
     public static class Rules

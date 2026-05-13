@@ -3,6 +3,7 @@ using ProductsAndPricingNew.Application.Features.Division.Commands.CreateDivisio
 using ProductsAndPricingNew.Application.Features.Division.Commands.UpdateDivision;
 using ProductsAndPricingNew.Domain.Entities.PricingRef;
 using ProductsAndPricingNew.Domain.ReferenceData;
+using ProductsAndPricingNew.Domain.SharedKernel.ValueObjects;
 using ProductsAndPricingNew.UnitTests.TestSupport.Builders;
 using ProductsAndPricingNew.UnitTests.TestSupport.Fakes;
 
@@ -59,11 +60,11 @@ public sealed class DivisionCommandValidatorTests
     [Fact]
     public async Task WebsiteUrl_MaxLengthComesFromDivisionRules()
     {
-        string tooLong = new('A', Division.Rules.WebsiteUrlMaxLength + 1);
+        string tooLong = new('A', WebsiteUrl.Rules.MaxLength + 1);
 
         ValidationResult result = await ValidateCreateAsync(new CreateDivisionCommandBuilder().WithWebsiteUrl(tooLong).Build());
 
-        AssertInvalid(result, Division.Rules.WebsiteUrlMaxLength.ToString());
+        AssertInvalid(result, WebsiteUrl.Rules.MaxLength.ToString());
     }
 
     [Fact]
@@ -97,11 +98,11 @@ public sealed class DivisionCommandValidatorTests
     [Fact]
     public async Task HeadOfficeEmail_MaxLengthComesFromDivisionRules()
     {
-        string tooLong = new('A', Division.Rules.HeadOfficeEmailMaxLength + 1);
+        string tooLong = new('A', EmailAddress.Rules.MaxLength + 1);
 
         ValidationResult result = await ValidateCreateAsync(new CreateDivisionCommandBuilder().WithHeadOfficeEmail(tooLong).Build());
 
-        AssertInvalid(result, Division.Rules.HeadOfficeEmailMaxLength.ToString());
+        AssertInvalid(result, EmailAddress.Rules.MaxLength.ToString());
     }
 
     [Fact]
@@ -115,11 +116,11 @@ public sealed class DivisionCommandValidatorTests
     [Fact]
     public async Task HeadOfficeTelephoneNo_MaxLengthComesFromDivisionRules()
     {
-        string tooLong = new('1', Division.Rules.HeadOfficeTelephoneNoMaxLength + 1);
+        string tooLong = new('1', TelephoneNumber.Rules.MaxLength + 1);
 
         ValidationResult result = await ValidateCreateAsync(new CreateDivisionCommandBuilder().WithHeadOfficeTelephoneNo(tooLong).Build());
 
-        AssertInvalid(result, Division.Rules.HeadOfficeTelephoneNoMaxLength.ToString());
+        AssertInvalid(result, TelephoneNumber.Rules.MaxLength.ToString());
     }
 
     [Fact]

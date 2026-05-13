@@ -4,7 +4,7 @@ using ProductsAndPricingNew.Domain.ReferenceData;
 
 namespace ProductsAndPricingNew.Domain.SharedKernel.ValueObjects;
 
-public sealed record FormattedText
+public sealed record FormattedText : IEmptyValueObject
 {
     public string? Content { get; private set; }
     public ContentFormat Format { get; private set; } = ContentFormat.None;

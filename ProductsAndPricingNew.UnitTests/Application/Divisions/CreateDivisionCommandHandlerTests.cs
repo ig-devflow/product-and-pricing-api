@@ -22,7 +22,7 @@ public sealed class CreateDivisionCommandHandlerTests
 
         Assert.NotNull(repository.AddedDivision);
         Assert.Equal("New division", repository.AddedDivision.Name);
-        Assert.Equal("https://division.example.com", repository.AddedDivision.WebsiteUrl);
+        Assert.Equal("https://division.example.com", repository.AddedDivision.WebsiteUrl.Value);
         Assert.Single(repository.AddedDivision.Texts);
     }
 
