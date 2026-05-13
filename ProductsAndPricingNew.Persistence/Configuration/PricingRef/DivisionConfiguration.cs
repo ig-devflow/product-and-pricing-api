@@ -29,7 +29,7 @@ internal sealed class DivisionConfiguration : IEntityTypeConfiguration<Division>
         entity.ConfigureWebsiteUrl(x => x.WebsiteUrl, required: true);
         entity.ConfigureEmailAddress(x => x.HeadOfficeEmail);
         entity.ConfigureTelephoneNumber(x => x.HeadOfficeTelephoneNo);
-        entity.ConfigureAddress(x => x.ContactAddress);
+        entity.ConfigureAddress(x => x.ContactAddress, "Contact");
         entity.ConfigureBanner(x => x.AccreditationBanner);
         entity.ConfigureAuditMetadata(x => x.AuditMetadata);
 

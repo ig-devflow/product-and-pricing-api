@@ -20,7 +20,7 @@ internal sealed class CentreConfiguration : IEntityTypeConfiguration<Centre>
             .HasMaxLength(Centre.Rules.CodeMaxLength)
             .IsRequired();
 
-        //builder.ConfigureAddress(x => x.ContactAddress, "Contact");
+        builder.ConfigureAddress(x => x.ContactAddress, "Contact");
 
         builder.OwnsOne(x => x.BankDetails, bank =>
         {
@@ -61,9 +61,9 @@ internal sealed class CentreConfiguration : IEntityTypeConfiguration<Centre>
             bank.Property(x => x.IntermediarySwiftCode)
                 .HasMaxLength(50);
 
-            // bank.ConfigureAddress(x => x.BankAddress, "Bank");
-            // bank.ConfigureAddress(x => x.BeneficiaryBankAddress, "Beneficiary");
-            // bank.ConfigureAddress(x => x.IntermediaryBankAddress, "Intermediary");
+            bank.ConfigureAddress(x => x.BankAddress, "Bank");
+            bank.ConfigureAddress(x => x.BeneficiaryBankAddress, "Beneficiary");
+            bank.ConfigureAddress(x => x.IntermediaryBankAddress, "Intermediary");
         });
     }
 }

@@ -32,61 +32,58 @@ internal static class ConfigurationExtensions
         });
     }
 
-    public static void ConfigureAddress<TEntity>(this EntityTypeBuilder<TEntity> builder, Expression<Func<TEntity, Address>> propertyExpression)
+    public static void ConfigureAddress<TEntity>(this EntityTypeBuilder<TEntity> builder, Expression<Func<TEntity, Address>> propertyExpression, string prefix)
         where TEntity : class
     {
         builder.ComplexProperty(propertyExpression, address =>
         {
             address.Property(x => x.Street)
-                .HasColumnName("Street")
+                .HasColumnName($"{prefix}Street")
                 .HasMaxLength(Address.Rules.AddressFieldMaxLength);
 
             address.Property(x => x.District)
-                .HasColumnName("District")
+                .HasColumnName($"{prefix}District")
                 .HasMaxLength(Address.Rules.AddressFieldMaxLength);
 
             address.Property(x => x.City)
-                .HasColumnName("City")
+                .HasColumnName($"{prefix}City")
                 .HasMaxLength(Address.Rules.AddressFieldMaxLength);
 
             address.Property(x => x.PostalCode)
-                .HasColumnName("PostalCode")
+                .HasColumnName($"{prefix}PostalCode")
                 .HasMaxLength(Address.Rules.AddressFieldMaxLength);
 
             address.Property(x => x.CountryId)
-                .HasColumnName("CountryId");
+                .HasColumnName($"{prefix}CountryId");
         });
     }
 
-    // public static void ConfigureAddress<TEntity, TDependent>(
-    //     this OwnedNavigationBuilder<TEntity, TDependent> builder,
-    //     Expression<Func<TDependent, Address>> propertyExpression,
-    //     string prefix)
-    //     where TEntity : class
-    //     where TDependent : class
-    // {
-    //     builder.ComplexProperty(propertyExpression, address =>
-    //     {
-    //         address.Property(x => x.CountryId)
-    //             .HasColumnName($"{prefix}CountryId");
-    //
-    //         address.Property(x => x.Street)
-    //             .HasColumnName($"{prefix}Street")
-    //             .HasMaxLength(Address.Rules.AddressFieldMaxLength);
-    //
-    //         address.Property(x => x.District)
-    //             .HasColumnName($"{prefix}District")
-    //             .HasMaxLength(Address.Rules.AddressFieldMaxLength);
-    //
-    //         address.Property(x => x.City)
-    //             .HasColumnName($"{prefix}City")
-    //             .HasMaxLength(Address.Rules.AddressFieldMaxLength);
-    //
-    //         address.Property(x => x.PostalCode)
-    //             .HasColumnName($"{prefix}PostalCode")
-    //             .HasMaxLength(Address.Rules.AddressFieldMaxLength);
-    //     });
-    // }
+    public static void ConfigureAddress<TEntity, TDependent>(this OwnedNavigationBuilder<TEntity, TDependent> builder, Expression<Func<TDependent, Address>> propertyExpression, string prefix)
+        where TEntity : class
+        where TDependent : class
+    {
+        builder.OwnsOne(propertyExpression, address =>
+        {
+            address.Property(x => x.CountryId)
+                .HasColumnName($"{prefix}CountryId");
+
+            address.Property(x => x.Street)
+                .HasColumnName($"{prefix}Street")
+                .HasMaxLength(Address.Rules.AddressFieldMaxLength);
+
+            address.Property(x => x.District)
+                .HasColumnName($"{prefix}District")
+                .HasMaxLength(Address.Rules.AddressFieldMaxLength);
+
+            address.Property(x => x.City)
+                .HasColumnName($"{prefix}City")
+                .HasMaxLength(Address.Rules.AddressFieldMaxLength);
+
+            address.Property(x => x.PostalCode)
+                .HasColumnName($"{prefix}PostalCode")
+                .HasMaxLength(Address.Rules.AddressFieldMaxLength);
+        });
+    }
 
     public static void ConfigureBanner<TEntity>(this EntityTypeBuilder<TEntity> builder, Expression<Func<TEntity, ImageFile>> propertyExpression)
         where TEntity : class
