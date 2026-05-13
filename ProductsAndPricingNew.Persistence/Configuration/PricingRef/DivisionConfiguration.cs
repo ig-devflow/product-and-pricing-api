@@ -27,7 +27,7 @@ internal sealed class DivisionConfiguration : IEntityTypeConfiguration<Division>
             .HasMaxLength(Division.Rules.GroupsPaymentTermsMaxLength);
 
         entity.ConfigureWebsiteUrl(x => x.WebsiteUrl, required: true);
-        entity.ConfigureEmailAddress(x => x.HeadOfficeEmail);
+        entity.ConfigureEmailAddress(x => x.HeadOfficeEmail, "HeadOfficeEmail");
         entity.ConfigureTelephoneNumber(x => x.HeadOfficeTelephoneNo);
         entity.ConfigureAddress(x => x.ContactAddress, "Contact");
         entity.ConfigureBanner(x => x.AccreditationBanner);

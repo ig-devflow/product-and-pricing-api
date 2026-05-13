@@ -106,13 +106,17 @@ internal static class ConfigurationExtensions
         });
     }
 
-    public static void ConfigureEmailAddress<TEntity>(this EntityTypeBuilder<TEntity> builder, Expression<Func<TEntity, EmailAddress>> propertyExpression, bool required = false)
+    public static void ConfigureEmailAddress<TEntity>(
+        this EntityTypeBuilder<TEntity> builder,
+        Expression<Func<TEntity, EmailAddress>> propertyExpression,
+        string columnName,
+        bool required = false)
         where TEntity : class
     {
         builder.ComplexProperty(propertyExpression, email =>
         {
             var property = email.Property(x => x.Value)
-                .HasColumnName("Email")
+                .HasColumnName(columnName)
                 .HasMaxLength(EmailAddress.Rules.MaxLength);
 
             if (required)
