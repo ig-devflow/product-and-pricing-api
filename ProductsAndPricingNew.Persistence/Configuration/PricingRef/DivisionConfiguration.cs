@@ -26,11 +26,24 @@ internal sealed class DivisionConfiguration : IEntityTypeConfiguration<Division>
         entity.Property(x => x.GroupsPaymentTerms)
             .HasMaxLength(Division.Rules.GroupsPaymentTermsMaxLength);
 
-        entity.ConfigureWebsiteUrl(x => x.WebsiteUrl, required: true);
-        entity.ConfigureEmailAddress(x => x.HeadOfficeEmail, "HeadOfficeEmail");
-        entity.ConfigureTelephoneNumber(x => x.HeadOfficeTelephoneNo);
+        entity.Property(x => x.WebsiteUrl)
+            .HasConversion(Converters.WebsiteUrl)
+            .HasColumnName("WebsiteUrl")
+            .HasMaxLength(WebsiteUrl.Rules.MaxLength)
+            .IsRequired();
+
+        entity.Property(x => x.HeadOfficeEmail)
+            .HasConversion(Converters.EmailAddress)
+            .HasColumnName("HeadOfficeEmail")
+            .HasMaxLength(EmailAddress.Rules.MaxLength);
+
+        entity.Property(x => x.HeadOfficeTelephoneNo)
+            .HasConversion(Converters.TelephoneNumber)
+            .HasColumnName("HeadOfficeTelephoneNo")
+            .HasMaxLength(TelephoneNumber.Rules.MaxLength);
+
         entity.ConfigureAddress(x => x.ContactAddress, "Contact");
-        entity.ConfigureBanner(x => x.AccreditationBanner);
+        entity.ConfigureBanner(x => x.AccreditationBanner, "Banner");
         entity.ConfigureAuditMetadata(x => x.AuditMetadata);
 
         entity.HasMany(x => x.Texts)
