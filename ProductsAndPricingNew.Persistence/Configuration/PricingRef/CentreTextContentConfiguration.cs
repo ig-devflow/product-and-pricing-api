@@ -8,25 +8,24 @@ namespace ProductsAndPricingNew.Persistence.Configuration.PricingRef;
 
 internal sealed class CentreTextContentConfiguration : IEntityTypeConfiguration<CentreTextContent>
 {
-    public void Configure(EntityTypeBuilder<CentreTextContent> builder)
+    public void Configure(EntityTypeBuilder<CentreTextContent> entity)
     {
-        builder.ToTable("CentreTextContents", "PricingRef");
+        entity.ToTable("CentreTextContents", "PricingRef");
 
-        builder.HasKey(x => x.Id);
-
-        builder.Property(x => x.Id)
+        entity.HasKey(x => x.Id);
+        entity.Property(x => x.Id)
             .ValueGeneratedOnAdd();
 
-        builder.Property(x => x.CentreId)
+        entity.Property(x => x.CentreId)
             .IsRequired();
 
-        builder.Property(x => x.ContentTemplateId)
+        entity.Property(x => x.ContentTemplateId)
             .IsRequired();
 
-        builder.Property(x => x.AudienceId)
+        entity.Property(x => x.AudienceId)
             .IsRequired(false);
 
-        builder.ComplexProperty(x => x.Text, text =>
+        entity.ComplexProperty(x => x.Text, text =>
         {
             text.Property(x => x.Content)
                 .HasColumnName("Content")
@@ -41,21 +40,21 @@ internal sealed class CentreTextContentConfiguration : IEntityTypeConfiguration<
                 .IsRequired();
         });
 
-        builder.Property(x => x.IsDeleted)
+        entity.Property(x => x.IsDeleted)
             .HasDefaultValue(false)
             .IsRequired();
 
-        builder.HasOne<ContentTemplate>()
+        entity.HasOne<ContentTemplate>()
             .WithMany()
             .HasForeignKey(x => x.ContentTemplateId)
             .OnDelete(DeleteBehavior.Restrict);
 
-        builder.HasOne<Audience>()
+        entity.HasOne<Audience>()
             .WithMany()
             .HasForeignKey(x => x.AudienceId)
             .OnDelete(DeleteBehavior.Restrict);
 
-        builder.HasIndex(x => new
+        entity.HasIndex(x => new
         {
             x.CentreId,
             x.ContentTemplateId,
