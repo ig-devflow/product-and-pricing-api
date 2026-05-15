@@ -1,6 +1,8 @@
 ﻿using System.Data.Common;
 using Dapper;
+using ProductsAndPricingNew.Application.Common.Pagination;
 using ProductsAndPricingNew.Application.Features.Centre.Abstractions;
+using ProductsAndPricingNew.Application.Features.Centre.Models;
 using ProductsAndPricingNew.Persistence.Queries.Configuration;
 
 namespace ProductsAndPricingNew.Persistence.Queries.Centre;
@@ -38,5 +40,15 @@ internal sealed class CentreQuery : ICentreQuery
             cancellationToken: ct);
 
         return await connection.QuerySingleAsync<bool>(command);
+    }
+
+    public async Task<CentreDetailsDto?> GetByIdAsync(int id, CancellationToken ct = default)
+    {
+        throw new NotImplementedException();
+    }
+
+    public async Task<PagedResult<CentreListItemDto>> GetListAsync(string? search, bool? isActive, PagingFilter paging, CancellationToken ct = default)
+    {
+        throw new NotImplementedException();
     }
 }

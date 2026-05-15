@@ -12,7 +12,7 @@ internal sealed class CentreRepository : EfRepositoryBase<Centre, int>, ICentreR
 
     public async Task<Centre?> GetByIdWithTextsAsync(int id, CancellationToken ct = default)
     {
-        return await Db.Set<Centre>()
+        return await Set
             .Include(c => c.Contacts)
             .SingleOrDefaultAsync(c => c.Id == id && !c.IsDeleted, ct);
     }

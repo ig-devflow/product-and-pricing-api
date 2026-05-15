@@ -1,6 +1,7 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata;
 using ProductsAndPricingNew.Domain.Edit;
+using ProductsAndPricingNew.Domain.SharedKernel.ValueObjects;
 using ProductsAndPricingNew.Persistence;
 
 namespace ProductsAndPricingNew.UnitTests.Persistence.Model;
@@ -26,7 +27,7 @@ public sealed class EditorConfigurationTests
         Assert.Equal(Editor.Rules.UserNameMaxLength, editor.FindProperty(nameof(Editor.UserName))!.GetMaxLength());
         Assert.Equal(Editor.Rules.FirstNameMaxLength, editor.FindProperty(nameof(Editor.FirstName))!.GetMaxLength());
         Assert.Equal(Editor.Rules.LastNameMaxLength, editor.FindProperty(nameof(Editor.LastName))!.GetMaxLength());
-        Assert.Equal(Editor.Rules.EmailMaxLength, editor.FindProperty(nameof(Editor.Email))!.GetMaxLength());
+        Assert.Equal(EmailAddress.Rules.MaxLength, editor.FindProperty(nameof(Editor.Email))!.GetMaxLength());
     }
 
     [Fact]

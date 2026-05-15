@@ -12,7 +12,7 @@ internal sealed class DivisionRepository : EfRepositoryBase<Division, int>, IDiv
 
     public async Task<Division?> GetByIdWithTextsAsync(int id, CancellationToken ct = default)
     {
-        return await Db.Set<Division>()
+        return await Set
             .Include(x => x.Texts)
             .SingleOrDefaultAsync(x => x.Id == id && !x.IsDeleted, ct);
     }

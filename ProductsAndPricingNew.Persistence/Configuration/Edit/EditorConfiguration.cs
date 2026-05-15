@@ -1,6 +1,7 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using ProductsAndPricingNew.Domain.Edit;
+using ProductsAndPricingNew.Domain.SharedKernel.ValueObjects;
 
 namespace ProductsAndPricingNew.Persistence.Configuration.Edit;
 
@@ -28,9 +29,11 @@ internal sealed class EditorConfiguration : IEntityTypeConfiguration<Editor>
             .IsRequired();
 
         entity.Property(x => x.Email)
-            .HasMaxLength(Editor.Rules.EmailMaxLength)
-            .IsRequired();
-
+            .HasConversion(Converters.EmailAddress)
+            .HasColumnName("Email")
+            .HasMaxLength(EmailAddress.Rules.MaxLength)
+            .IsRequired();;
+        
         entity.HasData(new
         {
             Id = 1,

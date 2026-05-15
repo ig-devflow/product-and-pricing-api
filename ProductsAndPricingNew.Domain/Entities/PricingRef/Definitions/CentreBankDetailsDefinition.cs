@@ -24,8 +24,6 @@ public sealed record BankIdentifiersDefinition(
         && string.IsNullOrWhiteSpace(BranchCode)
         && string.IsNullOrWhiteSpace(AbaRoutingNo)
         && string.IsNullOrWhiteSpace(AchAba);
-
-    public static BankIdentifiersDefinition Empty { get; } = new(null, null, null, null, null);
 }
 
 public sealed record IntermediaryBankDefinition(
@@ -37,7 +35,4 @@ public sealed record IntermediaryBankDefinition(
         string.IsNullOrWhiteSpace(BankName)
         && string.IsNullOrWhiteSpace(SwiftCode)
         && BankAddress.IsEmpty;
-
-    public static IntermediaryBankDefinition Empty { get; } =
-        new(null, null, AddressDefinition.Empty);
 }
