@@ -13,7 +13,6 @@ public readonly struct WebsiteUrl : IEquatable<WebsiteUrl>, IEmptyValueObject
     }
 
     public bool IsEmpty => Value is null;
-
     public static WebsiteUrl Empty { get; } = new(null);
 
     public static WebsiteUrl Create(string? value)

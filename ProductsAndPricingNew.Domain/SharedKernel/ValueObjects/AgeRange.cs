@@ -14,7 +14,6 @@ public readonly struct AgeRange : IEquatable<AgeRange>, IEmptyValueObject
     }
 
     public bool IsEmpty => From is null && To is null;
-
     public static AgeRange Empty { get; } = new(null, null);
 
     public static AgeRange Create(int? from, int? to)

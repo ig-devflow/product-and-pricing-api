@@ -28,7 +28,7 @@ public sealed class DivisionMappingProfile : Profile
                 src.HeadOfficeEmail,
                 src.HeadOfficeTelephoneNo,
                 ctx.Mapper.Map<AddressDto?>(src.ContactAddress),
-                ctx.Mapper.Map<ImageBannerDto?>(src.AccreditationBanner),
+                ctx.Mapper.Map<ImageFileDto?>(src.AccreditationBanner),
                 ctx.Mapper.Map<IReadOnlyCollection<TextContentDto>>(src.Texts)));
 
         CreateMap<UpdateDivisionRequest, UpdateDivisionCommand>()
@@ -42,7 +42,7 @@ public sealed class DivisionMappingProfile : Profile
                 src.HeadOfficeEmail,
                 src.HeadOfficeTelephoneNo,
                 ctx.Mapper.Map<AddressDto?>(src.ContactAddress),
-                ctx.Mapper.Map<ImageBannerDto?>(src.AccreditationBanner),
+                ctx.Mapper.Map<ImageFileDto?>(src.AccreditationBanner),
                 ctx.Mapper.Map<IReadOnlyCollection<TextContentDto>>(src.Texts),
                 src.Version));
     }

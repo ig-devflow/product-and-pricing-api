@@ -73,8 +73,8 @@ public sealed class School : AggregateRoot<int>
     public void ChangeEmergencyNo(string? value)
         => EmergencyNo = TelephoneNumber.Create(value);
 
-    public void ChangeAddress(int? countryId, string? street, string? district, string? city, string? postalCode)
-        => Address = Address.Create(countryId, street, district, city, postalCode);
+    // public void ChangeAddress(int? countryId, string? street, string? district, string? city, string? postalCode)
+    //     => Address = Address.Create(countryId, street, district, city, postalCode);
 
     public void ChangeFinanceCode(string? value)
         => FinanceCode = FinanceCode.Create(value);

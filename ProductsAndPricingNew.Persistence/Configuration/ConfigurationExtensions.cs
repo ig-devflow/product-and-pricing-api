@@ -56,6 +56,34 @@ internal static class ConfigurationExtensions
         });
     }
 
+    public static void ConfigureAddress<TComplex>(
+        this ComplexPropertyBuilder<TComplex> builder,
+        Expression<Func<TComplex, Address>> propertyExpression,
+        string prefix)
+    {
+        builder.ComplexProperty(propertyExpression, address =>
+        {
+            address.Property(x => x.Street)
+                .HasColumnName($"{prefix}Street")
+                .HasMaxLength(Address.Rules.AddressFieldMaxLength);
+
+            address.Property(x => x.District)
+                .HasColumnName($"{prefix}District")
+                .HasMaxLength(Address.Rules.AddressFieldMaxLength);
+
+            address.Property(x => x.City)
+                .HasColumnName($"{prefix}City")
+                .HasMaxLength(Address.Rules.AddressFieldMaxLength);
+
+            address.Property(x => x.PostalCode)
+                .HasColumnName($"{prefix}PostalCode")
+                .HasMaxLength(Address.Rules.AddressFieldMaxLength);
+
+            address.Property(x => x.CountryId)
+                .HasColumnName($"{prefix}CountryId");
+        });
+    }
+
     public static void ConfigureAddress<TEntity, TDependent>(this OwnedNavigationBuilder<TEntity, TDependent> builder, Expression<Func<TDependent, Address>> propertyExpression, string prefix)
         where TEntity : class
         where TDependent : class

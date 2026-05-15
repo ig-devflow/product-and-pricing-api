@@ -5,7 +5,7 @@ using ProductsAndPricingNew.Domain.SharedKernel.ValueObjects;
 
 namespace ProductsAndPricingNew.Application.Common.Validation.Validators;
 
-internal sealed class ImageBannerDtoValidator : AbstractValidator<ImageBannerDto>
+internal sealed class ImageBannerDtoValidator : AbstractValidator<ImageFileDto>
 {
     public ImageBannerDtoValidator(string displayName = "Image", int maxBytes = ValidationLimitDefaults.MaxFileBytes)
     {

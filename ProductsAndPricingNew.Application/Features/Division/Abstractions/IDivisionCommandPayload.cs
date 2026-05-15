@@ -11,6 +11,6 @@ public interface IDivisionCommandPayload
     string? HeadOfficeEmail { get; }
     string? HeadOfficeTelephoneNo { get; }
     AddressDto? ContactAddress { get; }
-    ImageBannerDto? AccreditationBanner { get; }
+    ImageFileDto? AccreditationBanner { get; }
     IReadOnlyCollection<TextContentDto> Texts { get; }
 }

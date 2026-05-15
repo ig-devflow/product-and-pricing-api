@@ -1,90 +1,62 @@
-﻿using ProductsAndPricingNew.Domain.Common.Text;
+﻿using ProductsAndPricingNew.Domain.Common.Exceptions;
+using ProductsAndPricingNew.Domain.Common.Text;
+using ProductsAndPricingNew.Domain.Entities.PricingRef.Definitions;
 using ProductsAndPricingNew.Domain.SharedKernel.ValueObjects;
 
 namespace ProductsAndPricingNew.Domain.Entities.PricingRef;
 
-public sealed record CentreBankDetails : IEmptyValueObject
+public sealed class CentreBankDetails : IEquatable<CentreBankDetails>
 {
-    public string BeneficiaryName { get; private set; }
-    public string AccountNumber { get; private set; }
-    public string BankName { get; private set; }
-    public string? Iban { get; private set; }
-    public string? SwiftCode { get; private set; }
-    public string? BranchCode { get; private set; }
-    public string? AbaRoutingNo { get; private set; }
-    public string? AchAba { get; private set; }
-    public Address BankAddress { get; private set; } = Address.Empty;
-    public Address BeneficiaryBankAddress { get; private set; } = Address.Empty;
-    public Address IntermediaryBankAddress { get; private set; } = Address.Empty;
-    public string? IntermediaryBankName { get; private set; }
-    public string? IntermediarySwiftCode { get; private set; }
+    public string BeneficiaryName { get; } = null!;
+    public string AccountNumber { get; } = null!;
+    public string BankName { get; } = null!;
+    public BankIdentifiers Identifiers { get; private init; } = BankIdentifiers.Empty;
+    public Address BankAddress { get; private init; } = Address.Empty;
+    public Address BeneficiaryBankAddress { get; private init; } = Address.Empty;
+    public IntermediaryBank Intermediary { get; private init; } = IntermediaryBank.Empty;
 
     private CentreBankDetails() { }
-
+    
     private CentreBankDetails(string beneficiaryName, string accountNumber, string bankName)
     {
         BeneficiaryName = beneficiaryName;
         AccountNumber = accountNumber;
         BankName = bankName;
     }
-
-    public static CentreBankDetails Create(
-        string beneficiaryName,
-        string accountNumber,
-        string bankName,
-        string? iban,
-        string? swiftCode,
-        string? branchCode,
-        string? abaRoutingNo,
-        string? achAba,
-        Address bankAddress,
-        Address beneficiaryBankAddress,
-        Address intermediaryBankAddress,
-        string? intermediaryBankName,
-        string? intermediarySwiftCode)
+    
+    public static CentreBankDetails Create(CentreBankDetailsDefinition? definition)
     {
+        if (definition is null)
+            throw new DomainException("CentreBankDetailsDefinition cannot be null.");
 
-        var centreBankDetails = new CentreBankDetails(
-            beneficiaryName.AsRequiredDomainText(nameof(beneficiaryName), Rules.MaxLength),
-            accountNumber.AsRequiredDomainText(nameof(accountNumber), Rules.MaxLength),
-            bankName.AsRequiredDomainText(nameof(bankName), Rules.MaxLength)
-        )
+        var bankDetails = new CentreBankDetails(
+            definition.BeneficiaryName.AsRequiredDomainText(nameof(BeneficiaryName), Rules.MaxLength),
+            definition.AccountNumber.AsRequiredDomainText(nameof(AccountNumber), Rules.MaxLength),
+            definition.BankName.AsRequiredDomainText(nameof(BankName), Rules.MaxLength))
         {
-            Iban = iban.AsOptionalDomainText(nameof(iban), Rules.MaxLength),
-            SwiftCode = swiftCode.AsOptionalDomainText(nameof(swiftCode), Rules.MaxLength),
-            BranchCode = branchCode.AsOptionalDomainText(nameof(branchCode), Rules.MaxLength),
-            AbaRoutingNo = abaRoutingNo.AsOptionalDomainText(nameof(abaRoutingNo), Rules.MaxLength),
-            AchAba = achAba.AsOptionalDomainText(nameof(achAba), Rules.MaxLength),
-            BankAddress = bankAddress,
-            BeneficiaryBankAddress = beneficiaryBankAddress,
-            IntermediaryBankAddress = intermediaryBankAddress,
-            IntermediaryBankName = intermediaryBankName.AsOptionalDomainText(nameof(IntermediaryBankName), Rules.MaxLength),
-            IntermediarySwiftCode = intermediarySwiftCode.AsOptionalDomainText(nameof(intermediarySwiftCode), Rules.MaxLength),
+            Identifiers = BankIdentifiers.Create(definition.Identifiers),
+            BankAddress = Address.Create(definition.BankAddress),
+            BeneficiaryBankAddress = Address.Create(definition.BeneficiaryBankAddress),
+            Intermediary = IntermediaryBank.Create(definition.Intermediary)
         };
 
-        return centreBankDetails;
+        return bankDetails;
     }
 
-    // public bool IsEmpty =>
-    //     BeneficiaryName is null &&
-    //     AccountNumber is null &&
-    //     BankName is null &&
-    //     Iban is null &&
-    //     SwiftCode is null &&
-    //     BranchCode is null &&
-    //     AbaRoutingNo is null &&
-    //     AchAba is null &&
-    //     BankAddress.IsEmpty &&
-    //     BeneficiaryBankAddress.IsEmpty &&
-    //     IntermediaryBankAddress.IsEmpty &&
-    //     IntermediaryBankName is null &&
-    //     IntermediarySwiftCode is null;
-    public bool IsEmpty =>
-        BeneficiaryName is null &&
-        AccountNumber is null &&
-        BankName is null;
+    public bool Equals(CentreBankDetails? other) =>
+        other is not null
+        && BeneficiaryName == other.BeneficiaryName
+        && AccountNumber == other.AccountNumber
+        && BankName == other.BankName
+        && Identifiers.Equals(other.Identifiers)
+        && BankAddress.Equals(other.BankAddress)
+        && BeneficiaryBankAddress.Equals(other.BeneficiaryBankAddress)
+        && Intermediary.Equals(other.Intermediary);
 
-    public static CentreBankDetails Empty { get; } = new();
+    public override bool Equals(object? obj) => Equals(obj as CentreBankDetails);
+
+    public override int GetHashCode() =>
+        HashCode.Combine(BeneficiaryName, AccountNumber, BankName, Identifiers, BankAddress, BeneficiaryBankAddress, Intermediary);
 
     public static class Rules
     {

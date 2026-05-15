@@ -16,7 +16,7 @@ public sealed record UpdateDivisionCommand(
     string? HeadOfficeEmail,
     string? HeadOfficeTelephoneNo,
     AddressDto? ContactAddress,
-    ImageBannerDto? AccreditationBanner,
+    ImageFileDto? AccreditationBanner,
     IReadOnlyCollection<TextContentDto> Texts,
     string Version
 ) : ICommand<Result<Unit>>, IDivisionCommandPayload;

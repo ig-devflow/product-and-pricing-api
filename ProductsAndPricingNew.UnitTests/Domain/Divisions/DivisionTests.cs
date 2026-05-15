@@ -1,6 +1,7 @@
 using ProductsAndPricingNew.Domain.Common.Exceptions;
 using ProductsAndPricingNew.Domain.Entities.PricingRef;
 using ProductsAndPricingNew.Domain.ReferenceData;
+using ProductsAndPricingNew.Domain.SharedKernel.Definitions;
 using ProductsAndPricingNew.Domain.SharedKernel.TextContent;
 using ProductsAndPricingNew.Domain.SharedKernel.ValueObjects;
 
@@ -17,8 +18,8 @@ public sealed class DivisionTests
             .GroupsPaymentTerms("  Groups   payment terms  ")
             .HeadOfficeEmail("  office@example.com  ")
             .HeadOfficeTelephone("  +1   555   1234567  ")
-            .ContactAddress(1, " Street ", null, " City ", " 10001 ")
-            .AccreditationBanner([1], " IMAGE/PNG ", " banner.png ")
+            .ContactAddress(new AddressDefinition(1, " Street ", null, " City ", " 10001 "))
+            .AccreditationBanner(new ImageFileDefinition([1], " IMAGE/PNG ", " banner.png "))
             .Texts([new TextContentDefinition(100, null, " Text ", ContentFormat.PlainText)])
             .Build();
 
@@ -102,8 +103,7 @@ public sealed class DivisionTests
     {
         Division division = CreateDivision();
 
-        division.ChangeContactAddress(2, " Main   Street ", null, " Boston ", " 02108 ");
-
+        division.ChangeContactAddress(new AddressDefinition(2, " Main   Street ", null, " Boston ", " 02108 "));
         Assert.Equal(2, division.ContactAddress.CountryId);
         Assert.Equal("Main Street", division.ContactAddress.Street);
         Assert.Equal("Boston", division.ContactAddress.City);
@@ -115,9 +115,9 @@ public sealed class DivisionTests
     {
         Division division = CreateDivision();
 
-        division.ChangeContactAddress(null, " ", null, null, null);
+        division.ChangeContactAddress(new AddressDefinition(null, " ", null, null, null));
 
-        Assert.Same(ProductsAndPricingNew.Domain.SharedKernel.ValueObjects.Address.Empty, division.ContactAddress);
+        Assert.Same(Address.Empty, division.ContactAddress);
     }
 
     [Fact]
@@ -125,7 +125,7 @@ public sealed class DivisionTests
     {
         Division division = CreateDivision();
 
-        division.ChangeAccreditationBanner([9], "image/webp", "banner.webp");
+        division.ChangeAccreditationBanner(new ImageFileDefinition([9], "image/webp", "banner.webp"));
 
         Assert.Equal(new byte[] { 9 }, division.AccreditationBanner.Data);
         Assert.Equal("image/webp", division.AccreditationBanner.ContentType);
@@ -137,9 +137,9 @@ public sealed class DivisionTests
     {
         Division division = CreateDivision();
 
-        division.ChangeAccreditationBanner(null, null, null);
+        division.ChangeAccreditationBanner(new ImageFileDefinition(null, null, null));
 
-        Assert.Same(ProductsAndPricingNew.Domain.SharedKernel.ValueObjects.ImageFile.Empty, division.AccreditationBanner);
+        Assert.Same(ImageFile.Empty, division.AccreditationBanner);
     }
 
     [Fact]
@@ -148,7 +148,7 @@ public sealed class DivisionTests
         Division division = CreateDivision();
         byte[] tooLarge = new byte[Division.Rules.AccreditationBannerMaxBytes + 1];
 
-        Assert.Throws<DomainException>(() => division.ChangeAccreditationBanner(tooLarge, "image/png", "banner.png"));
+        Assert.Throws<DomainException>(() => division.ChangeAccreditationBanner(new ImageFileDefinition(tooLarge, "image/png", "banner.png")));
     }
 
     [Fact]
@@ -288,8 +288,8 @@ public sealed class DivisionTests
     private static Division CreateDivision(params TextContentDefinition[] texts)
         => new Division.Builder("Division", "https://example.com")
             .IsActive(true)
-            .ContactAddress(1, "Street", null, "City", "10001")
-            .AccreditationBanner([1], "image/png", "banner.png")
+            .ContactAddress(new AddressDefinition(1, "Street", null, "City", "10001"))
+            .AccreditationBanner(new ImageFileDefinition([1], "image/png", "banner.png"))
             .Texts(texts.Length == 0
                 ? [new TextContentDefinition(100, null, "Text", ContentFormat.PlainText)]
                 : texts)

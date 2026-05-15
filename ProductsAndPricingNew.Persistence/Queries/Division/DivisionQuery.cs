@@ -264,7 +264,7 @@ internal sealed class DivisionQuery : IDivisionQuery
 
     private static DateOnly ToDateOnly(DateTimeOffset value) => DateOnly.FromDateTime(value.DateTime);
 
-    private static ImageBannerDto? MapBanner(DivisionDetailsRow row)
+    private static ImageFileDto? MapBanner(DivisionDetailsRow row)
     {
         bool isEmpty =
             row.AccreditationBannerData is null &&
@@ -274,7 +274,7 @@ internal sealed class DivisionQuery : IDivisionQuery
         if (isEmpty)
             return null;
 
-        return new ImageBannerDto(
+        return new ImageFileDto(
             row.AccreditationBannerData,
             row.AccreditationBannerContentType,
             row.AccreditationBannerFileName);

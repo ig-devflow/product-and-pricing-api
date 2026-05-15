@@ -13,7 +13,7 @@ internal sealed class CreateDivisionCommandBuilder
     private string? _headOfficeEmail = "office@example.com";
     private string? _headOfficeTelephoneNo = "+1 555 123 4567";
     private AddressDto? _contactAddress = new AddressDtoBuilder().Build();
-    private ImageBannerDto? _accreditationBanner = new ImageBannerDtoBuilder().Build();
+    private ImageFileDto? _accreditationBanner = new ImageBannerDtoBuilder().Build();
     private IReadOnlyCollection<TextContentDto>? _texts = [new TextContentDtoBuilder().Build()];
 
     public CreateDivisionCommandBuilder WithName(string? name)
@@ -46,7 +46,7 @@ internal sealed class CreateDivisionCommandBuilder
         return this;
     }
 
-    public CreateDivisionCommandBuilder WithAccreditationBanner(ImageBannerDto? banner)
+    public CreateDivisionCommandBuilder WithAccreditationBanner(ImageFileDto? banner)
     {
         _accreditationBanner = banner;
         return this;

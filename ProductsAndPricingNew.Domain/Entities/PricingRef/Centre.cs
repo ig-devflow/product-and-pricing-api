@@ -1,6 +1,8 @@
 ﻿using ProductsAndPricingNew.Domain.Common.Exceptions;
 using ProductsAndPricingNew.Domain.Common.Primitives;
 using ProductsAndPricingNew.Domain.Common.Text;
+using ProductsAndPricingNew.Domain.Entities.PricingRef.Definitions;
+using ProductsAndPricingNew.Domain.SharedKernel.Definitions;
 using ProductsAndPricingNew.Domain.SharedKernel.TextContent;
 using ProductsAndPricingNew.Domain.SharedKernel.ValueObjects;
 
@@ -34,7 +36,7 @@ public sealed class Centre : AggregateRoot<int>
     public decimal? IndividualsRatio { get; private set; }
     public decimal? StaffingRatio { get; private set; }
     public decimal? EmptyBeds { get; private set; }
-    public CentreBankDetails BankDetails { get; private set; } = CentreBankDetails.Empty;
+    public CentreBankDetails BankDetails { get; private set; } = null!;
     public IReadOnlyCollection<CentreContact> Contacts => _contacts.AsReadOnly();
     public IReadOnlyCollection<CentreTextContent> Texts => _texts.AsReadOnly();
 
@@ -48,83 +50,178 @@ public sealed class Centre : AggregateRoot<int>
         PrintFormat = printFormat;
     }
 
-    public void Rename(string name)
-        => Name = name.AsRequiredDomainText(nameof(Name), Rules.NameMaxLength);
+    public void Rename(string name) =>
+        Name = name.AsRequiredDomainText(nameof(Name), Rules.NameMaxLength);
+
+    public void ChangeCode(string code) =>
+        Code = code.AsRequiredDomainText(nameof(Code), Rules.CodeMaxLength);
 
     public void ChangeCurrency(int currencyId)
     {
-        if (currencyId <= 0)
-            throw new DomainException("CurrencyId must be greater than zero.");
-
+        EnsureValidCurrency(currencyId);
         CurrencyId = currencyId;
     }
 
-    public void ChangeCode(string code)
-        => Code = code.AsRequiredDomainText(nameof(Code), Rules.CodeMaxLength);
-
-    public void ChangeActive(bool isActive)
-        => IsActive = isActive;
-
-    public void ChangePhysicalCentre(bool value)
-        => IsPhysicalCentre = value;
-
     public void ChangePrintFormat(PrintFormat printFormat)
     {
-        if (!Enum.IsDefined(printFormat) || printFormat == PrintFormat.None)
-            throw new DomainException("Print format must be provided.");
-
+        EnsureValidPrintFormat(printFormat);
         PrintFormat = printFormat;
     }
 
-    public void ChangeGeneralEmail(string? value)
-        => GeneralEmail = EmailAddress.Create(value);
+    public void ChangeActive(bool isActive) => IsActive = isActive;
 
-    public void ChangeAccommodationEmail(string? value)
-        => AccommodationEmail = EmailAddress.Create(value);
+    public void ChangePhysicalCentre(bool value) => IsPhysicalCentre = value;
 
-    public void ChangeTelephone(string? value)
-        => Telephone = TelephoneNumber.Create(value);
+    public void ChangeGeneralEmail(string? value) =>
+        GeneralEmail = EmailAddress.Create(value);
 
-    public void ChangeEmergencyTelephone(string? value)
-        => EmergencyTelephone = TelephoneNumber.Create(value);
+    public void ChangeAccommodationEmail(string? value) =>
+        AccommodationEmail = EmailAddress.Create(value);
 
-    public void ChangeTransferEmergencyTelephone(string? value)
-        => TransferEmergencyTelephone = TelephoneNumber.Create(value);
+    public void ChangeTelephone(string? value) =>
+        Telephone = TelephoneNumber.Create(value);
 
-    public void ChangeBrandColor(string? value)
-        => BrandColor = HexColor.Create(value);
+    public void ChangeEmergencyTelephone(string? value) =>
+        EmergencyTelephone = TelephoneNumber.Create(value);
 
-    public void ChangeContactAddress(int countryId, string? street, string? district, string? city, string? postalCode)
+    public void ChangeTransferEmergencyTelephone(string? value) =>
+        TransferEmergencyTelephone = TelephoneNumber.Create(value);
+
+    public void ChangeBrandColor(string? value) =>
+        BrandColor = HexColor.Create(value);
+
+    public void ChangeContactAddress(AddressDefinition? definition) =>
+        ContactAddress = Address.Create(definition);
+
+    public void ChangeLogo(ImageFileDefinition? definition) =>
+        LogoImage = ImageFile.Create(definition, Rules.LogoMaxBytes);
+
+    public void ChangeSchoolSponsorshipNumber(string? value) =>
+        SchoolSponsorshipNumber = value.AsOptionalDomainText(nameof(SchoolSponsorshipNumber), Rules.LegalTextMaxLength);
+
+    public void ChangeVatNumber(string? value) =>
+        VatNumber = value.AsOptionalDomainText(nameof(VatNumber), Rules.LegalTextMaxLength);
+
+    public void ChangeRegistrationNumber(string? value) =>
+        RegistrationNumber = value.AsOptionalDomainText(nameof(RegistrationNumber), Rules.LegalTextMaxLength);
+
+    public void ChangeVatExemptionNumber(string? value) =>
+        VatExemptionNumber = value.AsOptionalDomainText(nameof(VatExemptionNumber), Rules.LegalTextMaxLength);
+
+    public void ChangeChequePayableTo(string? value) =>
+        ChequePayableTo = value.AsOptionalDomainText(nameof(ChequePayableTo), Rules.LegalTextMaxLength);
+
+    public void ChangeGuarantees(decimal? value) => Guarantees = value;
+
+    public void ChangeIndividualsRatio(decimal? value) => IndividualsRatio = value;
+
+    public void ChangeStaffingRatio(decimal? value) => StaffingRatio = value;
+
+    public void ChangeEmptyBeds(decimal? value) => EmptyBeds = value;
+
+    public void ChangeBankDetails(CentreBankDetailsDefinition? definition) =>
+        BankDetails = CentreBankDetails.Create(definition);
+    
+    public void ReplaceContacts(IEnumerable<CentreContactDefinition> contacts)
     {
-        if (countryId <= 0)
-            throw new DomainException("CountryId must be greater than zero.");
+        ArgumentNullException.ThrowIfNull(contacts);
 
-        ContactAddress = Address.Create(countryId, street, district, city, postalCode);
+        var incomingTypes = new HashSet<CentreContactType>();
+        foreach (CentreContactDefinition definition in contacts)
+        {
+            if (!incomingTypes.Add(definition.ContactType))
+                throw new DomainException($"Duplicate contact for type '{definition.ContactType}'.");
+
+            UpsertContact(definition);
+        }
+
+        foreach (CentreContact existing in _contacts.Where(x => !incomingTypes.Contains(x.ContactType)).ToList())
+        {
+            _contacts.Remove(existing);
+        }
     }
-
-    public void ChangeLogo(byte[]? data, string? contentType, string? fileName)
-        => LogoImage = ImageFile.Create(data, contentType, fileName, Rules.LogoMaxBytes);
-
-    public void UpsertContact(CentreContactType type, string name, string? email)
+    
+    private void UpsertContact(CentreContactDefinition definition)
     {
-        if (type == CentreContactType.None)
-            _contacts.Clear();
+        ArgumentNullException.ThrowIfNull(definition);
 
-        CentreContact? existing = _contacts.FirstOrDefault(x => x.ContactType == type);
+        CentreContact? existing = _contacts.FirstOrDefault(x => x.ContactType == definition.ContactType);
         if (existing is not null)
         {
-            existing.Change(name, email);
+            existing.Change(definition);
             return;
         }
 
-        _contacts.Add(CentreContact.Create(type, name, email));
+        _contacts.Add(CentreContact.Create(definition));
     }
 
-    public void RemoveContact(CentreContactType type)
+    public void ReplaceTexts(IEnumerable<TextContentDefinition> texts)
     {
-        // CentreContact? existing = _contacts.FirstOrDefault(x => x.ContactType == type && !x.IsDeleted);
-        CentreContact? existing = _contacts.FirstOrDefault(x => x.ContactType == type);
-        //existing?.Delete();
+        ArgumentNullException.ThrowIfNull(texts);
+
+        var incomingKeys = new HashSet<(int ContentTemplateId, int? AudienceId)>();
+        foreach (TextContentDefinition text in texts)
+        {
+            text.EnsureValid();
+
+            if (!incomingKeys.Add(text.Key))
+                throw new DomainException("Duplicate text content for the same template and audience.");
+
+            UpsertText(text);
+        }
+
+        foreach (CentreTextContent existing in _texts.Where(x => !x.IsDeleted).ToList())
+        {
+            var existingKey = (existing.ContentTemplateId, existing.AudienceId);
+            if (!incomingKeys.Contains(existingKey))
+                existing.Delete();
+        }
+
+        EnsureNoDuplicateActiveTextKeys();
+    }
+
+    private void UpsertText(TextContentDefinition definition)
+    {
+        CentreTextContent? existing = _texts.FirstOrDefault(
+            x => x.Matches(definition.ContentTemplateId, definition.NormalizedAudienceId));
+
+        if (definition.IsEmpty)
+        {
+            existing?.Delete();
+            return;
+        }
+
+        FormattedText text = FormattedText.Create(definition.Content, definition.Format);
+
+        if (existing is null)
+        {
+            _texts.Add(new CentreTextContent(definition.ContentTemplateId, definition.NormalizedAudienceId, text));
+            return;
+        }
+
+        existing.ChangeText(text);
+    }
+
+    private void EnsureNoDuplicateActiveTextKeys()
+    {
+        var activeKeys = new HashSet<(int ContentTemplateId, int? AudienceId)>();
+        foreach (CentreTextContent text in _texts.Where(x => !x.IsDeleted))
+        {
+            if (!activeKeys.Add((text.ContentTemplateId, text.AudienceId)))
+                throw new DomainException("Duplicate text content for the same template and audience.");
+        }
+    }
+
+    private static void EnsureValidCurrency(int currencyId)
+    {
+        if (currencyId <= 0)
+            throw new DomainException("CurrencyId must be greater than zero.");
+    }
+
+    private static void EnsureValidPrintFormat(PrintFormat printFormat)
+    {
+        if (!Enum.IsDefined(printFormat) || printFormat == PrintFormat.None)
+            throw new DomainException("PrintFormat must be a valid value.");
     }
 
     public sealed class Builder
@@ -133,7 +230,6 @@ public sealed class Centre : AggregateRoot<int>
         private readonly string _code;
         private readonly int _currencyId;
         private readonly PrintFormat _printFormat;
-        private readonly List<TextContentDefinition> _texts = new();
 
         private bool _isActive;
         private bool _isPhysicalCentre;
@@ -154,16 +250,14 @@ public sealed class Centre : AggregateRoot<int>
         private decimal? _individualsRatio;
         private decimal? _staffingRatio;
         private decimal? _emptyBeds;
-        private List<CentreContact> _contacts = new();
-        private CentreBankDetails _bankDetails = CentreBankDetails.Empty;
+        private CentreBankDetailsDefinition? _bankDetails;
+        private readonly List<CentreContactDefinition> _contacts = new();
+        private readonly List<TextContentDefinition> _texts = new();
 
         public Builder(string name, string code, int currencyId, PrintFormat printFormat)
         {
-            if (currencyId <= 0)
-                throw new DomainException("CurrencyId must be greater than zero.");
-
-            if (!Enum.IsDefined(typeof(PrintFormat), printFormat) || printFormat == PrintFormat.None)
-                throw new DomainException("PrintFormat must be a valid enum.");
+            EnsureValidCurrency(currencyId);
+            EnsureValidPrintFormat(printFormat);
 
             _name = name.AsRequiredDomainText(nameof(Name), Rules.NameMaxLength);
             _code = code.AsRequiredDomainText(nameof(Code), Rules.CodeMaxLength);
@@ -219,54 +313,45 @@ public sealed class Centre : AggregateRoot<int>
             return this;
         }
 
-        public Builder ContactAddress(int? countryId, string? street, string? district, string? city, string? postalCode)
+        public Builder ContactAddress(AddressDefinition definition)
         {
-            if (!countryId.HasValue)
-                throw new DomainException("Country ID must be provided.");
-
-            _contactAddress = Address.Create(countryId, street, district, city, postalCode);
+            _contactAddress = Address.Create(definition);
             return this;
         }
 
-        public Builder LogoBanner(byte[]? data, string? contentType, string? fileName)
+        public Builder LogoImage(ImageFileDefinition definition)
         {
-            _logoImage = ImageFile.Create(data, contentType, fileName, Rules.LogoMaxBytes);
-            return this;
-        }
-
-        public Builder Texts(IEnumerable<TextContentDefinition> texts)
-        {
-            _texts.AddRange(texts);
+            _logoImage = ImageFile.Create(definition, Rules.LogoMaxBytes);
             return this;
         }
 
         public Builder SchoolSponsorshipNumber(string? value)
         {
-            _schoolSponsorshipNumber = value.AsOptionalDomainText(nameof(SchoolSponsorshipNumber));
+            _schoolSponsorshipNumber = value.AsOptionalDomainText(nameof(SchoolSponsorshipNumber), Rules.LegalTextMaxLength);
             return this;
         }
 
         public Builder VatNumber(string? value)
         {
-            _vatNumber = value.AsOptionalDomainText(nameof(VatNumber));
+            _vatNumber = value.AsOptionalDomainText(nameof(VatNumber), Rules.LegalTextMaxLength);
             return this;
         }
 
         public Builder RegistrationNumber(string? value)
         {
-            _registrationNumber = value.AsOptionalDomainText(nameof(RegistrationNumber));
+            _registrationNumber = value.AsOptionalDomainText(nameof(RegistrationNumber), Rules.LegalTextMaxLength);
             return this;
         }
 
         public Builder VatExemptionNumber(string? value)
         {
-            _vatExemptionNumber = value.AsOptionalDomainText(nameof(VatExemptionNumber));
+            _vatExemptionNumber = value.AsOptionalDomainText(nameof(VatExemptionNumber), Rules.LegalTextMaxLength);
             return this;
         }
 
         public Builder ChequePayableTo(string? value)
         {
-            _chequePayableTo = value.AsOptionalDomainText(nameof(ChequePayableTo));
+            _chequePayableTo = value.AsOptionalDomainText(nameof(ChequePayableTo), Rules.LegalTextMaxLength);
             return this;
         }
 
@@ -291,6 +376,26 @@ public sealed class Centre : AggregateRoot<int>
         public Builder EmptyBeds(decimal? value)
         {
             _emptyBeds = value;
+            return this;
+        }
+
+        public Builder BankDetails(CentreBankDetailsDefinition definition)
+        {
+            _bankDetails = definition;
+            return this;
+        }
+
+        public Builder Contacts(IEnumerable<CentreContactDefinition> definitions)
+        {
+            ArgumentNullException.ThrowIfNull(definitions);
+            _contacts.AddRange(definitions);
+            return this;
+        }
+
+        public Builder Texts(IEnumerable<TextContentDefinition> definitions)
+        {
+            ArgumentNullException.ThrowIfNull(definitions);
+            _texts.AddRange(definitions);
             return this;
         }
 
@@ -319,7 +424,10 @@ public sealed class Centre : AggregateRoot<int>
                 EmptyBeds = _emptyBeds,
             };
 
-            //centre.ReplaceTexts(_texts);
+            centre.ChangeBankDetails(_bankDetails);
+            centre.ReplaceContacts(_contacts);
+            centre.ReplaceTexts(_texts);
+
             return centre;
         }
     }

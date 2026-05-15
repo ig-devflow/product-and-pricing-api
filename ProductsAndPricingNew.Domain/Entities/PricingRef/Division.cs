@@ -2,6 +2,7 @@
 using ProductsAndPricingNew.Domain.Common.Primitives;
 using ProductsAndPricingNew.Domain.Common.Text;
 using ProductsAndPricingNew.Domain.ReferenceData;
+using ProductsAndPricingNew.Domain.SharedKernel.Definitions;
 using ProductsAndPricingNew.Domain.SharedKernel.TextContent;
 using ProductsAndPricingNew.Domain.SharedKernel.ValueObjects;
 
@@ -52,11 +53,11 @@ public sealed class Division : AggregateRoot<int>
     public void ChangeHeadOfficeTelephone(string? headOfficeTelephone)
         => HeadOfficeTelephoneNo = TelephoneNumber.Create(headOfficeTelephone);
 
-    public void ChangeContactAddress(int? countryId, string? street, string? district, string? city, string? postalCode)
-        => ContactAddress = Address.Create(countryId, street, district, city, postalCode);
+    public void ChangeContactAddress(AddressDefinition? definition) =>
+        ContactAddress = Address.Create(definition);
 
-    public void ChangeAccreditationBanner(byte[]? data, string? contentType, string? fileName)
-        => AccreditationBanner = ImageFile.Create(data, contentType, fileName, Rules.AccreditationBannerMaxBytes);
+    public void ChangeAccreditationBanner(ImageFileDefinition? definition) =>
+        AccreditationBanner = ImageFile.Create(definition, Rules.AccreditationBannerMaxBytes);
 
     public void ReplaceTexts(IEnumerable<TextContentDefinition> texts)
     {
@@ -166,15 +167,15 @@ public sealed class Division : AggregateRoot<int>
             return this;
         }
 
-        public Builder ContactAddress(int? countryId, string? street, string? district, string? city, string? postalCode)
+        public Builder ContactAddress(AddressDefinition? definition)
         {
-            _contactAddress = Address.Create(countryId, street, district, city, postalCode);
+            _contactAddress = Address.Create(definition);
             return this;
         }
 
-        public Builder AccreditationBanner(byte[]? data, string? contentType, string? fileName)
+        public Builder AccreditationBanner(ImageFileDefinition definition)
         {
-            _accreditationBanner = ImageFile.Create(data, contentType, fileName, Rules.AccreditationBannerMaxBytes);
+            _accreditationBanner = ImageFile.Create(definition, Rules.AccreditationBannerMaxBytes);
             return this;
         }
 

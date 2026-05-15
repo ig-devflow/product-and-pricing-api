@@ -17,7 +17,7 @@ internal sealed class UpdateDivisionCommandBuilder
     private string? _headOfficeEmail = "head@example.com";
     private string? _headOfficeTelephoneNo = "+1 555 123 4567";
     private AddressDto? _contactAddress = new AddressDtoBuilder().Build();
-    private ImageBannerDto? _accreditationBanner = new ImageBannerDtoBuilder().Build();
+    private ImageFileDto? _accreditationBanner = new ImageBannerDtoBuilder().Build();
 
     private IReadOnlyCollection<TextContentDto> _texts =
     [
@@ -88,7 +88,7 @@ internal sealed class UpdateDivisionCommandBuilder
         return this;
     }
 
-    public UpdateDivisionCommandBuilder WithAccreditationBanner(ImageBannerDto? accreditationBanner)
+    public UpdateDivisionCommandBuilder WithAccreditationBanner(ImageFileDto? accreditationBanner)
     {
         _accreditationBanner = accreditationBanner;
         return this;

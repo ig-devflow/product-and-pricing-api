@@ -16,7 +16,6 @@ public readonly struct EmailAddress : IEquatable<EmailAddress>, IEmptyValueObjec
     }
 
     public bool IsEmpty => Value is null;
-
     public static EmailAddress Empty { get; } = new(null);
 
     public static EmailAddress Create(string? value)

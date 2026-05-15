@@ -59,49 +59,54 @@ internal sealed class CentreConfiguration : IEntityTypeConfiguration<Centre>
             .HasMaxLength(HexColor.Rules.MaxLengthWithHash)
             .IsFixedLength();
 
-        entity.OwnsOne(x => x.BankDetails, bank =>
+        entity.ComplexProperty(x => x.BankDetails, bank =>
         {
-            bank.ToTable("CentreBankDetails", "PricingRef");
+            bank.Property(x => x.BeneficiaryName)
+                .HasColumnName("BankBeneficiaryName")
+                .HasMaxLength(CentreBankDetails.Rules.MaxLength);
 
-            bank.WithOwner().HasForeignKey("CentreId");
-            bank.HasKey("CentreId");
+            bank.Property(x => x.AccountNumber)
+                .HasColumnName("BankAccountNumber")
+                .HasMaxLength(CentreBankDetails.Rules.MaxLength);
 
-            bank.Property(x => x.BeneficiaryName).HasMaxLength(200);
-            bank.Property(x => x.AccountNumber).HasMaxLength(100);
-            bank.Property(x => x.BankName).HasMaxLength(200);
-            bank.Property(x => x.Iban).HasMaxLength(100);
-            bank.Property(x => x.SwiftCode).HasMaxLength(50);
-            bank.Property(x => x.BranchCode).HasMaxLength(50);
-            bank.Property(x => x.AbaRoutingNo).HasMaxLength(50);
-            bank.Property(x => x.AchAba).HasMaxLength(50);
-            bank.Property(x => x.IntermediaryBankName).HasMaxLength(200);
-            bank.Property(x => x.IntermediarySwiftCode).HasMaxLength(50);
+            bank.Property(x => x.BankName)
+                .HasColumnName("BankName")
+                .HasMaxLength(CentreBankDetails.Rules.MaxLength);
+
+            bank.ComplexProperty(x => x.Identifiers, ids =>
+            {
+                ids.Property(x => x.Iban).HasColumnName("Iban").HasMaxLength(BankIdentifiers.Rules.MaxLength);
+                ids.Property(x => x.SwiftCode).HasColumnName("SwiftCode").HasMaxLength(BankIdentifiers.Rules.MaxLength);
+                ids.Property(x => x.BranchCode).HasColumnName("BranchCode").HasMaxLength(BankIdentifiers.Rules.MaxLength);
+                ids.Property(x => x.AbaRoutingNo).HasColumnName("AbaRoutingNo").HasMaxLength(BankIdentifiers.Rules.MaxLength);
+                ids.Property(x => x.AchAba).HasColumnName("AchAba").HasMaxLength(BankIdentifiers.Rules.MaxLength);
+            });
 
             bank.ConfigureAddress(x => x.BankAddress, "Bank");
             bank.ConfigureAddress(x => x.BeneficiaryBankAddress, "Beneficiary");
-            bank.ConfigureAddress(x => x.IntermediaryBankAddress, "Intermediary");
+
+            bank.ComplexProperty(x => x.Intermediary, inter =>
+            {
+                inter.Property(x => x.BankName)
+                    .HasColumnName("IntermediaryBankName")
+                    .HasMaxLength(IntermediaryBank.Rules.MaxLength);
+
+                inter.Property(x => x.SwiftCode)
+                    .HasColumnName("IntermediarySwiftCode")
+                    .HasMaxLength(IntermediaryBank.Rules.MaxLength);
+
+                inter.ConfigureAddress(x => x.BankAddress, "Intermediary");
+            });
         });
 
         entity.OwnsMany(x => x.Contacts, contact =>
         {
             contact.ToTable("CentreContacts", "PricingRef");
-
             contact.WithOwner().HasForeignKey("CentreId");
-
             contact.HasKey("CentreId", nameof(CentreContact.ContactType));
 
-            contact.Property(x => x.ContactType)
-                .HasColumnType("smallint")
-                .IsRequired();
-
-            contact.Property(x => x.Name)
-                .HasMaxLength(CentreContact.Rules.NameMaxLength)
-                .IsRequired();
-
-            // contact.Property(x => x.IsDeleted)
-            //     .IsRequired()
-            //     .HasDefaultValue(false);
-
+            contact.Property(x => x.ContactType).HasColumnType("smallint").IsRequired();
+            contact.Property(x => x.Name).HasMaxLength(CentreContact.Rules.NameMaxLength).IsRequired();
             contact.Property(x => x.Email)
                 .HasConversion(Converters.EmailAddress)
                 .HasColumnName("Email")

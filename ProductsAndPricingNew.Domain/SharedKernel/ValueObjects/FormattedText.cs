@@ -10,10 +10,9 @@ public sealed record FormattedText : IEmptyValueObject
     public ContentFormat Format { get; private set; } = ContentFormat.None;
 
     public bool IsEmpty => Content is null && Format == ContentFormat.None;
+    public static FormattedText Empty { get; } = new(null, ContentFormat.None);
 
-    private FormattedText()
-    {
-    }
+    private FormattedText() { }
 
     private FormattedText(string? content, ContentFormat format)
     {
@@ -44,8 +43,6 @@ public sealed record FormattedText : IEmptyValueObject
         FormattedText text = new(content, format);
         return text.IsEmpty ? Empty : text;
     }
-
-    public static FormattedText Empty { get; } = new(null, ContentFormat.None);
 
     public static class Rules
     {

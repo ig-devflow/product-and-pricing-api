@@ -1,5 +1,6 @@
 ﻿using ProductsAndPricingNew.Domain.Common.Exceptions;
 using ProductsAndPricingNew.Domain.Common.Text;
+using ProductsAndPricingNew.Domain.SharedKernel.Definitions;
 
 namespace ProductsAndPricingNew.Domain.SharedKernel.ValueObjects;
 
@@ -11,9 +12,7 @@ public sealed record Address : IEmptyValueObject
     public string? City { get; }
     public string? PostalCode { get; }
 
-    private Address()
-    {
-    }
+    private Address() { }
 
     private Address(
         int? countryId,
@@ -38,14 +37,12 @@ public sealed record Address : IEmptyValueObject
 
     public static Address Empty { get; } = new(null, null, null, null, null);
 
-    public static Address Create(
-        int? countryId,
-        string? street,
-        string? district,
-        string? city,
-        string? postalCode)
+    public static Address Create(AddressDefinition? definition)
     {
-        Address address = new(countryId, street, district, city, postalCode);
+        if (definition is null || definition.IsEmpty)
+            return Empty;
+
+        Address address = new(definition.CountryId, definition.Street, definition.District, definition.City, definition.PostalCode);
 
         if (address.IsEmpty)
             return Empty;
