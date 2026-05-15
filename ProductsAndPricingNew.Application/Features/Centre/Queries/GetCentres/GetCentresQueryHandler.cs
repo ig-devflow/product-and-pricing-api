@@ -15,7 +15,7 @@ internal sealed class GetCentresQueryHandler : IRequestHandler<GetCentresQuery, 
     {
         _centreQuery = centreQuery;
     }
-    
+
     public async Task<Result<PagedResult<CentreListItemDto>>> Handle(GetCentresQuery request, CancellationToken ct)
     {
         string? normalizedSearch = request.Search.AsOptionalText();

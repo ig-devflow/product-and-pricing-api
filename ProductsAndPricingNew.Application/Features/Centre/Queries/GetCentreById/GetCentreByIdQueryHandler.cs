@@ -14,7 +14,7 @@ internal sealed class GetCentreByIdQueryHandler : IRequestHandler<GetCentreByIdQ
     {
         _centreQuery = centreQuery;
     }
-    
+
     public async Task<Result<CentreDetailsDto>> Handle(GetCentreByIdQuery request, CancellationToken ct)
     {
         CentreDetailsDto? result = await _centreQuery.GetByIdAsync(request.Id, ct);

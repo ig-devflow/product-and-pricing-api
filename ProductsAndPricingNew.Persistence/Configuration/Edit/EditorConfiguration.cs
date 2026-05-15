@@ -32,8 +32,8 @@ internal sealed class EditorConfiguration : IEntityTypeConfiguration<Editor>
             .HasConversion(Converters.EmailAddress)
             .HasColumnName("Email")
             .HasMaxLength(EmailAddress.Rules.MaxLength)
-            .IsRequired();;
-        
+            .IsRequired();
+
         entity.HasData(new
         {
             Id = 1,

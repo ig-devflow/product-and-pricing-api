@@ -12,7 +12,7 @@ public sealed class Editor : Entity<int>
     public EmailAddress Email { get; init; }
 
     private Editor() { }
-    
+
     private Editor(string userName, string firstName, string lastName, EmailAddress email)
     {
         UserName = userName;
@@ -27,7 +27,7 @@ public sealed class Editor : Entity<int>
         string normalizedFirstName = firstName.AsRequiredDomainText(nameof(firstName), Rules.FirstNameMaxLength);
         string normalizedLastName = lastName.AsRequiredDomainText(nameof(lastName), Rules.LastNameMaxLength);
         string normalizedEmail = email.AsRequiredDomainText(nameof(email));
-        
+
         return new Editor(normalizedUserName, normalizedFirstName, normalizedLastName, EmailAddress.Create(normalizedEmail));
     }
 
