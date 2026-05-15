@@ -1,6 +1,7 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using ProductsAndPricingNew.Domain.Edit;
+using ProductsAndPricingNew.Domain.SharedKernel.ValueObjects;
 
 namespace ProductsAndPricingNew.Persistence.Configuration.Edit;
 
@@ -28,7 +29,9 @@ internal sealed class EditorConfiguration : IEntityTypeConfiguration<Editor>
             .IsRequired();
 
         entity.Property(x => x.Email)
-            .HasMaxLength(Editor.Rules.EmailMaxLength)
+            .HasConversion(Converters.EmailAddress)
+            .HasColumnName("Email")
+            .HasMaxLength(EmailAddress.Rules.MaxLength)
             .IsRequired();
 
         entity.HasData(new
@@ -37,7 +40,7 @@ internal sealed class EditorConfiguration : IEntityTypeConfiguration<Editor>
             UserName = "SYSTEM",
             FirstName = "System",
             LastName = "User",
-            Email = "noreply@ecenglish.com"
+            Email = EmailAddress.Create("noreply@ecenglish.com")
         });
     }
 }
