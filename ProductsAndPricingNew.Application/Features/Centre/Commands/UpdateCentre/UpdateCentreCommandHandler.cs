@@ -70,7 +70,6 @@ internal sealed class UpdateCentreCommandHandler : IRequestHandler<UpdateCentreC
         centre.ReplaceContacts(request.Contacts.ToDefinitions());
         centre.ReplaceTexts(request.Texts.ToDefinitions());
 
-        await _centreRepository.AddAsync(centre, ct);
         await _unitOfWork.SaveChangesAsync(ct);
 
         return Result.Ok();
