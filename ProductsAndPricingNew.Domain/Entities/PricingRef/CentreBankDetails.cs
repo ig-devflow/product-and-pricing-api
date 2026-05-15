@@ -16,14 +16,14 @@ public sealed class CentreBankDetails : IEquatable<CentreBankDetails>
     public IntermediaryBank Intermediary { get; private init; } = IntermediaryBank.Empty;
 
     private CentreBankDetails() { }
-    
+
     private CentreBankDetails(string beneficiaryName, string accountNumber, string bankName)
     {
         BeneficiaryName = beneficiaryName;
         AccountNumber = accountNumber;
         BankName = bankName;
     }
-    
+
     public static CentreBankDetails Create(CentreBankDetailsDefinition? definition)
     {
         if (definition is null)

@@ -121,7 +121,7 @@ public sealed class Centre : AggregateRoot<int>
 
     public void ChangeBankDetails(CentreBankDetailsDefinition? definition) =>
         BankDetails = CentreBankDetails.Create(definition);
-    
+
     public void ReplaceContacts(IEnumerable<CentreContactDefinition> contacts)
     {
         ArgumentNullException.ThrowIfNull(contacts);
@@ -140,7 +140,7 @@ public sealed class Centre : AggregateRoot<int>
             _contacts.Remove(existing);
         }
     }
-    
+
     private void UpsertContact(CentreContactDefinition definition)
     {
         ArgumentNullException.ThrowIfNull(definition);
