@@ -81,32 +81,26 @@ internal sealed class CentreQuery : ICentreQuery
                 c.IndividualsRatio,
                 c.StaffingRatio,
                 c.EmptyBeds,
-                -- BankDetails: основные поля
                 c.BankBeneficiaryName,
                 c.BankAccountNumber,
                 c.BankName,
-                -- BankDetails: идентификаторы
                 c.Iban,
                 c.SwiftCode,
                 c.BranchCode,
                 c.AbaRoutingNo,
                 c.AchAba,
-                -- BankDetails: BankAddress (prefix "Bank")
                 c.BankStreet,
                 c.BankDistrict,
                 c.BankCity,
                 c.BankPostalCode,
                 c.BankCountryId,
-                -- BankDetails: BeneficiaryBankAddress (prefix "Beneficiary")
                 c.BeneficiaryStreet,
                 c.BeneficiaryDistrict,
                 c.BeneficiaryCity,
                 c.BeneficiaryPostalCode,
                 c.BeneficiaryCountryId,
-                -- BankDetails: Intermediary
                 c.IntermediaryBankName,
                 c.IntermediarySwiftCode,
-                -- BankDetails: Intermediary.BankAddress (prefix "Intermediary")
                 c.IntermediaryStreet,
                 c.IntermediaryDistrict,
                 c.IntermediaryCity,
@@ -270,10 +264,6 @@ internal sealed class CentreQuery : ICentreQuery
             PageSize: pageSize);
     }
 
-    // -------------------------------------------------------------------------
-    // Mapping
-    // -------------------------------------------------------------------------
-
     private static CentreDetailsDto MapDetailsRow(
         CentreDetailsRow row,
         IReadOnlyCollection<CentreContactRow> contactRows,
@@ -387,7 +377,7 @@ internal sealed class CentreQuery : ICentreQuery
         return isEmpty ? null : new ImageFileDto(data, contentType, fileName);
     }
 
-    internal static string? BuildEditorName(string? firstName, string? lastName)
+    private static string? BuildEditorName(string? firstName, string? lastName)
     {
         string name = string.Join(" ", new[] { firstName, lastName }.Where(v => !string.IsNullOrWhiteSpace(v)));
         return string.IsNullOrWhiteSpace(name) ? null : name;
@@ -397,7 +387,7 @@ internal sealed class CentreQuery : ICentreQuery
 
     private static string ToBase64Version(byte[]? version) => Convert.ToBase64String(version ?? []);
 
-    internal sealed class CentreDetailsRow
+    private sealed class CentreDetailsRow
     {
         public int Id { get; init; }
         public string Name { get; init; } = null!;
@@ -468,7 +458,7 @@ internal sealed class CentreQuery : ICentreQuery
         public string? UpdatedByLastName { get; init; }
     }
 
-    internal sealed class CentreContactRow
+    private sealed class CentreContactRow
     {
         public CentreContactType ContactType { get; init; }
         public string Name { get; init; } = null!;
@@ -478,7 +468,7 @@ internal sealed class CentreQuery : ICentreQuery
         public string? SignatureFileName { get; init; }
     }
 
-    internal sealed class CentreListItemRow
+    private sealed class CentreListItemRow
     {
         public int Id { get; init; }
         public string Name { get; init; } = null!;

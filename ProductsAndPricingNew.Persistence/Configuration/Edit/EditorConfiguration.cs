@@ -40,7 +40,7 @@ internal sealed class EditorConfiguration : IEntityTypeConfiguration<Editor>
             UserName = "SYSTEM",
             FirstName = "System",
             LastName = "User",
-            Email = "noreply@ecenglish.com"
+            Email = EmailAddress.Create("noreply@ecenglish.com")
         });
     }
 }
