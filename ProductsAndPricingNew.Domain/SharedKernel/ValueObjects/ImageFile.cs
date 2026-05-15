@@ -1,5 +1,6 @@
 ﻿using ProductsAndPricingNew.Domain.Common.Exceptions;
 using ProductsAndPricingNew.Domain.Common.Text;
+using ProductsAndPricingNew.Domain.SharedKernel.Definitions;
 
 namespace ProductsAndPricingNew.Domain.SharedKernel.ValueObjects;
 
@@ -11,9 +12,10 @@ public sealed class ImageFile : IEquatable<ImageFile>, IEmptyValueObject
     public string? ContentType { get; }
     public string? FileName { get; }
 
-    private ImageFile()
-    {
-    }
+    public bool IsEmpty => _data is null || _data.Length == 0;
+    public static ImageFile Empty { get; } = new(null, null, null);
+
+    private ImageFile() { }
 
     private ImageFile(byte[]? data, string? contentType, string? fileName)
     {
@@ -22,25 +24,22 @@ public sealed class ImageFile : IEquatable<ImageFile>, IEmptyValueObject
         FileName = fileName;
     }
 
-    public static ImageFile Create(byte[]? data, string? contentType, string? fileName, int? maxBytes = null)
+    public static ImageFile Create(ImageFileDefinition? definition, int? maxBytes = null)
     {
-        if (data is null || data.Length == 0)
+        if (definition is null || definition.IsEmpty)
             return Empty;
 
-        if (maxBytes.HasValue && data.Length > maxBytes)
+        if (maxBytes.HasValue && definition.Data!.Length > maxBytes)
             throw new DomainException("Image is too large.");
 
-        string normalizedContentType = contentType.AsRequiredDomainText(nameof(ContentType), Rules.ContentTypeMaxLength).ToLowerInvariant();
-        string normalizedFileName = fileName.AsRequiredDomainText(nameof(FileName), Rules.FileNameMaxLength);
+        string normalizedContentType = definition.ContentType.AsRequiredDomainText(nameof(ContentType), Rules.ContentTypeMaxLength).ToLowerInvariant();
+        string normalizedFileName = definition.FileName.AsRequiredDomainText(nameof(FileName), Rules.FileNameMaxLength);
 
         if (!IsSupportedContentType(normalizedContentType))
             throw new DomainException("Unsupported image content type.");
 
-        return new ImageFile(data, normalizedContentType, normalizedFileName);
+        return new ImageFile(definition.Data, normalizedContentType, normalizedFileName);
     }
-
-    public bool IsEmpty => _data is null || _data.Length == 0;
-    public static ImageFile Empty { get; } = new(null, null, null);
 
     public static bool IsSupportedContentType(string? contentType)
         => !string.IsNullOrWhiteSpace(contentType) && Rules.AllowedImageContentTypes.Contains(contentType.Trim());

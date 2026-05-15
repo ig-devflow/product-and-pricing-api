@@ -18,7 +18,8 @@
     </ItemGroup>
 
     <ItemGroup>
-      <Folder Include="Features\Centre\" />
+      <Folder Include="Features\Centre\Queries\" />
+      <Folder Include="Features\Centre\Validation\" />
       <Folder Include="Features\School\" />
       <Folder Include="Utils\" />
     </ItemGroup>

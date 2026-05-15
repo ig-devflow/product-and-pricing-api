@@ -1,6 +1,7 @@
 using ProductsAndPricingNew.Domain.Common.Primitives;
 using ProductsAndPricingNew.Domain.Entities.PricingRef;
 using ProductsAndPricingNew.Domain.ReferenceData;
+using ProductsAndPricingNew.Domain.SharedKernel.Definitions;
 using ProductsAndPricingNew.Domain.SharedKernel.TextContent;
 
 namespace ProductsAndPricingNew.UnitTests.TestSupport.Builders;
@@ -78,8 +79,8 @@ internal sealed class DivisionBuilder
     {
         Division division = new Division.Builder(_name, _websiteUrl)
             .IsActive(_isActive)
-            .ContactAddress(_countryId, _street, _district, _city, _postalCode)
-            .AccreditationBanner(_bannerData, _bannerContentType, _bannerFileName)
+            .ContactAddress(new AddressDefinition(_countryId, _street, _district, _city, _postalCode))
+            .AccreditationBanner(new ImageFileDefinition(_bannerData, _bannerContentType, _bannerFileName))
             .Texts(_texts)
             .Build();
 

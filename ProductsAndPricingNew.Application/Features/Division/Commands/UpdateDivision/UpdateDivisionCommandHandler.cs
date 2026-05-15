@@ -2,9 +2,12 @@
 using MediatR;
 using ProductsAndPricingNew.Application.Abstractions;
 using ProductsAndPricingNew.Application.Common.Errors;
+using ProductsAndPricingNew.Application.Common.Mapping;
+using ProductsAndPricingNew.Application.Common.Models;
 using ProductsAndPricingNew.Application.Features.Division.Abstractions;
 using ProductsAndPricingNew.Domain.Abstractions;
 using ProductsAndPricingNew.Domain.Common.Text;
+using ProductsAndPricingNew.Domain.SharedKernel.Definitions;
 using ProductsAndPricingNew.Domain.SharedKernel.TextContent;
 using DivisionEntity = ProductsAndPricingNew.Domain.Entities.PricingRef.Division;
 
@@ -41,9 +44,6 @@ internal sealed class UpdateDivisionCommandHandler : IRequestHandler<UpdateDivis
         if (isNameTaken)
             return Result.Fail(new ConflictError($"Division name: '{name}' already exists"));
 
-        var address = request.ContactAddress;
-        var banner = request.AccreditationBanner;
-
         division.Rename(name);
         division.ChangeActiveState(request.IsActive);
         division.ChangeTermsAndConditions(request.TermsAndConditions);
@@ -51,9 +51,9 @@ internal sealed class UpdateDivisionCommandHandler : IRequestHandler<UpdateDivis
         division.ChangeWebsite(request.WebsiteUrl);
         division.ChangeHeadOfficeEmail(request.HeadOfficeEmail);
         division.ChangeHeadOfficeTelephone(request.HeadOfficeTelephoneNo);
-        division.ChangeContactAddress(address?.CountryId, address?.Street, address?.District, address?.City, address?.PostalCode);
-        division.ChangeAccreditationBanner(banner?.Data, banner?.ContentType, banner?.FileName);
-        division.ReplaceTexts(request.Texts.Select(x => new TextContentDefinition(x.ContentTemplateId, x.AudienceId, x.Content, x.Format)));
+        division.ChangeContactAddress(request.ContactAddress.ToDefinition());
+        division.ChangeAccreditationBanner(request.AccreditationBanner.ToDefinition());
+        division.ReplaceTexts(request.Texts.ToDefinitions());
 
         await _unitOfWork.SaveChangesAsync(ct);
 

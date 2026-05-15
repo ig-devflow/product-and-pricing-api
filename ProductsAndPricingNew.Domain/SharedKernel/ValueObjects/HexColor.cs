@@ -13,7 +13,6 @@ public readonly struct HexColor : IEquatable<HexColor>, IEmptyValueObject
     }
 
     public bool IsEmpty => Value is null;
-
     public static HexColor Empty { get; } = new(null);
 
     public static HexColor Create(string? value)

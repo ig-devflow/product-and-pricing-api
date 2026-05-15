@@ -14,6 +14,6 @@ public sealed record CreateDivisionCommand(
     string? HeadOfficeEmail,
     string? HeadOfficeTelephoneNo,
     AddressDto? ContactAddress,
-    ImageBannerDto? AccreditationBanner,
+    ImageFileDto? AccreditationBanner,
     IReadOnlyCollection<TextContentDto> Texts
 ) : ICommand<Result<int>>, IDivisionCommandPayload;

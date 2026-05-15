@@ -4,17 +4,14 @@ namespace ProductsAndPricingNew.Domain.SharedKernel.ValueObjects;
 
 public readonly struct FinanceCode : IEquatable<FinanceCode>, IEmptyValueObject
 {
-    private readonly string? _value;
-
-    public string Value => _value ?? Rules.DefaultValue;
+    public string Value { get; }
 
     private FinanceCode(string value)
     {
-        _value = value;
+        Value = value;
     }
 
     public bool IsEmpty => string.Equals(Value, Rules.DefaultValue, StringComparison.OrdinalIgnoreCase);
-
     public static FinanceCode Empty { get; } = new(Rules.DefaultValue);
 
     public static FinanceCode Create(string? value, string fieldName = nameof(FinanceCode), int maxLength = Rules.MaxLength)

@@ -26,6 +26,6 @@ internal sealed class ImageBannerDtoBuilder
         return this;
     }
 
-    public ImageBannerDto Build()
+    public ImageFileDto Build()
         => new(_data, _contentType, _fileName);
 }

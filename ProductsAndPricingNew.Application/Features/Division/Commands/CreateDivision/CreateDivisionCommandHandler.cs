@@ -2,10 +2,10 @@
 using MediatR;
 using ProductsAndPricingNew.Application.Abstractions;
 using ProductsAndPricingNew.Application.Common.Errors;
+using ProductsAndPricingNew.Application.Common.Mapping;
 using ProductsAndPricingNew.Application.Features.Division.Abstractions;
 using ProductsAndPricingNew.Domain.Abstractions;
 using ProductsAndPricingNew.Domain.Common.Text;
-using ProductsAndPricingNew.Domain.SharedKernel.TextContent;
 using DivisionEntity = ProductsAndPricingNew.Domain.Entities.PricingRef.Division;
 
 namespace ProductsAndPricingNew.Application.Features.Division.Commands.CreateDivision;
@@ -34,18 +34,15 @@ internal sealed class CreateDivisionCommandHandler : IRequestHandler<CreateDivis
         if (isNameTaken)
             return Result.Fail(new ConflictError($"Division name: '{name}' already exists"));
 
-        var address = request.ContactAddress;
-        var banner = request.AccreditationBanner;
-
         DivisionEntity division = new DivisionEntity.Builder(name, request.WebsiteUrl)
             .IsActive(request.IsActive)
             .TermsAndConditions(request.TermsAndConditions)
             .GroupsPaymentTerms(request.GroupsPaymentTerms)
             .HeadOfficeEmail(request.HeadOfficeEmail)
             .HeadOfficeTelephone(request.HeadOfficeTelephoneNo)
-            .ContactAddress(address?.CountryId, address?.Street, address?.District, address?.City, address?.PostalCode)
-            .AccreditationBanner(banner?.Data, banner?.ContentType, banner?.FileName)
-            .Texts(request.Texts.Select(x => new TextContentDefinition(x.ContentTemplateId, x.AudienceId, x.Content, x.Format)))
+            .ContactAddress(request.ContactAddress.ToDefinition())
+            .AccreditationBanner(request.AccreditationBanner.ToDefinition())
+            .Texts(request.Texts.ToDefinitions())
             .Build();
 
         await _divisionRepository.AddAsync(division, ct);
