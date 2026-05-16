@@ -55,7 +55,7 @@ public sealed class DivisionController : ControllerBase
     /// <returns>Division details.</returns>
     /// <response code="200">Returns the division details.</response>
     /// <response code="404">Division was not found.</response>
-    [HttpGet("{id:int}", Name = nameof(GetById))]
+    [HttpGet("{id:int}", Name = "GetDivisionById")]
     [ProducesResponseType(typeof(DivisionDetailsDto), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status404NotFound)]
     public async Task<ActionResult> GetById(int id, CancellationToken ct)

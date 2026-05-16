@@ -55,7 +55,6 @@ internal sealed class CentreQuery : ICentreQuery
                 c.PrintFormat,
                 c.IsActive,
                 c.IsPhysicalCentre,
-                -- ContactInfo
                 c.GeneralEmail,
                 c.AccommodationEmail,
                 c.Telephone,
@@ -70,13 +69,11 @@ internal sealed class CentreQuery : ICentreQuery
                 c.LogoData,
                 c.LogoContentType,
                 c.LogoFileName,
-                -- LegalInfo
                 c.SchoolSponsorshipNumber,
                 c.VatNumber,
                 c.RegistrationNumber,
                 c.VatExemptionNumber,
                 c.ChequePayableTo,
-                -- OperationalRatios
                 c.Guarantees,
                 c.IndividualsRatio,
                 c.StaffingRatio,
@@ -106,7 +103,6 @@ internal sealed class CentreQuery : ICentreQuery
                 c.IntermediaryCity,
                 c.IntermediaryPostalCode,
                 c.IntermediaryCountryId,
-                -- Audit
                 c.Version,
                 c.CreatedAt,
                 c.UpdatedAt,

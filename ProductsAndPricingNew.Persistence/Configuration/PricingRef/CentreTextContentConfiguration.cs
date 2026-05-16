@@ -10,7 +10,7 @@ internal sealed class CentreTextContentConfiguration : IEntityTypeConfiguration<
 {
     public void Configure(EntityTypeBuilder<CentreTextContent> entity)
     {
-        entity.ToTable("CentreTextContents", "PricingRef");
+        entity.ToTable("CentreTextContent", "PricingRef");
 
         entity.HasKey(x => x.Id);
         entity.Property(x => x.Id)

@@ -55,11 +55,11 @@ internal sealed class DivisionQuery : IDivisionQuery
                 d.WebsiteUrl,
                 d.HeadOfficeEmail,
                 d.HeadOfficeTelephoneNo,
-                d.Street,
-                d.District,
-                d.City,
-                d.PostalCode,
-                d.CountryId,
+                d.ContactStreet,
+                d.ContactDistrict,
+                d.ContactCity,
+                d.ContactPostalCode,
+                d.ContactCountryId,
                 d.BannerData AS AccreditationBannerData,
                 d.BannerContentType AS AccreditationBannerContentType,
                 d.BannerFileName AS AccreditationBannerFileName,
@@ -138,7 +138,7 @@ internal sealed class DivisionQuery : IDivisionQuery
                  OR d.Name LIKE '%' + @Search + '%'
                  OR d.WebsiteUrl LIKE '%' + @Search + '%'
                  OR d.HeadOfficeEmail LIKE '%' + @Search + '%'
-                 OR d.City LIKE '%' + @Search + '%'
+                 OR d.ContactCity LIKE '%' + @Search + '%'
                  OR c.Name LIKE '%' + @Search + '%'
                  OR createdEditor.FirstName LIKE '%' + @Search + '%'
                  OR createdEditor.LastName LIKE '%' + @Search + '%'
@@ -152,7 +152,7 @@ internal sealed class DivisionQuery : IDivisionQuery
                d.IsActive,
                d.WebsiteUrl,
                d.HeadOfficeEmail,
-               d.City,
+               d.ContactCity,
                c.Name AS CountryName,
                d.CreatedAt,
                d.UpdatedAt,
@@ -175,7 +175,7 @@ internal sealed class DivisionQuery : IDivisionQuery
                  OR d.Name LIKE '%' + @Search + '%'
                  OR d.WebsiteUrl LIKE '%' + @Search + '%'
                  OR d.HeadOfficeEmail LIKE '%' + @Search + '%'
-                 OR d.City LIKE '%' + @Search + '%'
+                 OR d.ContactCity LIKE '%' + @Search + '%'
                  OR c.Name LIKE '%' + @Search + '%'
                  OR createdEditor.FirstName LIKE '%' + @Search + '%'
                  OR createdEditor.LastName LIKE '%' + @Search + '%'
