@@ -30,7 +30,7 @@ public class CentreController : ControllerBase
         _sender = sender;
         _mapper = mapper;
     }
-    
+
     /// <summary>
     /// Gets a paged list of centres.
     /// </summary>
@@ -46,7 +46,7 @@ public class CentreController : ControllerBase
         Result<PagedResult<CentreListItemDto>> result = await _sender.Send(query, ct);
         return result.ToActionResult(this);
     }
-    
+
     /// <summary>
     /// Gets a centre by identifier.
     /// </summary>
