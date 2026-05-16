@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using ProductsAndPricingNew.Persistence;
 
@@ -12,9 +13,11 @@ using ProductsAndPricingNew.Persistence;
 namespace ProductsAndPricingNew.Persistence.Migrations
 {
     [DbContext(typeof(ProductsAndPricingDbContext))]
-    partial class ProductsAndPricingDbContextModelSnapshot : ModelSnapshot
+    [Migration("20260516170843_CreateCentreTable")]
+    partial class CreateCentreTable
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
