@@ -55,7 +55,7 @@ public class CentreController : ControllerBase
     /// <returns>Centre details.</returns>
     /// <response code="200">Returns the centre details.</response>
     /// <response code="404">Centre was not found.</response>
-    [HttpGet("{id:int}", Name = nameof(GetById))]
+    [HttpGet("{id:int}", Name = "GetCentreById")]
     [ProducesResponseType(typeof(CentreDetailsDto), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status404NotFound)]
     public async Task<ActionResult> GetById(int id, CancellationToken ct)

@@ -228,8 +228,10 @@ namespace ProductsAndPricingNew.Persistence.Migrations
                         .HasColumnType("nvarchar(100)");
 
                     b.Property<byte[]>("Version")
+                        .IsConcurrencyToken()
                         .IsRequired()
-                        .HasColumnType("varbinary(max)");
+                        .ValueGeneratedOnAddOrUpdate()
+                        .HasColumnType("rowversion");
 
                     b.ComplexProperty(typeof(Dictionary<string, object>), "AuditMetadata", "ProductsAndPricingNew.Domain.Entities.PricingRef.Centre.AuditMetadata#AuditMetadata", b1 =>
                         {
@@ -457,6 +459,10 @@ namespace ProductsAndPricingNew.Persistence.Migrations
 
                     b.HasKey("Id");
 
+                    b.HasIndex("Name")
+                        .IsUnique()
+                        .HasFilter("[IsDeleted] = 0");
+
                     b.ToTable("Centre", "PricingRef");
                 });
 
@@ -509,7 +515,7 @@ namespace ProductsAndPricingNew.Persistence.Migrations
                         .IsUnique()
                         .HasFilter("[IsDeleted] = 0");
 
-                    b.ToTable("CentreTextContents", "PricingRef");
+                    b.ToTable("CentreTextContent", "PricingRef");
                 });
 
             modelBuilder.Entity("ProductsAndPricingNew.Domain.Entities.PricingRef.Division", b =>

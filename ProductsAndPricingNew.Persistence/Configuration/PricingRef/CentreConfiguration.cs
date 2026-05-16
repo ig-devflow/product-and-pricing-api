@@ -96,7 +96,7 @@ internal sealed class CentreConfiguration : IEntityTypeConfiguration<Centre>
                 .HasColumnName("BankName")
                 .HasMaxLength(CentreBankDetails.Rules.MaxLength);
 
-            bank.ComplexProperty(x => x.Identifiers, ids =>
+            bank.ComplexProperty(x => x.Identifiers, ids => // CreateCentreTable
             {
                 ids.Property(x => x.Iban).HasColumnName("Iban").HasMaxLength(BankIdentifiers.Rules.MaxLength);
                 ids.Property(x => x.SwiftCode).HasColumnName("SwiftCode").HasMaxLength(BankIdentifiers.Rules.MaxLength);
@@ -137,5 +137,13 @@ internal sealed class CentreConfiguration : IEntityTypeConfiguration<Centre>
 
             contact.ConfigureBanner(x => x.SignatureImage, "Signature");
         });
+
+        entity.Property(x => x.Version).IsRowVersion();
+
+        entity.HasIndex(x => x.Name)
+            .IsUnique()
+            .HasFilter("[IsDeleted] = 0");
+
+        entity.Ignore(x => x.DomainEvents);
     }
 }

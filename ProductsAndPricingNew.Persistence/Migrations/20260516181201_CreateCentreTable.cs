@@ -199,7 +199,7 @@ namespace ProductsAndPricingNew.Persistence.Migrations
                     LogoData = table.Column<byte[]>(type: "varbinary(max)", nullable: true),
                     LogoFileName = table.Column<string>(type: "nvarchar(255)", maxLength: 255, nullable: true),
                     IsDeleted = table.Column<bool>(type: "bit", nullable: false),
-                    Version = table.Column<byte[]>(type: "varbinary(max)", nullable: false)
+                    Version = table.Column<byte[]>(type: "rowversion", rowVersion: true, nullable: false)
                 },
                 constraints: table =>
                 {
@@ -232,7 +232,7 @@ namespace ProductsAndPricingNew.Persistence.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "CentreTextContents",
+                name: "CentreTextContent",
                 schema: "PricingRef",
                 columns: table => new
                 {
@@ -247,23 +247,23 @@ namespace ProductsAndPricingNew.Persistence.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_CentreTextContents", x => x.Id);
+                    table.PrimaryKey("PK_CentreTextContent", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_CentreTextContents_Audience_AudienceId",
+                        name: "FK_CentreTextContent_Audience_AudienceId",
                         column: x => x.AudienceId,
                         principalSchema: "ReferenceData",
                         principalTable: "Audience",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
                     table.ForeignKey(
-                        name: "FK_CentreTextContents_Centre_CentreId",
+                        name: "FK_CentreTextContent_Centre_CentreId",
                         column: x => x.CentreId,
                         principalSchema: "PricingRef",
                         principalTable: "Centre",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_CentreTextContents_ContentTemplate_ContentTemplateId",
+                        name: "FK_CentreTextContent_ContentTemplate_ContentTemplateId",
                         column: x => x.ContentTemplateId,
                         principalSchema: "ReferenceData",
                         principalTable: "ContentTemplate",
@@ -272,23 +272,31 @@ namespace ProductsAndPricingNew.Persistence.Migrations
                 });
 
             migrationBuilder.CreateIndex(
-                name: "IX_CentreTextContents_AudienceId",
+                name: "IX_Centre_Name",
                 schema: "PricingRef",
-                table: "CentreTextContents",
+                table: "Centre",
+                column: "Name",
+                unique: true,
+                filter: "[IsDeleted] = 0");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_CentreTextContent_AudienceId",
+                schema: "PricingRef",
+                table: "CentreTextContent",
                 column: "AudienceId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_CentreTextContents_CentreId_ContentTemplateId_AudienceId",
+                name: "IX_CentreTextContent_CentreId_ContentTemplateId_AudienceId",
                 schema: "PricingRef",
-                table: "CentreTextContents",
+                table: "CentreTextContent",
                 columns: new[] { "CentreId", "ContentTemplateId", "AudienceId" },
                 unique: true,
                 filter: "[IsDeleted] = 0");
 
             migrationBuilder.CreateIndex(
-                name: "IX_CentreTextContents_ContentTemplateId",
+                name: "IX_CentreTextContent_ContentTemplateId",
                 schema: "PricingRef",
-                table: "CentreTextContents",
+                table: "CentreTextContent",
                 column: "ContentTemplateId");
         }
 
@@ -300,7 +308,7 @@ namespace ProductsAndPricingNew.Persistence.Migrations
                 schema: "PricingRef");
 
             migrationBuilder.DropTable(
-                name: "CentreTextContents",
+                name: "CentreTextContent",
                 schema: "PricingRef");
 
             migrationBuilder.DropTable(
