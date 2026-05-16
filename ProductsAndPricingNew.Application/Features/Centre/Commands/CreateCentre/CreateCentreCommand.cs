@@ -1,6 +1,7 @@
 ﻿using FluentResults;
 using ProductsAndPricingNew.Application.Abstractions;
 using ProductsAndPricingNew.Application.Common.Models;
+using ProductsAndPricingNew.Application.Features.Centre.Abstractions;
 using ProductsAndPricingNew.Application.Features.Centre.Models;
 using ProductsAndPricingNew.Domain.Entities.PricingRef;
 
@@ -19,4 +20,4 @@ public sealed record CreateCentreCommand(
     CentreBankDetailsDto BankDetails,
     IReadOnlyCollection<CentreContactDto> Contacts,
     IReadOnlyCollection<TextContentDto> Texts
-) : ICommand<Result<int>>;
+) : ICommand<Result<int>>, ICentreCommandPayload;

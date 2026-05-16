@@ -1,5 +1,11 @@
-﻿namespace ProductsAndPricingNew.Application.Features.Centre.Commands.CreateCentre;
+using ProductsAndPricingNew.Application.Common.Validation.Abstractions;
+using ProductsAndPricingNew.Application.Features.Centre.Validation;
 
-public class CreateCentreCommandValidator
+namespace ProductsAndPricingNew.Application.Features.Centre.Commands.CreateCentre;
+
+internal sealed class CreateCentreCommandValidator : CentreCommandValidatorBase<CreateCentreCommand>
 {
+    public CreateCentreCommandValidator(IReferenceDataValidationQuery referenceData) : base(referenceData)
+    {
+    }
 }

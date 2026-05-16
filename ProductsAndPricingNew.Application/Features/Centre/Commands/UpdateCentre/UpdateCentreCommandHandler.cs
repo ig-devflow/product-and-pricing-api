@@ -37,7 +37,7 @@ internal sealed class UpdateCentreCommandHandler : IRequestHandler<UpdateCentreC
             return Result.Fail(new ConflictError("Centre was modified by another user. Reload it and try again."));
 
         string name = request.Name.AsRequiredText(nameof(request.Name));
-        
+
         bool isNameTaken = await _centreQuery.ExistsByNameAsync(name, request.Id, ct);
         if (isNameTaken)
             return Result.Fail(new ConflictError($"Centre name: '{name}' already exists"));

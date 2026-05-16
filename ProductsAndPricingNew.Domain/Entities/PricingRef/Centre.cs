@@ -158,7 +158,7 @@ public sealed class Centre : AggregateRoot<int>
     {
         ArgumentNullException.ThrowIfNull(texts);
         var incomingKeys = new HashSet<(int ContentTemplateId, int? AudienceId)>();
-        
+
         foreach (TextContentDefinition text in texts)
         {
             text.EnsureValid();

@@ -30,7 +30,7 @@ internal sealed class CreateCentreCommandHandler : IRequestHandler<CreateCentreC
     public async Task<Result<int>> Handle(CreateCentreCommand request, CancellationToken ct)
     {
         string name = request.Name.AsRequiredText(nameof(request.Name));
-        
+
         bool isNameTaken = await _centreQuery.ExistsByNameAsync(name, ct: ct);
         if (isNameTaken)
             return Result.Fail(new ConflictError($"Centre name: '{name}' already exists"));

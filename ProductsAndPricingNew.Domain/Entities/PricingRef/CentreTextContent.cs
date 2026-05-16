@@ -15,7 +15,7 @@ public sealed class CentreTextContent : TextContent
         : base(contentTemplateId, audienceId, text)
     {
     }
-    
+
     internal static CentreTextContent Create(TextContentDefinition definition, FormattedText text)
         => new(definition.ContentTemplateId, definition.NormalizedAudienceId, text);
 }
