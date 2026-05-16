@@ -5,6 +5,7 @@ using ProductsAndPricingNew.Application.Common.Errors;
 using ProductsAndPricingNew.Application.Common.Mapping;
 using ProductsAndPricingNew.Application.Features.Centre.Abstractions;
 using ProductsAndPricingNew.Application.Features.Centre.Mappings;
+using ProductsAndPricingNew.Domain.Common.Text;
 using ProductsAndPricingNew.Domain.Repositories;
 using CentreEntity = ProductsAndPricingNew.Domain.Entities.PricingRef.Centre;
 
@@ -28,15 +29,17 @@ internal sealed class CreateCentreCommandHandler : IRequestHandler<CreateCentreC
 
     public async Task<Result<int>> Handle(CreateCentreCommand request, CancellationToken ct)
     {
-        bool isNameTaken = await _centreQuery.ExistsByNameAsync(request.Name, ct: ct);
+        string name = request.Name.AsRequiredText(nameof(request.Name));
+        
+        bool isNameTaken = await _centreQuery.ExistsByNameAsync(name, ct: ct);
         if (isNameTaken)
-            return Result.Fail(new ConflictError($"Centre name: '{request.Name}' already exists"));
+            return Result.Fail(new ConflictError($"Centre name: '{name}' already exists"));
 
         var contactInfo = request.ContactInfo;
         var legalInfo = request.LegalInfo;
         var ratios = request.OperationalRatios;
 
-        CentreEntity centre = new CentreEntity.Builder(request.Name, request.Code, request.CurrencyId, request.PrintFormat)
+        CentreEntity centre = new CentreEntity.Builder(name, request.Code, request.CurrencyId, request.PrintFormat)
             .IsActive(request.IsActive)
             .IsPhysicalCentre(request.IsPhysicalCentre)
             .GeneralEmail(contactInfo.GeneralEmail)

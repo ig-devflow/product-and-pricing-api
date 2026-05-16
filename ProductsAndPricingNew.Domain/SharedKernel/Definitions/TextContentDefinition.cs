@@ -1,7 +1,7 @@
 ﻿using ProductsAndPricingNew.Domain.Common.Exceptions;
 using ProductsAndPricingNew.Domain.ReferenceData;
 
-namespace ProductsAndPricingNew.Domain.SharedKernel.TextContent;
+namespace ProductsAndPricingNew.Domain.SharedKernel.Definitions;
 
 public readonly record struct TextContentDefinition
 {

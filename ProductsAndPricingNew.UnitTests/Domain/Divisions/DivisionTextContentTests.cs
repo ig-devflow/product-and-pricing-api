@@ -1,6 +1,6 @@
 using ProductsAndPricingNew.Domain.Entities.PricingRef;
 using ProductsAndPricingNew.Domain.ReferenceData;
-using ProductsAndPricingNew.Domain.SharedKernel.TextContent;
+using ProductsAndPricingNew.Domain.SharedKernel.Definitions;
 
 namespace ProductsAndPricingNew.UnitTests.Domain.Divisions;
 

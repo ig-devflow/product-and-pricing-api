@@ -2,7 +2,7 @@
 using ProductsAndPricingNew.Domain.Common.Primitives;
 using ProductsAndPricingNew.Domain.SharedKernel.ValueObjects;
 
-namespace ProductsAndPricingNew.Domain.SharedKernel.TextContent;
+namespace ProductsAndPricingNew.Domain.Entities.PricingRef;
 
 public abstract class TextContent : Entity<int>
 {
@@ -11,9 +11,7 @@ public abstract class TextContent : Entity<int>
     public FormattedText Text { get; protected set; } = FormattedText.Empty;
     public bool IsDeleted { get; protected set; }
 
-    protected TextContent()
-    {
-    }
+    protected TextContent() { }
 
     protected TextContent(int contentTemplateId, int? audienceId, FormattedText text)
     {

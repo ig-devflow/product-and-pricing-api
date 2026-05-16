@@ -6,7 +6,7 @@ using ProductsAndPricingNew.Application.Features.Division.Abstractions;
 using ProductsAndPricingNew.Application.Features.Division.Models;
 using ProductsAndPricingNew.Persistence.Queries.Configuration;
 
-namespace ProductsAndPricingNew.Persistence.Queries.Division;
+namespace ProductsAndPricingNew.Persistence.Queries;
 
 internal sealed class DivisionQuery : IDivisionQuery
 {

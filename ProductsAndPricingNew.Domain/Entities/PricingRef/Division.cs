@@ -3,7 +3,6 @@ using ProductsAndPricingNew.Domain.Common.Primitives;
 using ProductsAndPricingNew.Domain.Common.Text;
 using ProductsAndPricingNew.Domain.ReferenceData;
 using ProductsAndPricingNew.Domain.SharedKernel.Definitions;
-using ProductsAndPricingNew.Domain.SharedKernel.TextContent;
 using ProductsAndPricingNew.Domain.SharedKernel.ValueObjects;
 
 namespace ProductsAndPricingNew.Domain.Entities.PricingRef;
@@ -109,7 +108,6 @@ public sealed class Division : AggregateRoot<int>
     private void EnsureNoDuplicateActiveTextKeys()
     {
         var activeKeys = new HashSet<(int ContentTemplateId, int? AudienceId)>();
-
         foreach (DivisionTextContent text in _texts.Where(x => !x.IsDeleted))
         {
             if (!activeKeys.Add((text.ContentTemplateId, text.AudienceId)))

@@ -1,4 +1,4 @@
-﻿using ProductsAndPricingNew.Domain.SharedKernel.TextContent;
+﻿using ProductsAndPricingNew.Domain.SharedKernel.Definitions;
 using ProductsAndPricingNew.Domain.SharedKernel.ValueObjects;
 
 namespace ProductsAndPricingNew.Domain.Entities.PricingRef;
@@ -11,8 +11,11 @@ public sealed class CentreTextContent : TextContent
     {
     }
 
-    internal CentreTextContent(int contentTemplateId, int? audienceId, FormattedText text)
+    private CentreTextContent(int contentTemplateId, int? audienceId, FormattedText text)
         : base(contentTemplateId, audienceId, text)
     {
     }
+    
+    internal static CentreTextContent Create(TextContentDefinition definition, FormattedText text)
+        => new(definition.ContentTemplateId, definition.NormalizedAudienceId, text);
 }
