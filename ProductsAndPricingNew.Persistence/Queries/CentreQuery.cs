@@ -7,7 +7,7 @@ using ProductsAndPricingNew.Application.Features.Centre.Models;
 using ProductsAndPricingNew.Domain.Entities.PricingRef;
 using ProductsAndPricingNew.Persistence.Queries.Configuration;
 
-namespace ProductsAndPricingNew.Persistence.Queries.Centre;
+namespace ProductsAndPricingNew.Persistence.Queries;
 
 internal sealed class CentreQuery : ICentreQuery
 {

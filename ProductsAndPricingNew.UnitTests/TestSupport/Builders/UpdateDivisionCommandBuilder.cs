@@ -1,7 +1,6 @@
 using ProductsAndPricingNew.Application.Common.Models;
 using ProductsAndPricingNew.Application.Features.Division.Commands.UpdateDivision;
 using ProductsAndPricingNew.Domain.ReferenceData;
-using ProductsAndPricingNew.Domain.SharedKernel.TextContent;
 
 namespace ProductsAndPricingNew.UnitTests.TestSupport.Builders;
 

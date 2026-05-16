@@ -5,9 +5,6 @@ using ProductsAndPricingNew.Domain.SharedKernel.ValueObjects;
 
 namespace ProductsAndPricingNew.Domain.Entities.PricingRef;
 
-// Внутренняя Entity агрегата Centre.
-// Natural key: ContactType (composite (CentreId, ContactType) на уровне Persistence).
-// Все mutator-методы помечены internal — изменения только через корень.
 public sealed class CentreContact
 {
     public CentreContactType ContactType { get; private set; }

@@ -2,7 +2,6 @@ using ProductsAndPricingNew.Domain.Common.Primitives;
 using ProductsAndPricingNew.Domain.Entities.PricingRef;
 using ProductsAndPricingNew.Domain.ReferenceData;
 using ProductsAndPricingNew.Domain.SharedKernel.Definitions;
-using ProductsAndPricingNew.Domain.SharedKernel.TextContent;
 
 namespace ProductsAndPricingNew.UnitTests.TestSupport.Builders;
 

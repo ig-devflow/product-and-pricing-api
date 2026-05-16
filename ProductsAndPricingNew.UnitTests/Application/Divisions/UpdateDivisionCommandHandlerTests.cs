@@ -3,7 +3,7 @@ using ProductsAndPricingNew.Application.Common.Errors;
 using ProductsAndPricingNew.Application.Features.Division.Commands.UpdateDivision;
 using ProductsAndPricingNew.Domain.Entities.PricingRef;
 using ProductsAndPricingNew.Domain.ReferenceData;
-using ProductsAndPricingNew.Domain.SharedKernel.TextContent;
+using ProductsAndPricingNew.Domain.SharedKernel.Definitions;
 using ProductsAndPricingNew.UnitTests.TestSupport.Assertions;
 using ProductsAndPricingNew.UnitTests.TestSupport.Builders;
 using ProductsAndPricingNew.UnitTests.TestSupport.Fakes;

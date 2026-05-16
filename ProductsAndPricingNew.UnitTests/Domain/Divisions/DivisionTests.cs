@@ -2,7 +2,6 @@ using ProductsAndPricingNew.Domain.Common.Exceptions;
 using ProductsAndPricingNew.Domain.Entities.PricingRef;
 using ProductsAndPricingNew.Domain.ReferenceData;
 using ProductsAndPricingNew.Domain.SharedKernel.Definitions;
-using ProductsAndPricingNew.Domain.SharedKernel.TextContent;
 using ProductsAndPricingNew.Domain.SharedKernel.ValueObjects;
 
 namespace ProductsAndPricingNew.UnitTests.Domain.Divisions;

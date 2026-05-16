@@ -5,7 +5,7 @@ using ProductsAndPricingNew.Application.Features.ReferenceData.Models;
 using ProductsAndPricingNew.Domain.ReferenceData;
 using ProductsAndPricingNew.Persistence.Queries.Configuration;
 
-namespace ProductsAndPricingNew.Persistence.Queries.ReferenceData;
+namespace ProductsAndPricingNew.Persistence.Queries;
 
 internal sealed class ReferenceDataQuery : IReferenceDataQuery
 {

@@ -5,6 +5,7 @@ using ProductsAndPricingNew.Application.Common.Errors;
 using ProductsAndPricingNew.Application.Common.Mapping;
 using ProductsAndPricingNew.Application.Features.Centre.Abstractions;
 using ProductsAndPricingNew.Application.Features.Centre.Mappings;
+using ProductsAndPricingNew.Domain.Common.Text;
 using ProductsAndPricingNew.Domain.Repositories;
 using CentreEntity = ProductsAndPricingNew.Domain.Entities.PricingRef.Centre;
 
@@ -35,15 +36,17 @@ internal sealed class UpdateCentreCommandHandler : IRequestHandler<UpdateCentreC
         if (!centre.HasVersion(request.Version))
             return Result.Fail(new ConflictError("Centre was modified by another user. Reload it and try again."));
 
-        bool isNameTaken = await _centreQuery.ExistsByNameAsync(request.Name, request.Id, ct);
+        string name = request.Name.AsRequiredText(nameof(request.Name));
+
+        bool isNameTaken = await _centreQuery.ExistsByNameAsync(name, request.Id, ct);
         if (isNameTaken)
-            return Result.Fail(new ConflictError($"Centre name: '{request.Name}' already exists"));
+            return Result.Fail(new ConflictError($"Centre name: '{name}' already exists"));
 
         var contactInfo = request.ContactInfo;
         var legalInfo = request.LegalInfo;
         var ratios = request.OperationalRatios;
 
-        centre.Rename(request.Name);
+        centre.Rename(name);
         centre.ChangeCode(request.Code);
         centre.ChangeCurrency(request.CurrencyId);
         centre.ChangePrintFormat(request.PrintFormat);
@@ -70,7 +73,6 @@ internal sealed class UpdateCentreCommandHandler : IRequestHandler<UpdateCentreC
         centre.ReplaceContacts(request.Contacts.ToDefinitions());
         centre.ReplaceTexts(request.Texts.ToDefinitions());
 
-        await _centreRepository.AddAsync(centre, ct);
         await _unitOfWork.SaveChangesAsync(ct);
 
         return Result.Ok();

@@ -8,7 +8,6 @@ using ProductsAndPricingNew.Application.Features.Division.Abstractions;
 using ProductsAndPricingNew.Domain.Abstractions;
 using ProductsAndPricingNew.Domain.Common.Text;
 using ProductsAndPricingNew.Domain.SharedKernel.Definitions;
-using ProductsAndPricingNew.Domain.SharedKernel.TextContent;
 using DivisionEntity = ProductsAndPricingNew.Domain.Entities.PricingRef.Division;
 
 namespace ProductsAndPricingNew.Application.Features.Division.Commands.UpdateDivision;

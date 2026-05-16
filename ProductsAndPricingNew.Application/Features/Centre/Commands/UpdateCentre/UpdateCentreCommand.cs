@@ -2,6 +2,7 @@
 using MediatR;
 using ProductsAndPricingNew.Application.Abstractions;
 using ProductsAndPricingNew.Application.Common.Models;
+using ProductsAndPricingNew.Application.Features.Centre.Abstractions;
 using ProductsAndPricingNew.Application.Features.Centre.Models;
 using ProductsAndPricingNew.Domain.Entities.PricingRef;
 
@@ -22,4 +23,4 @@ public sealed record UpdateCentreCommand(
     IReadOnlyCollection<CentreContactDto> Contacts,
     IReadOnlyCollection<TextContentDto> Texts,
     string Version
-) : ICommand<Result<Unit>>;
+) : ICommand<Result<Unit>>, ICentreCommandPayload;

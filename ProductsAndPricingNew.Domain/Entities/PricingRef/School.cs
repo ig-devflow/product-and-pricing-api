@@ -9,12 +9,11 @@ public sealed class School : AggregateRoot<int>
 {
     public int CentreId { get; private set; }
     public string Name { get; private set; } = null!;
-    public string? LegacyCode { get; private set; }
-    public int MinimumAge { get; private set; }
+    public string LegacyCode { get; private set; }
     public int MinimumStayInWeeks { get; private set; }
     public AgeRange AgeRange { get; private set; } = AgeRange.Empty;
-    public TelephoneNumber TelephoneNo { get; private set; } = TelephoneNumber.Empty;
-    public TelephoneNumber EmergencyNo { get; private set; } = TelephoneNumber.Empty;
+    public TelephoneNumber Telephone { get; private set; } = TelephoneNumber.Empty;
+    public TelephoneNumber EmergencyTelephone { get; private set; } = TelephoneNumber.Empty;
     public Address Address { get; private set; } = Address.Empty;
     public FinanceCode FinanceCode { get; private set; } = FinanceCode.Empty;
     public bool LmsAccess { get; private set; }
@@ -23,11 +22,11 @@ public sealed class School : AggregateRoot<int>
 
     private School() { }
 
-    public School(int centreId, string name)
+    public School(int centreId, string name, string legacyCode)
     {
         ChangeCentre(centreId);
         Rename(name);
-
+        LegacyCode = legacyCode;
         IsActive = true;
     }
 
@@ -40,17 +39,6 @@ public sealed class School : AggregateRoot<int>
             throw new DomainException("CentreId must be greater than zero.");
 
         CentreId = centreId;
-    }
-
-    public void ChangeMinimumAge(int age)
-    {
-        if (age < 0)
-            throw new DomainException("Minimum age cannot be negative.");
-
-        if (age > AgeRange.Rules.MaxAge)
-            throw new DomainException($"Minimum age must not exceed {AgeRange.Rules.MaxAge}.");
-
-        MinimumAge = age;
     }
 
     public void ChangeMinimumStayInWeeks(int weeks)
@@ -68,10 +56,10 @@ public sealed class School : AggregateRoot<int>
         => AgeRange = AgeRange.Create(from, to);
 
     public void ChangeTelephoneNo(string? value)
-        => TelephoneNo = TelephoneNumber.Create(value);
+        => Telephone = TelephoneNumber.Create(value);
 
     public void ChangeEmergencyNo(string? value)
-        => EmergencyNo = TelephoneNumber.Create(value);
+        => EmergencyTelephone = TelephoneNumber.Create(value);
 
     // public void ChangeAddress(int? countryId, string? street, string? district, string? city, string? postalCode)
     //     => Address = Address.Create(countryId, street, district, city, postalCode);

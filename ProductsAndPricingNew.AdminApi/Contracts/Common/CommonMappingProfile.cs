@@ -9,7 +9,7 @@ public sealed class CommonMappingProfile : Profile
     {
         CreateMap<AddressRequest, AddressDto>();
 
-        CreateMap<ImageBannerRequest, ImageFileDto>();
+        CreateMap<ImageFileRequest, ImageFileDto>();
 
         CreateMap<TextContentRequest, TextContentDto>();
     }

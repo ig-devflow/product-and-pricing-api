@@ -1,5 +1,5 @@
 ﻿using ProductsAndPricingNew.Application.Common.Models;
-using ProductsAndPricingNew.Domain.SharedKernel.TextContent;
+using ProductsAndPricingNew.Domain.SharedKernel.Definitions;
 
 namespace ProductsAndPricingNew.Application.Common.Mapping;
 

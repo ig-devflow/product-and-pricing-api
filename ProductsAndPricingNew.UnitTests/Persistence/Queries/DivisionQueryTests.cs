@@ -1,5 +1,5 @@
 using ProductsAndPricingNew.Application.Features.Division.Models;
-using ProductsAndPricingNew.Persistence.Queries.Division;
+using ProductsAndPricingNew.Persistence.Queries;
 
 namespace ProductsAndPricingNew.UnitTests.Persistence.Queries;
 

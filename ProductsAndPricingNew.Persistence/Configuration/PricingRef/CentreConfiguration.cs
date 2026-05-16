@@ -19,10 +19,33 @@ internal sealed class CentreConfiguration : IEntityTypeConfiguration<Centre>
             .IsRequired();
 
         entity.Property(x => x.IsActive).IsRequired();
+        entity.Property(x => x.IsPhysicalCentre).IsRequired();
+
+        entity.Property(x => x.CurrencyId).IsRequired();
+
+        entity.Property(x => x.PrintFormat)
+            .HasConversion<short>()
+            .HasColumnType("smallint")
+            .IsRequired();
 
         entity.Property(x => x.Code)
             .HasMaxLength(Centre.Rules.CodeMaxLength)
             .IsRequired();
+
+        entity.Property(x => x.SchoolSponsorshipNumber)
+            .HasMaxLength(Centre.Rules.LegalTextMaxLength);
+
+        entity.Property(x => x.VatNumber)
+            .HasMaxLength(Centre.Rules.LegalTextMaxLength);
+
+        entity.Property(x => x.RegistrationNumber)
+            .HasMaxLength(Centre.Rules.LegalTextMaxLength);
+
+        entity.Property(x => x.VatExemptionNumber)
+            .HasMaxLength(Centre.Rules.LegalTextMaxLength);
+
+        entity.Property(x => x.ChequePayableTo)
+            .HasMaxLength(Centre.Rules.LegalTextMaxLength);
 
         entity.ConfigureAddress(x => x.ContactAddress, "Contact");
         entity.ConfigureBanner(x => x.LogoImage, "Logo");

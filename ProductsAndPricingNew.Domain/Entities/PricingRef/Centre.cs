@@ -3,7 +3,6 @@ using ProductsAndPricingNew.Domain.Common.Primitives;
 using ProductsAndPricingNew.Domain.Common.Text;
 using ProductsAndPricingNew.Domain.Entities.PricingRef.Definitions;
 using ProductsAndPricingNew.Domain.SharedKernel.Definitions;
-using ProductsAndPricingNew.Domain.SharedKernel.TextContent;
 using ProductsAndPricingNew.Domain.SharedKernel.ValueObjects;
 
 namespace ProductsAndPricingNew.Domain.Entities.PricingRef;
@@ -158,8 +157,8 @@ public sealed class Centre : AggregateRoot<int>
     public void ReplaceTexts(IEnumerable<TextContentDefinition> texts)
     {
         ArgumentNullException.ThrowIfNull(texts);
-
         var incomingKeys = new HashSet<(int ContentTemplateId, int? AudienceId)>();
+
         foreach (TextContentDefinition text in texts)
         {
             text.EnsureValid();
@@ -182,8 +181,7 @@ public sealed class Centre : AggregateRoot<int>
 
     private void UpsertText(TextContentDefinition definition)
     {
-        CentreTextContent? existing = _texts.FirstOrDefault(
-            x => x.Matches(definition.ContentTemplateId, definition.NormalizedAudienceId));
+        CentreTextContent? existing = _texts.FirstOrDefault(x => x.Matches(definition.ContentTemplateId, definition.NormalizedAudienceId));
 
         if (definition.IsEmpty)
         {
@@ -191,11 +189,11 @@ public sealed class Centre : AggregateRoot<int>
             return;
         }
 
-        FormattedText text = FormattedText.Create(definition.Content, definition.Format);
+        var text = FormattedText.Create(definition.Content, definition.Format);
 
         if (existing is null)
         {
-            _texts.Add(new CentreTextContent(definition.ContentTemplateId, definition.NormalizedAudienceId, text));
+            _texts.Add(CentreTextContent.Create(definition, text));
             return;
         }
 

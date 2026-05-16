@@ -4,7 +4,7 @@ using ProductsAndPricingNew.Application.Common.Validation.Abstractions;
 using ProductsAndPricingNew.Domain.ReferenceData;
 using ProductsAndPricingNew.Persistence.Queries.Configuration;
 
-namespace ProductsAndPricingNew.Persistence.Queries.ReferenceData;
+namespace ProductsAndPricingNew.Persistence.Queries;
 
 internal sealed class ReferenceDataValidationQuery : IReferenceDataValidationQuery
 {

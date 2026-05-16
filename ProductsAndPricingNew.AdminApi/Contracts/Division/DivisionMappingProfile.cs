@@ -1,5 +1,4 @@
 ﻿using AutoMapper;
-using ProductsAndPricingNew.AdminApi.Contracts.Common;
 using ProductsAndPricingNew.Application.Common.Models;
 using ProductsAndPricingNew.Application.Common.Pagination;
 using ProductsAndPricingNew.Application.Features.Division.Commands.CreateDivision;
