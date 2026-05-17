@@ -125,7 +125,7 @@ internal sealed class DivisionQuery : IDivisionQuery
            SELECT COUNT(1)
            FROM PricingRef.Division d
            LEFT JOIN ReferenceData.Country c
-               ON c.Id = d.CountryId
+               ON c.Id = d.ContactCountryId
               AND c.IsDeleted = 0
            LEFT JOIN Edit.Editor createdEditor
                ON createdEditor.Id = d.CreatedById
@@ -162,7 +162,7 @@ internal sealed class DivisionQuery : IDivisionQuery
                updatedEditor.LastName AS UpdatedByLastName
            FROM PricingRef.Division d
            LEFT JOIN ReferenceData.Country c
-               ON c.Id = d.CountryId
+               ON c.Id = d.ContactCountryId
               AND c.IsDeleted = 0
            LEFT JOIN Edit.Editor createdEditor
                ON createdEditor.Id = d.CreatedById
