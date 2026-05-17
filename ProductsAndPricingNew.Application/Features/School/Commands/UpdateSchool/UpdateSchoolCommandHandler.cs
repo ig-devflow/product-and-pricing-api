@@ -40,7 +40,7 @@ internal sealed class UpdateSchoolCommandHandler : IRequestHandler<UpdateSchoolC
         bool isNameTaken = await _schoolQuery.ExistsByNameAsync(name, request.Id, ct);
         if (isNameTaken)
             return Result.Fail(new ConflictError($"School name: '{name}' already exists"));
-        
+
         school.ChangeCentre(request.CentreId);
         school.Rename(request.Name);
         school.ChangeLegacyCode(request.LegacyCode);
@@ -53,7 +53,7 @@ internal sealed class UpdateSchoolCommandHandler : IRequestHandler<UpdateSchoolC
         school.ChangeLmsAccess(request.LmsAccess);
         school.ChangeActive(request.IsActive);
         school.ChangeDecommissionDate(request.DecommissionDate);
-        
+
         await _unitOfWork.SaveChangesAsync(ct);
 
         return Result.Ok();

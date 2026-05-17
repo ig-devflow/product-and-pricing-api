@@ -2,6 +2,7 @@
 using MediatR;
 using ProductsAndPricingNew.Application.Abstractions;
 using ProductsAndPricingNew.Application.Common.Models;
+using ProductsAndPricingNew.Application.Features.School.Abstractions;
 
 namespace ProductsAndPricingNew.Application.Features.School.Commands.UpdateSchool;
 
@@ -21,4 +22,4 @@ public sealed record UpdateSchoolCommand(
     bool IsActive,
     DateOnly? DecommissionDate,
     string Version
-) : ICommand<Result<Unit>>;
+) : ICommand<Result<Unit>>, ISchoolCommandPayload;

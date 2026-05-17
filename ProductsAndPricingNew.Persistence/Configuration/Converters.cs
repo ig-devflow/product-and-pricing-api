@@ -24,4 +24,9 @@ internal static class Converters
         v => v.IsEmpty ? null : v.Value,
         v => Domain.SharedKernel.ValueObjects.WebsiteUrl.Create(v)
     );
+
+    public static readonly ValueConverter<FinanceCode, string> FinanceCode = new(
+        v => v.Value,
+        v => Domain.SharedKernel.ValueObjects.FinanceCode.Create(v)
+    );
 }

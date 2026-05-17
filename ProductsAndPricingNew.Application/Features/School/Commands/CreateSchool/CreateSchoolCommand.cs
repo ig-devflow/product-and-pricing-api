@@ -1,6 +1,7 @@
 ﻿using FluentResults;
 using ProductsAndPricingNew.Application.Abstractions;
 using ProductsAndPricingNew.Application.Common.Models;
+using ProductsAndPricingNew.Application.Features.School.Abstractions;
 
 namespace ProductsAndPricingNew.Application.Features.School.Commands.CreateSchool;
 
@@ -18,4 +19,4 @@ public sealed record CreateSchoolCommand(
     bool LmsAccess,
     bool IsActive,
     DateOnly? DecommissionDate
-) : ICommand<Result<int>>;
+) : ICommand<Result<int>>, ISchoolCommandPayload;

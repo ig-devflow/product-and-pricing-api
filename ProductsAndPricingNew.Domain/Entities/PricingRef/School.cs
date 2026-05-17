@@ -26,7 +26,7 @@ public sealed class School : AggregateRoot<int>
     private School(int centreId, string name, string legacyCode)
     {
         EnsureValidCentre(centreId);
-        
+
         CentreId = centreId;
         Name = name;
         LegacyCode = legacyCode;
@@ -37,13 +37,13 @@ public sealed class School : AggregateRoot<int>
         EnsureValidCentre(centreId);
         CentreId = centreId;
     }
-    
+
     public void Rename(string name)
         => Name = name.AsRequiredDomainText(nameof(Name), Rules.NameMaxLength);
-    
+
     public void ChangeLegacyCode(string legacyCode)
         => LegacyCode = legacyCode.AsRequiredDomainText(nameof(LegacyCode), Rules.LegacyCodeMaxLength);
-    
+
     public void ChangeMinimumStayInWeeks(int weeks)
     {
         EnsureValidMinimumStayInWeeks(weeks);
@@ -90,7 +90,7 @@ public sealed class School : AggregateRoot<int>
         if (minimumStayInWeeks <= 0)
             throw new DomainException("Minimum stay in weeks must be greater than zero.");
     }
-    
+
     public sealed class Builder
     {
         private readonly int _centreId;
@@ -106,7 +106,7 @@ public sealed class School : AggregateRoot<int>
         private bool _lmsAccess;
         private bool _isActive;
         private DateOnly? _decommissionDate;
-        
+
 
         public Builder(int centreId, string name, string legacyCode)
         {
@@ -120,7 +120,7 @@ public sealed class School : AggregateRoot<int>
         public Builder MinimumStayInWeeks(int value)
         {
             EnsureValidMinimumStayInWeeks(value);
-            
+
             _minimumStayInWeeks = value;
             return this;
         }
@@ -130,19 +130,19 @@ public sealed class School : AggregateRoot<int>
             _ageRange = AgeRange.Create(from, to);
             return this;
         }
-        
+
         public Builder Telephone(string? value)
         {
             _telephone = TelephoneNumber.Create(value);
             return this;
         }
-        
+
         public Builder EmergencyTelephone(string? value)
         {
             _emergencyTelephone = TelephoneNumber.Create(value);
             return this;
         }
-        
+
         public Builder ContactAddress(AddressDefinition definition)
         {
             _contactAddress = Address.Create(definition);
@@ -154,19 +154,19 @@ public sealed class School : AggregateRoot<int>
             _financeCode = FinanceCode.Create(code);
             return this;
         }
-        
+
         public Builder LmsActive(bool value)
         {
             _lmsAccess = value;
             return this;
         }
-        
+
         public Builder IsActive(bool value)
         {
             _isActive = value;
             return this;
         }
-        
+
         public Builder DecommissionDate(DateOnly? value)
         {
             _decommissionDate = value;
@@ -191,7 +191,7 @@ public sealed class School : AggregateRoot<int>
             return school;
         }
     }
-    
+
     public static class Rules
     {
         public const int NameMaxLength = 100;

@@ -17,33 +17,39 @@ internal sealed class SchoolConfiguration : IEntityTypeConfiguration<School>
         entity.Property(x => x.Name)
             .HasMaxLength(School.Rules.NameMaxLength)
             .IsRequired();
-        
+
         entity.Property(x => x.LegacyCode)
             .HasMaxLength(School.Rules.LegacyCodeMaxLength)
             .IsRequired();
 
-        entity.Property(x => x.MinimumStayInWeeks);
+        entity.Property(x => x.CentreId).IsRequired();
 
-        // AgeRange
-        
+        entity.Property(x => x.MinimumStayInWeeks).IsRequired();
+
+        entity.ConfigureAgeRange(x => x.AgeRange);
+
         entity.Property(x => x.Telephone)
             .HasConversion(Converters.TelephoneNumber)
             .HasColumnName("Telephone")
             .HasMaxLength(TelephoneNumber.Rules.MaxLength);
-        
+
         entity.Property(x => x.EmergencyTelephone)
             .HasConversion(Converters.TelephoneNumber)
             .HasColumnName("EmergencyTelephone")
             .HasMaxLength(TelephoneNumber.Rules.MaxLength);
-        
-        // FinanceCode
-        
+
+        entity.Property(x => x.FinanceCode)
+            .HasConversion(Converters.FinanceCode)
+            .HasColumnName("FinanceCode")
+            .HasMaxLength(FinanceCode.Rules.MaxLength)
+            .IsRequired();
+
         entity.Property(x => x.LmsAccess)
             .IsRequired();
-        
+
         entity.Property(x => x.IsActive)
             .IsRequired();
-        
+
         entity.Property(x => x.DecommissionDate)
             .IsRequired(false);
 
