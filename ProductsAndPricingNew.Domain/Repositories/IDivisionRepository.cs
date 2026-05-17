@@ -1,7 +1,6 @@
 ﻿using ProductsAndPricingNew.Domain.Entities.PricingRef;
-using ProductsAndPricingNew.Domain.Repositories;
 
-namespace ProductsAndPricingNew.Domain.Abstractions;
+namespace ProductsAndPricingNew.Domain.Repositories;
 
 public interface IDivisionRepository : IRepository<Division, int>
 {
