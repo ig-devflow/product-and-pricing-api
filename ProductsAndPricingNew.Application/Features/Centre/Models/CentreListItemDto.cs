@@ -7,7 +7,7 @@ public sealed record CentreListItemDto(
     bool IsActive,
     bool IsPhysicalCentre,
     string? City,
-    string? CountryName,
+    int CountryId,
     DateOnly CreatedAt,
     string? CreatedByName,
     DateOnly UpdatedAt,

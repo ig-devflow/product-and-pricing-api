@@ -129,13 +129,21 @@ internal sealed class CentreQuery : ICentreQuery
             WHERE cc.CentreId = @Id;
 
             SELECT
+                ctc.Id,
                 ctc.ContentTemplateId,
+                ct.Name AS ContentTemplateName,
                 ctc.AudienceId,
+                a.Name AS AudienceName,
                 ctc.Content,
                 ctc.Format
             FROM PricingRef.CentreTextContent ctc
+            INNER JOIN ReferenceData.ContentTemplate ct
+                ON ct.Id = ctc.ContentTemplateId
+            LEFT JOIN ReferenceData.Audience a
+                ON a.Id = ctc.AudienceId
             WHERE ctc.CentreId = @Id
-              AND ctc.IsDeleted = 0;
+              AND ctc.IsDeleted = 0
+            ORDER BY ct.Name, a.Name;
             """;
 
         await using DbConnection connection = _connectionFactory.CreateConnection();
@@ -153,7 +161,7 @@ internal sealed class CentreQuery : ICentreQuery
             return null;
 
         List<CentreContactRow> contactRows = (await grid.ReadAsync<CentreContactRow>()).AsList();
-        List<TextContentDto> texts = (await grid.ReadAsync<TextContentDto>()).AsList();
+        List<CentreTextContentDto> texts = (await grid.ReadAsync<CentreTextContentDto>()).AsList();
 
         return MapDetailsRow(row, contactRows, texts);
     }
@@ -195,7 +203,7 @@ internal sealed class CentreQuery : ICentreQuery
                 c.IsActive,
                 c.IsPhysicalCentre,
                 c.ContactCity,
-                country.Name AS CountryName,
+                country.Id AS CountryId,
                 c.CreatedAt,
                 c.UpdatedAt,
                 createdEditor.FirstName AS CreatedByFirstName,
@@ -263,7 +271,7 @@ internal sealed class CentreQuery : ICentreQuery
     private static CentreDetailsDto MapDetailsRow(
         CentreDetailsRow row,
         IReadOnlyCollection<CentreContactRow> contactRows,
-        IReadOnlyCollection<TextContentDto> texts)
+        IReadOnlyCollection<CentreTextContentDto> texts)
     {
         return new CentreDetailsDto(
             row.Id,
@@ -295,7 +303,7 @@ internal sealed class CentreQuery : ICentreQuery
             row.IsActive,
             row.IsPhysicalCentre,
             row.ContactCity,
-            row.CountryName,
+            row.CountryId,
             ToDateOnly(row.CreatedAt),
             BuildEditorName(row.CreatedByFirstName, row.CreatedByLastName),
             ToDateOnly(row.UpdatedAt),
@@ -472,7 +480,7 @@ internal sealed class CentreQuery : ICentreQuery
         public bool IsActive { get; init; }
         public bool IsPhysicalCentre { get; init; }
         public string? ContactCity { get; init; }
-        public string? CountryName { get; init; }
+        public int CountryId { get; init; }
         public DateTimeOffset CreatedAt { get; init; }
         public DateTimeOffset UpdatedAt { get; init; }
         public string? CreatedByFirstName { get; init; }

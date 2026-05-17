@@ -16,7 +16,7 @@ public sealed record CentreDetailsDto(
     CentreOperationalRatiosDto OperationalRatios,
     CentreBankDetailsDto BankDetails,
     IReadOnlyCollection<CentreContactDto> Contacts,
-    IReadOnlyCollection<TextContentDto> Texts,
+    IReadOnlyCollection<CentreTextContentDto> Texts,
     string Version,
     DateOnly CreatedAt,
     string? CreatedByName,
