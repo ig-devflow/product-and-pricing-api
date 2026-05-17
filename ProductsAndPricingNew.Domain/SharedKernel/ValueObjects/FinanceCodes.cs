@@ -14,9 +14,9 @@ public readonly struct FinanceCode : IEquatable<FinanceCode>, IEmptyValueObject
     public bool IsEmpty => string.Equals(Value, Rules.DefaultValue, StringComparison.OrdinalIgnoreCase);
     public static FinanceCode Empty { get; } = new(Rules.DefaultValue);
 
-    public static FinanceCode Create(string? value, string fieldName = nameof(FinanceCode), int maxLength = Rules.MaxLength)
+    public static FinanceCode Create(string? value)
     {
-        string normalized = value.AsOptionalDomainText(fieldName, maxLength) ?? Rules.DefaultValue;
+        string normalized = value.AsOptionalDomainText(nameof(FinanceCode), Rules.MaxLength) ?? Rules.DefaultValue;
         return new FinanceCode(normalized.ToUpperInvariant());
     }
 

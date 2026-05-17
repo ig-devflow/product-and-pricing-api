@@ -1,12 +1,13 @@
 ﻿using FluentResults;
+using MediatR;
 using ProductsAndPricingNew.Application.Abstractions;
 using ProductsAndPricingNew.Application.Common.Models;
 using ProductsAndPricingNew.Application.Features.School.Abstractions;
 
-namespace ProductsAndPricingNew.Application.Features.School.Commands.CreateSchool;
+namespace ProductsAndPricingNew.Application.Features.School.Commands.UpdateSchool;
 
-public sealed record CreateSchoolCommand(
-    int CentreId,
+public sealed record UpdateSchoolCommand(
+    int Id,
     string Name,
     string LegacyCode,
     int MinimumStayInWeeks,
@@ -18,5 +19,6 @@ public sealed record CreateSchoolCommand(
     string? FinanceCode,
     bool LmsAccess,
     bool IsActive,
-    DateOnly? DecommissionDate
-) : ICommand<Result<int>>, ISchoolCommandPayload;
+    DateOnly? DecommissionDate,
+    string Version
+) : ICommand<Result<Unit>>, ISchoolCommandPayload;

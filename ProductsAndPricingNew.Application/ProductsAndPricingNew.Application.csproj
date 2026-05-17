@@ -19,12 +19,7 @@
 
     <ItemGroup>
       <Folder Include="Features\Centre\Validation\" />
-      <Folder Include="Features\School\Commands\UpdateSchool\" />
-      <Folder Include="Features\School\Mappings\" />
-      <Folder Include="Features\School\Models\" />
-      <Folder Include="Features\School\Queries\" />
       <Folder Include="Features\School\Validation\" />
-      <Folder Include="Utils\" />
     </ItemGroup>
 
     <ItemGroup>

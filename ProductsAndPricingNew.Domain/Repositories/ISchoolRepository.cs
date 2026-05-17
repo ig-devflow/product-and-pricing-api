@@ -1,5 +1,7 @@
-﻿namespace ProductsAndPricingNew.Domain.Repositories;
+﻿using ProductsAndPricingNew.Domain.Entities.PricingRef;
 
-public interface ISchoolRepository
+namespace ProductsAndPricingNew.Domain.Repositories;
+
+public interface ISchoolRepository : IRepository<School, int>
 {
 }
