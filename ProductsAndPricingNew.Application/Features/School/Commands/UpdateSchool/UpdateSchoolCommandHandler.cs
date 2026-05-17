@@ -41,7 +41,6 @@ internal sealed class UpdateSchoolCommandHandler : IRequestHandler<UpdateSchoolC
         if (isNameTaken)
             return Result.Fail(new ConflictError($"School name: '{name}' already exists"));
 
-        school.ChangeCentre(request.CentreId);
         school.Rename(request.Name);
         school.ChangeLegacyCode(request.LegacyCode);
         school.ChangeMinimumStayInWeeks(request.MinimumStayInWeeks);

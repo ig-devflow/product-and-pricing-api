@@ -97,6 +97,7 @@ internal sealed class SchoolQuery : ISchoolQuery
         string? search,
         bool? isActive,
         PagingFilter paging,
+        int? centreId = null,
         CancellationToken ct = default)
     {
         const string sql = """
@@ -113,6 +114,7 @@ internal sealed class SchoolQuery : ISchoolQuery
            LEFT JOIN Edit.Editor updatedEditor
                ON updatedEditor.Id = s.UpdatedById
            WHERE s.IsDeleted = 0
+             AND (@CentreId IS NULL OR s.CentreId = @CentreId)
              AND (@IsActive IS NULL OR s.IsActive = @IsActive)
              AND (
                  @Search IS NULL
@@ -154,6 +156,7 @@ internal sealed class SchoolQuery : ISchoolQuery
            LEFT JOIN Edit.Editor updatedEditor
                ON updatedEditor.Id = s.UpdatedById
            WHERE s.IsDeleted = 0
+             AND (@CentreId IS NULL OR s.CentreId = @CentreId)
              AND (@IsActive IS NULL OR s.IsActive = @IsActive)
              AND (
                  @Search IS NULL
@@ -180,6 +183,7 @@ internal sealed class SchoolQuery : ISchoolQuery
         {
             Search = search,
             IsActive = isActive,
+            CentreId = centreId,
             Offset = offset,
             PageSize = pageSize
         };

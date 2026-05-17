@@ -12,10 +12,6 @@ internal abstract class SchoolCommandValidatorBase<TCommand> : AbstractValidator
 {
     protected SchoolCommandValidatorBase(IReferenceDataValidationQuery referenceData)
     {
-        RuleFor(x => x.CentreId)
-            .GreaterThan(0)
-            .WithMessage("Centre is required.");
-
         RuleFor(x => x.Name)
             .Cascade(CascadeMode.Stop)
             .NotEmpty()

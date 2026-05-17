@@ -8,7 +8,6 @@ namespace ProductsAndPricingNew.Application.Features.School.Commands.UpdateSchoo
 
 public sealed record UpdateSchoolCommand(
     int Id,
-    int CentreId,
     string Name,
     string LegacyCode,
     int MinimumStayInWeeks,

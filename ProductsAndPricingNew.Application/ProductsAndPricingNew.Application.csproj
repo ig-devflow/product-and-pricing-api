@@ -19,9 +19,7 @@
 
     <ItemGroup>
       <Folder Include="Features\Centre\Validation\" />
-      <Folder Include="Features\School\Queries\" />
       <Folder Include="Features\School\Validation\" />
-      <Folder Include="Utils\" />
     </ItemGroup>
 
     <ItemGroup>

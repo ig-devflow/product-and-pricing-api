@@ -4,7 +4,6 @@ namespace ProductsAndPricingNew.Application.Features.School.Abstractions;
 
 public interface ISchoolCommandPayload
 {
-    int CentreId { get; }
     string Name { get; }
     string LegacyCode { get; }
     int MinimumStayInWeeks { get; }

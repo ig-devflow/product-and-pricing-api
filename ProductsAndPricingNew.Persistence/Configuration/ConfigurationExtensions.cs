@@ -168,19 +168,4 @@ internal static class ConfigurationExtensions
                 .HasColumnType("smallint");
         });
     }
-
-    // public static void ConfigureFinanceCodes<TEntity>(this EntityTypeBuilder<TEntity> builder, Expression<Func<TEntity, FinanceCodes>> propertyExpression)
-    //     where TEntity : class
-    // {
-    //     builder.ComplexProperty(propertyExpression, financeCodes =>
-    //     {
-    //         financeCodes.Property(p => p.GeneralLedgerCode)
-    //             .HasColumnName("GeneralLedgerCode")
-    //             .HasMaxLength(FinanceCodes.Rules.GeneralLedgerCodeMaxLength);
-    //
-    //         financeCodes.Property(p => p.CostCentreCode)
-    //             .HasColumnName("CostCentreCode")
-    //             .HasMaxLength(FinanceCodes.Rules.CostCentreCodeMaxLength);
-    //     });
-    // }
 }

@@ -32,12 +32,6 @@ public sealed class School : AggregateRoot<int>
         LegacyCode = legacyCode;
     }
 
-    public void ChangeCentre(int centreId)
-    {
-        EnsureValidCentre(centreId);
-        CentreId = centreId;
-    }
-
     public void Rename(string name)
         => Name = name.AsRequiredDomainText(nameof(Name), Rules.NameMaxLength);
 
@@ -70,10 +64,12 @@ public sealed class School : AggregateRoot<int>
 
     public void ChangeActive(bool isActive)
     {
-        if (DecommissionDate is not null)
-            throw new DomainException("Cannot activate decommissioned school.");
+        var today = DateOnly.FromDateTime(DateTime.Now);
 
-        IsActive = true;
+        if (DecommissionDate <= today)
+            throw new DomainException("Cannot activate/deactivate decommissioned school.");
+
+        IsActive = isActive;
     }
 
     public void ChangeDecommissionDate(DateOnly? date)
