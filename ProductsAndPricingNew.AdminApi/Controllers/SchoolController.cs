@@ -39,7 +39,7 @@ public class SchoolController : ControllerBase
     /// <param name="ct">Cancellation token.</param>
     /// <returns>A paged list of schools that belong to the specified centre.</returns>
     /// <response code="200">Returns the requested page of schools that belong to the specified centre.</response>
-    /// Returns an empty page if the centre has no schools. Centre existence is not enforced here —
+    /// Returns an empty page if the centre has no schools. Centre existence is not enforced here.
     /// </remarks>
     /// <response code="200">Returns the requested page of schools for the centre.</response>
     [HttpGet("api/v1/centres/{centreId:int:min(1)}/schools")]

@@ -25,8 +25,6 @@ public sealed class School : AggregateRoot<int>
 
     private School(int centreId, string name, string legacyCode)
     {
-        EnsureValidCentre(centreId);
-
         CentreId = centreId;
         Name = name;
         LegacyCode = legacyCode;
@@ -102,7 +100,6 @@ public sealed class School : AggregateRoot<int>
         private bool _lmsAccess;
         private bool _isActive;
         private DateOnly? _decommissionDate;
-
 
         public Builder(int centreId, string name, string legacyCode)
         {
