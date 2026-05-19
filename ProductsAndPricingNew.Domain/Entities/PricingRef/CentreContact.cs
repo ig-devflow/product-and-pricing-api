@@ -9,7 +9,7 @@ public sealed class CentreContact
 {
     public CentreContactType ContactType { get; private set; }
     public string Name { get; private set; } = null!;
-    public EmailAddress Email { get; private set; } = EmailAddress.Empty;
+    public EmailAddress? Email { get; private set; } = EmailAddress.Empty;
     public ImageFile SignatureImage { get; private set; } = ImageFile.Empty;
 
     private CentreContact() { }

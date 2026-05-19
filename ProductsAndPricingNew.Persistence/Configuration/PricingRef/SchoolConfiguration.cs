@@ -31,12 +31,14 @@ internal sealed class SchoolConfiguration : IEntityTypeConfiguration<School>
         entity.Property(x => x.Telephone)
             .HasConversion(Converters.TelephoneNumber)
             .HasColumnName("Telephone")
-            .HasMaxLength(TelephoneNumber.Rules.MaxLength);
+            .HasMaxLength(TelephoneNumber.Rules.MaxLength)
+            .IsRequired(false);
 
         entity.Property(x => x.EmergencyTelephone)
             .HasConversion(Converters.TelephoneNumber)
             .HasColumnName("EmergencyTelephone")
-            .HasMaxLength(TelephoneNumber.Rules.MaxLength);
+            .HasMaxLength(TelephoneNumber.Rules.MaxLength)
+            .IsRequired(false);
 
         entity.Property(x => x.FinanceCode)
             .HasConversion(Converters.FinanceCode)

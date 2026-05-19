@@ -13,8 +13,8 @@ public sealed class School : AggregateRoot<int>
     public string LegacyCode { get; private set; }
     public int MinimumStayInWeeks { get; private set; }
     public AgeRange AgeRange { get; private set; } = AgeRange.Empty;
-    public TelephoneNumber Telephone { get; private set; } = TelephoneNumber.Empty;
-    public TelephoneNumber EmergencyTelephone { get; private set; } = TelephoneNumber.Empty;
+    public TelephoneNumber? Telephone { get; private set; } = TelephoneNumber.Empty;
+    public TelephoneNumber? EmergencyTelephone { get; private set; } = TelephoneNumber.Empty;
     public Address ContactAddress { get; private set; } = Address.Empty;
     public FinanceCode FinanceCode { get; private set; } = FinanceCode.Empty;
     public bool LmsAccess { get; private set; }

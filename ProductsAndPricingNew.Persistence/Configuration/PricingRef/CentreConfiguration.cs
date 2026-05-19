@@ -54,33 +54,39 @@ internal sealed class CentreConfiguration : IEntityTypeConfiguration<Centre>
         entity.Property(x => x.GeneralEmail)
             .HasConversion(Converters.EmailAddress)
             .HasColumnName("GeneralEmail")
-            .HasMaxLength(EmailAddress.Rules.MaxLength);
+            .HasMaxLength(EmailAddress.Rules.MaxLength)
+            .IsRequired(false);
 
         entity.Property(x => x.AccommodationEmail)
             .HasConversion(Converters.EmailAddress)
             .HasColumnName("AccommodationEmail")
-            .HasMaxLength(EmailAddress.Rules.MaxLength);
+            .HasMaxLength(EmailAddress.Rules.MaxLength)
+            .IsRequired(false);
 
         entity.Property(x => x.Telephone)
             .HasConversion(Converters.TelephoneNumber)
             .HasColumnName("Telephone")
-            .HasMaxLength(TelephoneNumber.Rules.MaxLength);
+            .HasMaxLength(TelephoneNumber.Rules.MaxLength)
+            .IsRequired(false);
 
         entity.Property(x => x.EmergencyTelephone)
             .HasConversion(Converters.TelephoneNumber)
             .HasColumnName("EmergencyTelephone")
-            .HasMaxLength(TelephoneNumber.Rules.MaxLength);
+            .HasMaxLength(TelephoneNumber.Rules.MaxLength)
+            .IsRequired(false);
 
         entity.Property(x => x.TransferEmergencyTelephone)
             .HasConversion(Converters.TelephoneNumber)
             .HasColumnName("TransferEmergencyTelephone")
-            .HasMaxLength(TelephoneNumber.Rules.MaxLength);
+            .HasMaxLength(TelephoneNumber.Rules.MaxLength)
+            .IsRequired(false);
 
         entity.Property(x => x.BrandColor)
             .HasConversion(Converters.HexColor)
             .HasColumnName("BrandColor")
             .HasMaxLength(HexColor.Rules.MaxLengthWithHash)
-            .IsFixedLength();
+            .IsFixedLength()
+            .IsRequired(false);
 
         entity.ComplexProperty(x => x.BankDetails, bank =>
         {
@@ -96,7 +102,7 @@ internal sealed class CentreConfiguration : IEntityTypeConfiguration<Centre>
                 .HasColumnName("BankName")
                 .HasMaxLength(CentreBankDetails.Rules.MaxLength);
 
-            bank.ComplexProperty(x => x.Identifiers, ids => // CreateCentreTable
+            bank.ComplexProperty(x => x.Identifiers, ids =>
             {
                 ids.Property(x => x.Iban).HasColumnName("Iban").HasMaxLength(BankIdentifiers.Rules.MaxLength);
                 ids.Property(x => x.SwiftCode).HasColumnName("SwiftCode").HasMaxLength(BankIdentifiers.Rules.MaxLength);
@@ -133,7 +139,8 @@ internal sealed class CentreConfiguration : IEntityTypeConfiguration<Centre>
             contact.Property(x => x.Email)
                 .HasConversion(Converters.EmailAddress)
                 .HasColumnName("Email")
-                .HasMaxLength(EmailAddress.Rules.MaxLength);
+                .HasMaxLength(EmailAddress.Rules.MaxLength)
+                .IsRequired(false);
 
             contact.ConfigureBanner(x => x.SignatureImage, "Signature");
         });

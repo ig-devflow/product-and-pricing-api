@@ -8,6 +8,8 @@ public sealed record CentreListItemDto(
     bool IsPhysicalCentre,
     string? City,
     int CountryId,
+    string? BrandColor,
+    string? Telephone,
     DateOnly CreatedAt,
     string? CreatedByName,
     DateOnly UpdatedAt,

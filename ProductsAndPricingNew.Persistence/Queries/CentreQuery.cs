@@ -204,6 +204,8 @@ internal sealed class CentreQuery : ICentreQuery
                 c.IsPhysicalCentre,
                 c.ContactCity,
                 country.Id AS CountryId,
+                c.BrandColor,
+                c.Telephone,
                 c.CreatedAt,
                 c.UpdatedAt,
                 createdEditor.FirstName AS CreatedByFirstName,
@@ -304,6 +306,8 @@ internal sealed class CentreQuery : ICentreQuery
             row.IsPhysicalCentre,
             row.ContactCity,
             row.CountryId,
+            row.BrandColor,
+            row.Telephone,
             ToDateOnly(row.CreatedAt),
             BuildEditorName(row.CreatedByFirstName, row.CreatedByLastName),
             ToDateOnly(row.UpdatedAt),
@@ -481,6 +485,8 @@ internal sealed class CentreQuery : ICentreQuery
         public bool IsPhysicalCentre { get; init; }
         public string? ContactCity { get; init; }
         public int CountryId { get; init; }
+        public string? BrandColor { get; init; }
+        public string? Telephone { get; init; }
         public DateTimeOffset CreatedAt { get; init; }
         public DateTimeOffset UpdatedAt { get; init; }
         public string? CreatedByFirstName { get; init; }
