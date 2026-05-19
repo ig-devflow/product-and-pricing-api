@@ -10,6 +10,6 @@ internal sealed class CreateSchoolCommandValidator : SchoolCommandValidatorBase<
     {
         RuleFor(x => x.CentreId)
             .GreaterThan(0)
-            .WithMessage("Centre is required.");
+            .WithMessage("CentreId is required.");
     }
 }

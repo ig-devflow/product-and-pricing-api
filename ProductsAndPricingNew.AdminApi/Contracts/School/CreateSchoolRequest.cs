@@ -3,7 +3,6 @@
 namespace ProductsAndPricingNew.AdminApi.Contracts.School;
 
 public sealed record CreateSchoolRequest(
-    int CentreId,
     string Name,
     string LegacyCode,
     int MinimumStayInWeeks,

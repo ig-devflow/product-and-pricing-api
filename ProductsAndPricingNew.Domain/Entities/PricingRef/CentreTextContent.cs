@@ -5,7 +5,7 @@ namespace ProductsAndPricingNew.Domain.Entities.PricingRef;
 
 public sealed class CentreTextContent : TextContent
 {
-    public int CentreId { get; private set; }
+    public int CentreId { get; init; }
 
     private CentreTextContent()
     {

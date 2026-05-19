@@ -18,12 +18,12 @@ public sealed class Centre : AggregateRoot<int>
     public PrintFormat PrintFormat { get; private set; } = PrintFormat.None;
     public bool IsActive { get; private set; }
     public bool IsPhysicalCentre { get; private set; }
-    public EmailAddress GeneralEmail { get; private set; } = EmailAddress.Empty;
-    public EmailAddress AccommodationEmail { get; private set; } = EmailAddress.Empty;
-    public TelephoneNumber Telephone { get; private set; } = TelephoneNumber.Empty;
-    public TelephoneNumber EmergencyTelephone { get; private set; } = TelephoneNumber.Empty;
-    public TelephoneNumber TransferEmergencyTelephone { get; private set; } = TelephoneNumber.Empty;
-    public HexColor BrandColor { get; private set; } = HexColor.Empty;
+    public EmailAddress? GeneralEmail { get; private set; } = EmailAddress.Empty;
+    public EmailAddress? AccommodationEmail { get; private set; } = EmailAddress.Empty;
+    public TelephoneNumber? Telephone { get; private set; } = TelephoneNumber.Empty;
+    public TelephoneNumber? EmergencyTelephone { get; private set; } = TelephoneNumber.Empty;
+    public TelephoneNumber? TransferEmergencyTelephone { get; private set; } = TelephoneNumber.Empty;
+    public HexColor? BrandColor { get; private set; } = HexColor.Empty;
     public Address ContactAddress { get; private set; } = Address.Empty;
     public ImageFile LogoImage { get; private set; } = ImageFile.Empty;
     public string? SchoolSponsorshipNumber { get; private set; }

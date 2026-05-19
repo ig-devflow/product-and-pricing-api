@@ -26,6 +26,7 @@ public abstract class AggregateRoot<TId> : Entity<TId>, IAggregateRoot, IAuditab
 
         return Version.AsSpan().SequenceEqual(expectedVersion);
     }
+
     protected void Raise(object @event) => _domainEvents.Add(@event);
     public void ClearDomainEvents() => _domainEvents.Clear();
 }
