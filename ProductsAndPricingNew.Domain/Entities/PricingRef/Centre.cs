@@ -89,7 +89,7 @@ public sealed class Centre : AggregateRoot<int>
     public void ChangeBrandColor(string? value) =>
         BrandColor = HexColor.Create(value);
 
-    public void ChangeContactAddress(AddressDefinition? definition) =>
+    public void ChangeContactAddress(AddressDefinition? definition) => // todo: CountryId is obligatory field
         ContactAddress = Address.Create(definition);
 
     public void ChangeLogo(ImageFileDefinition? definition) =>

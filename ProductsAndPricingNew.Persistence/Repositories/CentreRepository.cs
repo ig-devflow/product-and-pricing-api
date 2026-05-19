@@ -14,6 +14,7 @@ internal sealed class CentreRepository : EfRepositoryBase<Centre, int>, ICentreR
     {
         return await Set
             .Include(c => c.Contacts)
+            .Include(c => c.Texts)
             .SingleOrDefaultAsync(c => c.Id == id && !c.IsDeleted, ct);
     }
 }
