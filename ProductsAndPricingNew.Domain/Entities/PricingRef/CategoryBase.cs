@@ -1,32 +1,35 @@
-﻿using ProductsAndPricingNew.Domain.Common.Text;
+﻿using ProductsAndPricingNew.Domain.Common.Exceptions;
+using ProductsAndPricingNew.Domain.Common.Text;
 using ProductsAndPricingNew.Domain.Common.Primitives;
 
 namespace ProductsAndPricingNew.Domain.Entities.PricingRef;
 
 public abstract class CategoryBase : AggregateRoot<int>
 {
-    protected CategoryBase() { }
-
-    protected CategoryBase(int id, int divisionId, string name)
-    {
-        Id = id;
-        DivisionId = divisionId;
-        IsActive = true;
-        IsDeleted = false;
-
-        Rename(name);
-    }
-
-    public int DivisionId { get; private set; }
+    public int DivisionId { get; }
     public string Name { get; private set; } = null!;
     public bool IsActive { get; private set; }
+    
+    protected CategoryBase() { }
+
+    protected CategoryBase(int divisionId, string name, bool isActive)
+    {
+        EnsureValidDivision(divisionId);
+        
+        DivisionId = divisionId;
+        Name = name.AsRequiredDomainText(nameof(Name), Rules.NameMaxLength);
+        IsActive = isActive;
+    }
 
     public void Rename(string name) => Name = name.AsRequiredDomainText(nameof(Name), Rules.NameMaxLength);
-    public void Activate() => IsActive = true;
-    public void Deactivate() => IsActive = false;
-    public void Delete() => IsDeleted = true;
-    public void Restore() => IsDeleted = false;
-
+    public void ChangeActive(bool active) => IsActive = active;
+    
+    private static void EnsureValidDivision(int divisionId)
+    {
+        if (divisionId <= 0)
+            throw new DomainException("DivisionId must be greater than zero.");
+    }
+    
     public static class Rules
     {
         public const int NameMaxLength = 100;

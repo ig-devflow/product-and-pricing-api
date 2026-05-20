@@ -4,8 +4,13 @@ public sealed class ProductCategory : CategoryBase
 {
     private ProductCategory() { }
 
-    public ProductCategory(int id, int divisionId, string name)
-        : base(id, divisionId, name)
+    private ProductCategory(int divisionId, string name, bool isActive)
+        : base(divisionId, name, isActive)
     {
+    }
+    
+    public static ProductCategory Create(int divisionId, string name, bool isActive)
+    {
+        return new ProductCategory(divisionId, name, isActive);
     }
 }
