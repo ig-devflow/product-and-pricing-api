@@ -4,8 +4,13 @@ public sealed class AccountCategory : CategoryBase
 {
     private AccountCategory() { }
 
-    public AccountCategory(int id, int divisionId, string name)
-        : base(id, divisionId, name)
+    private AccountCategory(int divisionId, string name, bool isActive)
+        : base(divisionId, name, isActive)
     {
+    }
+
+    public static AccountCategory Create(int divisionId, string name, bool isActive)
+    {
+        return new AccountCategory(divisionId, name, isActive);
     }
 }

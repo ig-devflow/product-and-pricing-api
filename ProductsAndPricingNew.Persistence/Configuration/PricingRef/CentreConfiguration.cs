@@ -151,6 +151,10 @@ internal sealed class CentreConfiguration : IEntityTypeConfiguration<Centre>
             .IsUnique()
             .HasFilter("[IsDeleted] = 0");
 
+        entity.HasIndex(x => x.Code)
+            .IsUnique()
+            .HasFilter("[IsDeleted] = 0");
+
         entity.Ignore(x => x.DomainEvents);
     }
 }
