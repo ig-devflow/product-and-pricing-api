@@ -8,7 +8,7 @@ public sealed class ProductCategory : CategoryBase
         : base(divisionId, name, isActive)
     {
     }
-    
+
     public static ProductCategory Create(int divisionId, string name, bool isActive)
     {
         return new ProductCategory(divisionId, name, isActive);

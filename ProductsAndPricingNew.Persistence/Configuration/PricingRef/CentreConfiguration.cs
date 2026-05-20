@@ -150,7 +150,7 @@ internal sealed class CentreConfiguration : IEntityTypeConfiguration<Centre>
         entity.HasIndex(x => x.Name)
             .IsUnique()
             .HasFilter("[IsDeleted] = 0");
-        
+
         entity.HasIndex(x => x.Code)
             .IsUnique()
             .HasFilter("[IsDeleted] = 0");
