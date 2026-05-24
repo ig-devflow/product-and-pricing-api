@@ -312,6 +312,7 @@ public sealed class DivisionCommandValidatorTests
         => new ReferenceDataValidationQueryFake()
             .WithActiveCountries(1)
             .WithActiveAudiences(10)
+            .WithActiveCurrencies(2)
             .WithActiveContentTemplates(ContentTemplateScope.Division, 100);
 
     private static void AssertInvalid(ValidationResult result, string expectedMessagePart)
