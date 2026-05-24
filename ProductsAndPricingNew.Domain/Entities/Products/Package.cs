@@ -1,6 +1,9 @@
-﻿using ProductsAndPricingNew.Domain.Common.Exceptions;
-using ProductsAndPricingNew.Domain.Common.Text;
+using ProductsAndPricingNew.Domain.Common.Exceptions;
 using ProductsAndPricingNew.Domain.Common.Primitives;
+using ProductsAndPricingNew.Domain.Common.Text;
+using ProductsAndPricingNew.Domain.SharedKernel.Definitions;
+using ProductsAndPricingNew.Domain.SharedKernel.ValueObjects;
+using ProductsAndPricingNew.Domain.UnitOfMeasure;
 
 namespace ProductsAndPricingNew.Domain.Entities.Products;
 
@@ -8,166 +11,213 @@ public sealed class Package : AggregateRoot<int>, IProductDefinition
 {
     private readonly List<PackageItem> _items = new();
 
-    private Package() { }
-
-    public Package(int id, int divisionId, string name, int unitTypeId)
-    {
-        Id = id;
-        DivisionId = divisionId;
-        UnitTypeId = unitTypeId;
-        IsActive = true;
-        // FinanceCodes = new FinanceCodes(null, null);
-
-        Rename(name);
-    }
-
     public int DivisionId { get; private set; }
     public int UnitTypeId { get; private set; }
     public string Name { get; private set; } = null!;
     public bool IsActive { get; private set; }
     public string? Description { get; private set; }
-    public decimal CommissionPercentage { get; private set; }
-    public int? MinimumAge { get; private set; }
-    public int? MaximumAge { get; private set; }
+    public Percentage Commission { get; private set; } = Percentage.Zero;
+    public AgeRange AgeRange { get; private set; } = AgeRange.Open;
     public int? MinimumWeeks { get; private set; }
-    public int? AccountCategoryId { get; private set; }
-    public int? ProductCategoryId { get; private set; }
-    public DateOnly? OfferingsClosureDate { get; private set; }
-    //public FinanceCodes FinanceCodes { get; private set; }
+    public ProductCategories Categories { get; private set; } = ProductCategories.Unassigned;
+    public FinanceCodes FinanceCodes { get; private set; } = FinanceCodes.Unassigned;
+    public OfferingsClosurePolicy ClosurePolicy { get; private set; } = OfferingsClosurePolicy.Open;
 
     public IReadOnlyCollection<PackageItem> Items => _items.AsReadOnly();
 
-    public void Rename(string name) => Name = name.AsRequiredDomainText(nameof(Name), Rules.NameMaxLength);
+    private Package() { }
 
-    public void ChangeDescription(string? description)
+    private Package(int divisionId, int unitTypeId, string name)
     {
-        Description = string.IsNullOrWhiteSpace(description) ? null : description.Trim();
-    }
-
-    public void Activate() => IsActive = true;
-    public void Deactivate() => IsActive = false;
-
-    public void ChangeUnitType(int unitTypeId)
-    {
-        if (unitTypeId <= 0)
-            throw new DomainException("UnitTypeId must be greater than zero");
-
+        DivisionId = divisionId;
         UnitTypeId = unitTypeId;
+        Name = name;
     }
 
-    public void SetCommissionPercentage(decimal commissionPercentage)
-    {
-        if (commissionPercentage < 0 || commissionPercentage > 100)
-            throw new DomainException("Commission percentage must be between 0 and 100");
+    public void Rename(string name) =>
+        Name = name.AsRequiredDomainText(nameof(Name), Rules.NameMaxLength);
 
-        CommissionPercentage = commissionPercentage;
+    public void ChangeDescription(string? description) =>
+        Description = description.AsOptionalText();
+
+    public void ChangeIsActive(bool isActive) =>
+        IsActive = isActive;
+
+    public void ChangeUnitType(UnitType unitType)
+    {
+        UnitTypePolicy.EnsureAllowedForProduct(ProductKind.Package, unitType);
+        UnitTypeId = unitType.Id;
     }
 
-    public void SetAgeRange(int? minimumAge, int? maximumAge)
+    public void ChangeCommission(decimal commissionPercentage) =>
+        Commission = Percentage.Create(commissionPercentage);
+
+    public void ChangeAgeRange(AgeRangeDefinition? definition) =>
+        AgeRange = AgeRange.Create(definition);
+
+    public void ChangeMinimumWeeks(int? weeks)
     {
-        if (minimumAge.HasValue && minimumAge.Value < 0)
-            throw new DomainException("Minimum age cannot be negative");
-
-        if (maximumAge.HasValue && maximumAge.Value < 0)
-            throw new DomainException("Maximum age cannot be negative");
-
-        if (minimumAge.HasValue && maximumAge.HasValue && minimumAge > maximumAge)
-            throw new DomainException("Minimum age cannot be greater than maximum age");
-
-        MinimumAge = minimumAge;
-        MaximumAge = maximumAge;
-    }
-
-    public void SetMinimumWeeks(int? weeks)
-    {
-        if (weeks.HasValue && weeks.Value < 0)
-            throw new DomainException("Minimum weeks must be 0 or greater");
+        if (weeks is < 0)
+            throw new DomainException("Minimum weeks must be 0 or greater.");
 
         MinimumWeeks = weeks;
     }
 
-    public void ChangeCategories(int? accountCategoryId, int? productCategoryId)
-    {
-        AccountCategoryId = accountCategoryId;
-        ProductCategoryId = productCategoryId;
-    }
+    public void ChangeCategories(ProductCategoriesDefinition? definition) =>
+        Categories = ProductCategories.Create(definition);
 
-    //public void ChangeFinanceCodes(FinanceCodes codes) => FinanceCodes = codes;
-    public void ChangeOfferingsClosureDate(DateOnly? value) => OfferingsClosureDate = value;
+    public void ChangeFinanceCodes(FinanceCodesDefinition? definition) =>
+        FinanceCodes = FinanceCodes.Create(definition);
+
+    public void ChangeClosurePolicy(DateOnly date) =>
+        ClosurePolicy = OfferingsClosurePolicy.Create(date);
 
     public void AddItem(ProductRef product, decimal percentage)
     {
-        if (product.Kind == ProductKind.Package && product.Id == Id)
-            throw new DomainException("Package cannot include itself");
+        EnsureNotSelfReference(product);
 
-        if (_items.Any(x => x.ProductKind == product.Kind && x.ProductDefinitionId == product.Id))
-            throw new DomainException("Duplicate package item");
+        if (_items.Any(x => x.Product == product))
+            throw new DomainException("Duplicate package item.");
 
-        _items.Add(new PackageItem(product, percentage));
-        ValidatePercentagesDoNotExceed100();
+        _items.Add(new PackageItem(product, Percentage.Create(percentage)));
+        EnsureBreakdownDoesNotExceed100();
     }
 
     public void ChangeItemPercentage(ProductRef product, decimal percentage)
     {
-        PackageItem item = _items.SingleOrDefault(x => x.ProductKind == product.Kind && x.ProductDefinitionId == product.Id)
-                           ?? throw new DomainException("Package item not found");
+        PackageItem item = _items.SingleOrDefault(x => x.Product == product)
+                           ?? throw new DomainException("Package item not found.");
 
-        item.ChangePercentage(percentage);
-        ValidatePercentagesDoNotExceed100();
+        item.ChangePercentage(Percentage.Create(percentage));
+        EnsureBreakdownDoesNotExceed100();
     }
 
     public void RemoveItem(ProductRef product)
     {
         PackageItem item = _items.SingleOrDefault(x => x.Product == product)
-                           ?? throw new DomainException("Package item not found");
+                           ?? throw new DomainException("Package item not found.");
 
         _items.Remove(item);
     }
 
     public void EnsureBreakdownTotalEquals100()
     {
-        decimal total = _items.Sum(x => x.Percentage);
+        decimal total = _items.Sum(x => x.Percentage.Value);
 
         if (Math.Abs(total - 100m) > 0.01m)
-            throw new DomainException($"Total percentage breakdown must equal 100%, current total is {total}%");
+            throw new DomainException($"Total percentage breakdown must equal 100%, current total is {total}%.");
     }
 
-    private void ValidatePercentagesDoNotExceed100()
+    private void EnsureBreakdownDoesNotExceed100()
     {
-        decimal total = _items.Sum(x => x.Percentage);
+        if (_items.Sum(x => x.Percentage.Value) > 100m)
+            throw new DomainException("Package breakdown total cannot exceed 100%.");
+    }
 
-        if (total > 100m)
-            throw new DomainException("Package breakdown total cannot exceed 100%");
+    private void EnsureNotSelfReference(ProductRef product)
+    {
+        if (product.Kind == ProductKind.Package && Id != 0 && product.Id == Id)
+            throw new DomainException("Package cannot include itself.");
+    }
+
+    public sealed class Builder
+    {
+        private readonly int _divisionId;
+        private readonly string _name;
+        private readonly int _unitTypeId;
+
+        private bool _isActive = true;
+        private string? _description;
+        private Percentage _commission = Percentage.Zero;
+        private AgeRange _ageRange = AgeRange.Open;
+        private int? _minimumWeeks;
+        private ProductCategories _categories = ProductCategories.Unassigned;
+        private FinanceCodes _financeCodes = FinanceCodes.Unassigned;
+        private readonly List<(ProductRef Product, decimal Percentage)> _items = new();
+
+        public Builder(int divisionId, string name, UnitType unitType)
+        {
+            ArgumentNullException.ThrowIfNull(unitType);
+            UnitTypePolicy.EnsureAllowedForProduct(ProductKind.Package, unitType);
+
+            _divisionId = Guard.PositiveId(divisionId, nameof(DivisionId));
+            _name = name.AsRequiredDomainText(nameof(Name), Rules.NameMaxLength);
+            _unitTypeId = unitType.Id;
+        }
+
+        public Builder IsActive(bool value)
+        {
+            _isActive = value;
+            return this;
+        }
+
+        public Builder WithDescription(string? value)
+        {
+            _description = value.AsOptionalText();
+            return this;
+        }
+
+        public Builder WithCommission(decimal commissionPercentage)
+        {
+            _commission = Percentage.Create(commissionPercentage);
+            return this;
+        }
+
+        public Builder WithAgeRange(AgeRangeDefinition? definition)
+        {
+            _ageRange = AgeRange.Create(definition);
+            return this;
+        }
+
+        public Builder WithMinimumWeeks(int? weeks)
+        {
+            if (weeks is < 0)
+                throw new DomainException("Minimum weeks must be 0 or greater.");
+
+            _minimumWeeks = weeks;
+            return this;
+        }
+
+        public Builder WithCategories(ProductCategoriesDefinition? definition)
+        {
+            _categories = ProductCategories.Create(definition);
+            return this;
+        }
+
+        public Builder WithFinanceCodes(FinanceCodesDefinition? definition)
+        {
+            _financeCodes = FinanceCodes.Create(definition);
+            return this;
+        }
+
+        public Builder WithItem(ProductRef product, decimal percentage)
+        {
+            _items.Add((product, percentage));
+            return this;
+        }
+
+        public Package Build()
+        {
+            Package package = new(_divisionId, _unitTypeId, _name)
+            {
+                IsActive = _isActive,
+                Description = _description,
+                Commission = _commission,
+                AgeRange = _ageRange,
+                MinimumWeeks = _minimumWeeks,
+                Categories = _categories,
+                FinanceCodes = _financeCodes
+            };
+
+            foreach ((ProductRef product, decimal percentage) in _items)
+                package.AddItem(product, percentage);
+
+            return package;
+        }
     }
 
     public static class Rules
     {
         public const int NameMaxLength = 100;
-    }
-}
-
-public sealed class PackageItem : Entity<int>
-{
-    private PackageItem() { }
-
-    internal PackageItem(ProductRef product, decimal percentage)
-    {
-        ProductKind = product.Kind;
-        ProductDefinitionId = product.Id;
-        ChangePercentage(percentage);
-    }
-
-    public ProductKind ProductKind { get; private set; }
-    public int ProductDefinitionId { get; private set; }
-    public decimal Percentage { get; private set; }
-
-    public ProductRef Product => new(ProductKind, ProductDefinitionId);
-
-    internal void ChangePercentage(decimal percentage)
-    {
-        if (percentage <= 0 || percentage > 100)
-            throw new DomainException("Percentage breakdown must be between 0 and 100");
-
-        Percentage = percentage;
     }
 }

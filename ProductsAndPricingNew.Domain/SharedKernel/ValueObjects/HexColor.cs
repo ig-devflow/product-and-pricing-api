@@ -64,7 +64,7 @@ public readonly record struct HexColor
 
         return $"#{color}";
     }
-    
+
     public static class Rules
     {
         public const int ShortLength = 3;

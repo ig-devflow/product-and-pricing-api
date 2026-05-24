@@ -19,7 +19,7 @@ internal static class ConfigurationExtensions
             audit.Property(x => x.UpdatedAt).HasColumnName("UpdatedAt").IsRequired();
         });
     }
-    
+
     public static EntityTypeBuilder<T> ConfigureAuditAndConcurrency<T>(this EntityTypeBuilder<T> builder)
         where T : AggregateRoot<int>
     {

@@ -7,6 +7,10 @@ namespace ProductsAndPricingNew.Domain.Entities.Products;
 
 public sealed class TransferPortInstruction : Entity<int>, ISoftDeletable
 {
+    public int DivisionId { get; private set; }
+    public string Instructions { get; private set; } = null!;
+    public bool IsDeleted { get; private set; }
+
     private TransferPortInstruction() { }
     internal TransferPortInstruction(int divisionId, string instructions)
     {
@@ -17,10 +21,6 @@ public sealed class TransferPortInstruction : Entity<int>, ISoftDeletable
         UpdateInstructions(instructions);
         IsDeleted = false;
     }
-
-    public int DivisionId { get; private set; }
-    public string Instructions { get; private set; } = null!;
-    public bool IsDeleted { get; private set; }
 
     internal void UpdateInstructions(string instructions)
     {

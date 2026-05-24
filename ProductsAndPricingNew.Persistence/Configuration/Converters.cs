@@ -29,4 +29,17 @@ internal static class Converters
         v => v.Value,
         v => Domain.SharedKernel.ValueObjects.FinanceCode.Create(v)
     );
+
+    public static readonly ValueConverter<OfferingsClosurePolicy, DateOnly?> OfferingsClosurePolicy = new(
+        v => v.Value,
+        v => Domain.SharedKernel.ValueObjects.OfferingsClosurePolicy.Create(v)
+    );
+
+#pragma warning disable EF1001
+    public static readonly ValueConverter<Percentage?, decimal?> Percentage = new(
+        v => !v.HasValue || v.Value.Value == 0m ? null : v.Value.Value,
+        v => Domain.SharedKernel.ValueObjects.Percentage.Create(v),
+        convertsNulls: true
+    );
+#pragma warning restore EF1001
 }

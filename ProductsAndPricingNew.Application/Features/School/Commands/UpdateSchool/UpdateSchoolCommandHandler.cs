@@ -6,6 +6,7 @@ using ProductsAndPricingNew.Application.Common.Mapping;
 using ProductsAndPricingNew.Application.Features.School.Abstractions;
 using ProductsAndPricingNew.Domain.Common.Text;
 using ProductsAndPricingNew.Domain.Repositories;
+using ProductsAndPricingNew.Domain.SharedKernel.Definitions;
 using SchoolEntity = ProductsAndPricingNew.Domain.Entities.PricingRef.School;
 
 namespace ProductsAndPricingNew.Application.Features.School.Commands.UpdateSchool;
@@ -44,7 +45,7 @@ internal sealed class UpdateSchoolCommandHandler : IRequestHandler<UpdateSchoolC
         school.Rename(request.Name);
         school.ChangeLegacyCode(request.Code);
         school.ChangeMinimumStayInWeeks(request.MinimumStayInWeeks);
-        school.ChangeAgeRange(request.AgeFrom, request.AgeTo);
+        school.ChangeAgeRange(new AgeRangeDefinition(request.AgeFrom, request.AgeTo));
         school.ChangeTelephone(request.Telephone);
         school.ChangeEmergencyTelephone(request.EmergencyTelephone);
         school.ChangeContactAddress(request.ContactAddress.ToDefinition());

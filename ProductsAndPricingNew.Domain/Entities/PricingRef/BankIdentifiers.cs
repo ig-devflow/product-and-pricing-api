@@ -49,7 +49,7 @@ public sealed record BankIdentifiers : IEmptyValueObject
         AchAba is null;
 
     public static BankIdentifiers Empty { get; } = new();
-    
+
     public static class Rules
     {
         public const int MaxLength = 100;

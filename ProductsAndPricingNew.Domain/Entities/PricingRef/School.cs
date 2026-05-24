@@ -42,8 +42,8 @@ public sealed class School : AggregateRoot<int>
         MinimumStayInWeeks = weeks;
     }
 
-    public void ChangeAgeRange(int? from, int? to)
-        => AgeRange = AgeRange.Create(from, to);
+    public void ChangeAgeRange(AgeRangeDefinition? definition)
+        => AgeRange = AgeRange.Create(definition);
 
     public void ChangeTelephone(string? value)
         => Telephone = TelephoneNumber.Create(value);
@@ -118,9 +118,9 @@ public sealed class School : AggregateRoot<int>
             return this;
         }
 
-        public Builder SetAgeRange(int? from, int? to)
+        public Builder SetAgeRange(AgeRangeDefinition? definition)
         {
-            _ageRange = AgeRange.Create(from, to);
+            _ageRange = AgeRange.Create(definition);
             return this;
         }
 

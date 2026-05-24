@@ -12,12 +12,12 @@ public readonly struct TelephoneNumber : IEquatable<TelephoneNumber>, IEmptyValu
 
     public bool IsEmpty => Value is null;
     public static TelephoneNumber Empty { get; } = new(null);
-    
+
     private TelephoneNumber(string? value)
     {
         Value = value;
     }
-    
+
     public static TelephoneNumber Create(string? value)
     {
         string? normalized = value.AsOptionalDomainText(nameof(TelephoneNumber), Rules.MaxLength);

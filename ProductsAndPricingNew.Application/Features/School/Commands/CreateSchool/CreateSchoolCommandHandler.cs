@@ -6,6 +6,7 @@ using ProductsAndPricingNew.Application.Common.Mapping;
 using ProductsAndPricingNew.Application.Features.School.Abstractions;
 using ProductsAndPricingNew.Domain.Common.Text;
 using ProductsAndPricingNew.Domain.Repositories;
+using ProductsAndPricingNew.Domain.SharedKernel.Definitions;
 using SchoolEntity = ProductsAndPricingNew.Domain.Entities.PricingRef.School;
 
 namespace ProductsAndPricingNew.Application.Features.School.Commands.CreateSchool;
@@ -36,7 +37,7 @@ internal sealed class CreateSchoolCommandHandler : IRequestHandler<CreateSchoolC
 
         SchoolEntity school = new SchoolEntity.Builder(request.CentreId, name, request.Code)
             .MinimumStayInWeeks(request.MinimumStayInWeeks)
-            .SetAgeRange(request.AgeFrom, request.AgeTo)
+            .SetAgeRange(new AgeRangeDefinition(request.AgeFrom, request.AgeTo))
             .Telephone(request.Telephone)
             .EmergencyTelephone(request.EmergencyTelephone)
             .ContactAddress(request.ContactAddress.ToDefinition())

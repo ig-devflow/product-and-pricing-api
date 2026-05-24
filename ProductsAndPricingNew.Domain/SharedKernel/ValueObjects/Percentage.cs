@@ -8,7 +8,7 @@ public readonly record struct Percentage : IEmptyValueObject
 
     public static Percentage Zero => new(0m);
     public bool IsEmpty => Value == 0m;
-    
+
     private Percentage(decimal value)
     {
         Value = value;

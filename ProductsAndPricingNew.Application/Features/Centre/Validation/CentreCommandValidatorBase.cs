@@ -36,7 +36,7 @@ internal abstract class CentreCommandValidatorBase<TCommand> : AbstractValidator
             .WithMessage("Currency is required.")
             .MustAsync((currencyId, ct) => CurrencyIsActiveAsync(referenceData, currencyId, ct))
             .WithMessage("Currency must reference an active currency.");
-        
+
         RuleFor(x => x.PrintFormat)
             .Must(pf => Enum.IsDefined(pf) && pf != PrintFormat.None)
             .WithMessage("PrintFormat must be a valid value.");
@@ -172,7 +172,7 @@ internal abstract class CentreCommandValidatorBase<TCommand> : AbstractValidator
 
         return true;
     }
-    
+
     private static async Task<bool> CurrencyIsActiveAsync(IReferenceDataValidationQuery referenceData, int? currencyId, CancellationToken ct)
     {
         if (currencyId is null or <= 0)
