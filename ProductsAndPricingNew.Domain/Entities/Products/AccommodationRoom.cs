@@ -1,5 +1,9 @@
-﻿using ProductsAndPricingNew.Domain.Common.Text;
 using ProductsAndPricingNew.Domain.Common.Primitives;
+using ProductsAndPricingNew.Domain.Common.Text;
+using ProductsAndPricingNew.Domain.Entities.Products.Definitions;
+using ProductsAndPricingNew.Domain.SharedKernel.Definitions;
+using ProductsAndPricingNew.Domain.SharedKernel.ValueObjects;
+using ProductsAndPricingNew.Domain.UnitOfMeasure;
 
 namespace ProductsAndPricingNew.Domain.Entities.Products;
 
@@ -7,97 +11,119 @@ public sealed class AccommodationRoom : AggregateRoot<int>, IProductDefinition
 {
     public int AccommodationId { get; private set; }
     public int DivisionId { get; private set; }
-    public int UnitTypeId { get; private set; }
     public string Name { get; private set; } = null!;
+    public int UnitTypeId { get; private set; }
     public bool IsActive { get; private set; }
     public bool OccupyRoom { get; private set; }
-    public int RoomTypeId { get; private set; }
-    public int BoardTypeId { get; private set; }
-    public int? BathroomTypeId { get; private set; }
-    public int RoomGradeId { get; private set; }
-    public int? AccountCategoryId { get; private set; }
-    public int? ProductCategoryId { get; private set; }
-    public DateOnly? OfferingsClosureDate { get; private set; }
-    // public FinanceCodes FinanceCodes { get; private set; }
+    public RoomDetails RoomDetails { get; private set; } = RoomDetails.Unassigned;
+    public ProductCategories Categories { get; private set; } = ProductCategories.Unassigned;
+    public FinanceCodes FinanceCodes { get; private set; } = FinanceCodes.Unassigned;
+    public OfferingsClosurePolicy ClosurePolicy { get; private set; } = OfferingsClosurePolicy.Open;
 
     private AccommodationRoom() { }
 
-    public AccommodationRoom(
-        int id,
-        int accommodationId,
-        int divisionId,
-        int unitTypeId,
-        string name,
-        int roomTypeId,
-        int boardTypeId,
-        int roomGradeId)
+    private AccommodationRoom(int accommodationId, int divisionId, int unitTypeId, string name)
     {
-        Id = id;
         AccommodationId = accommodationId;
         DivisionId = divisionId;
         UnitTypeId = unitTypeId;
-        RoomTypeId = roomTypeId;
-        BoardTypeId = boardTypeId;
-        RoomGradeId = roomGradeId;
-        IsActive = true;
-        //  FinanceCodes = new FinanceCodes(null, null);
-
-        Rename(name);
+        Name = name;
     }
 
-    public void Rename(string name) => Name = name.AsRequiredDomainText(nameof(Name), Rules.NameMaxLength);
+    public void Rename(string name) =>
+        Name = name.AsRequiredDomainText(nameof(Name), Rules.NameMaxLength);
 
-    public void Activate()
+    public void ChangeUnitType(UnitType unitType)
     {
-        IsActive = true;
+        UnitTypePolicy.EnsureAllowedForProduct(ProductKind.AccommodationRoom, unitType);
+        UnitTypeId = unitType.Id;
     }
 
-    public void Deactivate()
+    public void ChangeIsActive(bool isActive) =>
+        IsActive = isActive;
+
+    public void SetOccupyRoom(bool occupyRoom) =>
+        OccupyRoom = occupyRoom;
+
+    public void ChangeRoomDetails(RoomDetailsDefinition roomDetails) =>
+        RoomDetails = RoomDetails.Create(roomDetails);
+
+    public void ChangeCategories(ProductCategoriesDefinition? definition) =>
+        Categories = ProductCategories.Create(definition);
+
+    public void ChangeFinanceCodes(FinanceCodesDefinition? definition) =>
+        FinanceCodes = FinanceCodes.Create(definition);
+
+    public void ChangeClosurePolicy(DateOnly date) =>
+        ClosurePolicy = OfferingsClosurePolicy.Create(date);
+
+    public sealed class Builder
     {
-        IsActive = false;
-    }
+        private readonly int _accommodationId;
+        private readonly int _divisionId;
+        private readonly int _unitTypeId;
+        private readonly string _name;
 
-    public void ChangeUnitType(int unitTypeId) => UnitTypeId = unitTypeId;
+        private bool _isActive = true;
+        private bool _occupyRoom;
+        private RoomDetails _roomDetails = RoomDetails.Unassigned;
+        private ProductCategories _categories = ProductCategories.Unassigned;
+        private FinanceCodes _financeCodes = FinanceCodes.Unassigned;
 
-    public void SetOccupyRoom(bool value)
-    {
-        OccupyRoom = value;
-    }
+        public Builder(int accommodationId, int divisionId, UnitType unitType, string name)
+        {
+            ArgumentNullException.ThrowIfNull(unitType);
+            UnitTypePolicy.EnsureAllowedForProduct(ProductKind.AccommodationRoom, unitType);
 
-    public void ChangeRoomType(int id)
-    {
-        RoomTypeId = id;
-    }
+            _accommodationId = Guard.PositiveId(accommodationId, nameof(AccommodationId));
+            _divisionId = Guard.PositiveId(divisionId, nameof(DivisionId));
+            _unitTypeId = unitType.Id;
+            _name = name.AsRequiredDomainText(nameof(Name), Rules.NameMaxLength);
+        }
 
-    public void ChangeBoardType(int id)
-    {
-        BoardTypeId = id;
-    }
+        public Builder IsActive(bool value)
+        {
+            _isActive = value;
+            return this;
+        }
 
-    public void ChangeBathroomType(int? id)
-    {
-        BathroomTypeId = id;
-    }
+        public Builder OccupyRoom(bool value)
+        {
+            _occupyRoom = value;
+            return this;
+        }
 
-    public void ChangeRoomGrade(int id)
-    {
-        RoomGradeId = id;
-    }
+        public Builder WithRoomDetails(RoomDetailsDefinition roomDetails)
+        {
+            _roomDetails = RoomDetails.Create(roomDetails);
+            return this;
+        }
 
-    public void ChangeCategories(int? accountCategoryId, int? productCategoryId)
-    {
-        AccountCategoryId = accountCategoryId;
-        ProductCategoryId = productCategoryId;
-    }
+        public Builder WithCategories(ProductCategoriesDefinition? definition)
+        {
+            _categories = ProductCategories.Create(definition);
+            return this;
+        }
 
-    // public void ChangeFinanceCodes(FinanceCodes codes)
-    // {
-    //     FinanceCodes = codes;
-    // }
+        public Builder WithFinanceCodes(FinanceCodesDefinition? definition)
+        {
+            _financeCodes = FinanceCodes.Create(definition);
+            return this;
+        }
 
-    public void ChangeOfferingsClosureDate(DateOnly? value)
-    {
-        OfferingsClosureDate = value;
+        public AccommodationRoom Build()
+        {
+            AccommodationRoom accommodationRoom = new(_accommodationId, _divisionId, _unitTypeId, _name)
+            {
+                IsActive = _isActive,
+                OccupyRoom = _occupyRoom,
+                RoomDetails = _roomDetails,
+                Categories = _categories,
+                FinanceCodes = _financeCodes
+            };
+
+            return accommodationRoom;
+        }
     }
 
     public static class Rules

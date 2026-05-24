@@ -10,13 +10,13 @@ public readonly struct TelephoneNumber : IEquatable<TelephoneNumber>, IEmptyValu
 
     public string? Value { get; }
 
+    public bool IsEmpty => Value is null;
+    public static TelephoneNumber Empty { get; } = new(null);
+
     private TelephoneNumber(string? value)
     {
         Value = value;
     }
-
-    public bool IsEmpty => Value is null;
-    public static TelephoneNumber Empty { get; } = new(null);
 
     public static TelephoneNumber Create(string? value)
     {

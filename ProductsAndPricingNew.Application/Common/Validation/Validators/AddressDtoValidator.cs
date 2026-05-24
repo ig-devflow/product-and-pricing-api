@@ -53,7 +53,6 @@ internal sealed class AddressDtoValidator : AbstractValidator<AddressDto>
             return true;
 
         IReadOnlySet<int> activeCountryIds = await referenceData.GetActiveCountryIdsAsync(new[] { countryId.Value }, ct);
-
         return activeCountryIds.Contains(countryId.Value);
     }
 }

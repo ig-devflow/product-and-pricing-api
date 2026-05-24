@@ -1,52 +1,29 @@
-﻿using ProductsAndPricingNew.Domain.Common.Text;
+using ProductsAndPricingNew.Domain.Common.Text;
+using ProductsAndPricingNew.Domain.SharedKernel.Definitions;
 
 namespace ProductsAndPricingNew.Domain.SharedKernel.ValueObjects;
 
-public readonly struct FinanceCode : IEquatable<FinanceCode>, IEmptyValueObject
+public readonly record struct FinanceCodes(string? GeneralLedgerCode, string? CostCentreCode) : IEmptyValueObject
 {
-    public string Value { get; }
+    public static readonly FinanceCodes Unassigned = new(null, null);
 
-    private FinanceCode(string value)
+    public bool IsEmpty => string.IsNullOrEmpty(GeneralLedgerCode) && string.IsNullOrEmpty(CostCentreCode);
+
+    public static FinanceCodes Create(string? generalLedgerCode, string? costCentreCode)
     {
-        Value = value;
+        string? normalizedLedgerCode = generalLedgerCode.AsOptionalDomainText(nameof(GeneralLedgerCode), Rules.MaxLength);
+        string? normalizedCentreCode = costCentreCode.AsOptionalDomainText(nameof(CostCentreCode), Rules.MaxLength);
+
+        return new FinanceCodes(normalizedLedgerCode, normalizedCentreCode);
     }
 
-    public bool IsEmpty => string.Equals(Value, Rules.DefaultValue, StringComparison.OrdinalIgnoreCase);
-    public static FinanceCode Empty { get; } = new(Rules.DefaultValue);
-
-    public static FinanceCode Create(string? value)
-    {
-        string normalized = value.AsOptionalDomainText(nameof(FinanceCode), Rules.MaxLength) ?? Rules.DefaultValue;
-        return new FinanceCode(normalized.ToUpperInvariant());
-    }
-
-    public static bool IsValid(string? value)
-    {
-        if (string.IsNullOrWhiteSpace(value))
-            return true;
-
-        string normalized = value.AsOptionalText()!;
-
-        return normalized.Length <= Rules.MaxLength;
-    }
-
-    public bool Equals(FinanceCode other) =>
-        string.Equals(Value, other.Value, StringComparison.OrdinalIgnoreCase);
-
-    public override bool Equals(object? obj) =>
-        obj is FinanceCode other && Equals(other);
-
-    public override int GetHashCode() =>
-        StringComparer.OrdinalIgnoreCase.GetHashCode(Value);
-
-    public override string ToString() => Value;
-
-    public static bool operator ==(FinanceCode left, FinanceCode right) => left.Equals(right);
-    public static bool operator !=(FinanceCode left, FinanceCode right) => !left.Equals(right);
+    public static FinanceCodes Create(FinanceCodesDefinition? definition) =>
+        definition is null
+            ? Unassigned
+            : Create(definition.GeneralLedgerCode, definition.CostCentreCode);
 
     public static class Rules
     {
-        public const string DefaultValue = "ZZ";
-        public const int MaxLength = 20;
+        public const int MaxLength = 50;
     }
 }

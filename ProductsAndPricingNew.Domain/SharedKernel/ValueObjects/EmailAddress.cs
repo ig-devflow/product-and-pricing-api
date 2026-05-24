@@ -30,7 +30,7 @@ public readonly struct EmailAddress : IEquatable<EmailAddress>, IEmptyValueObjec
         return new EmailAddress(normalized);
     }
 
-    public static bool IsValid(string? value) // todo rework
+    public static bool IsValid(string? value)
     {
         if (string.IsNullOrWhiteSpace(value))
             return true;

@@ -3,24 +3,25 @@ using ProductsAndPricingNew.Domain.Common.Text;
 
 namespace ProductsAndPricingNew.Domain.SharedKernel.ValueObjects;
 
-public readonly struct HexColor : IEquatable<HexColor>, IEmptyValueObject
+public readonly record struct HexColor
 {
-    public string? Value { get; }
+    private const string DefaultColor = "#F58802";
+    public string Value { get; }
 
-    private HexColor(string? value)
+    private HexColor(string value)
     {
         Value = value;
     }
 
-    public bool IsEmpty => Value is null;
-    public static HexColor Empty { get; } = new(null);
+    public bool IsDefault => Value.Equals(DefaultColor, StringComparison.OrdinalIgnoreCase);
+    public static HexColor Default { get; } = new(DefaultColor);
 
     public static HexColor Create(string? value)
     {
         string? normalized = value.AsOptionalDomainText(nameof(HexColor), Rules.MaxLengthWithHash);
 
         if (normalized is null)
-            return Empty;
+            return Default;
 
         return new HexColor(Normalize(normalized));
     }
@@ -63,20 +64,6 @@ public readonly struct HexColor : IEquatable<HexColor>, IEmptyValueObject
 
         return $"#{color}";
     }
-
-    public bool Equals(HexColor other) =>
-        string.Equals(Value, other.Value, StringComparison.Ordinal);
-
-    public override bool Equals(object? obj) =>
-        obj is HexColor other && Equals(other);
-
-    public override int GetHashCode() =>
-        Value is null ? 0 : StringComparer.Ordinal.GetHashCode(Value);
-
-    public override string ToString() => Value ?? string.Empty;
-
-    public static bool operator ==(HexColor left, HexColor right) => left.Equals(right);
-    public static bool operator !=(HexColor left, HexColor right) => !left.Equals(right);
 
     public static class Rules
     {

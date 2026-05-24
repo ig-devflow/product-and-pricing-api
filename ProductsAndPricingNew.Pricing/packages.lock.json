@@ -1,0 +1,41 @@
+{
+  "version": 1,
+  "dependencies": {
+    "net10.0": {
+      "NRules": {
+        "type": "Direct",
+        "requested": "[1.0.4, )",
+        "resolved": "1.0.4",
+        "contentHash": "q2qoCrrke6E/9dIYSJwBOnME4sXM4QG86QP/M4Hc1cL5iU+GQTgqSz3C25FsjP+9VRjjK4pK+9SOMtuSqCtClA==",
+        "dependencies": {
+          "NRules.Fluent": "1.0.4",
+          "NRules.Runtime": "1.0.4"
+        }
+      },
+      "NRules.Fluent": {
+        "type": "Transitive",
+        "resolved": "1.0.4",
+        "contentHash": "xI29FDLLrO66pj72o7E70AjM6GwsE135M/eLeEDSrWNh9SybJ7sxSEP1s3g1F1BGv3NR0xkcLdTXqrBPGwidNg==",
+        "dependencies": {
+          "NRules.RuleModel": "1.0.4"
+        }
+      },
+      "NRules.RuleModel": {
+        "type": "Transitive",
+        "resolved": "1.0.4",
+        "contentHash": "VpdlkaE6ImoAf9PnzqpF7rd/P0Sc1CvoCNIyFmTcA4V574a9TemxmN5RfM1ONhVmxIK3qkU8w6RakVHd3gPoGA=="
+      },
+      "NRules.Runtime": {
+        "type": "Transitive",
+        "resolved": "1.0.4",
+        "contentHash": "xDk+/nJJA8nOf+qayIo+hVUc8pBe5mdPCHY6ciSjJtEnwBRfVuVWGDMLOqOhAHUy3Hr17g0xW1LMIl4JTRhPXg==",
+        "dependencies": {
+          "NRules.RuleModel": "1.0.4"
+        }
+      },
+      "productsandpricingnew.domain": {
+        "type": "Project"
+      }
+    }
+  }
+}

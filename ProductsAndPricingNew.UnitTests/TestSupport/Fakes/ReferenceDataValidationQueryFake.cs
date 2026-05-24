@@ -7,6 +7,7 @@ internal sealed class ReferenceDataValidationQueryFake : IReferenceDataValidatio
 {
     private readonly HashSet<int> _activeCountryIds = new();
     private readonly HashSet<int> _activeAudienceIds = new();
+    private readonly HashSet<int> _activeCurrencyIds = new();
     private readonly Dictionary<ContentTemplateScope, HashSet<int>> _activeContentTemplateIds = new();
 
     public ReferenceDataValidationQueryFake WithActiveCountries(params int[] ids)
@@ -18,6 +19,12 @@ internal sealed class ReferenceDataValidationQueryFake : IReferenceDataValidatio
     public ReferenceDataValidationQueryFake WithActiveAudiences(params int[] ids)
     {
         AddRange(_activeAudienceIds, ids);
+        return this;
+    }
+
+    public ReferenceDataValidationQueryFake WithActiveCurrencies(params int[] ids)
+    {
+        AddRange(_activeCurrencyIds, ids);
         return this;
     }
 
@@ -39,10 +46,10 @@ internal sealed class ReferenceDataValidationQueryFake : IReferenceDataValidatio
     public Task<IReadOnlySet<int>> GetActiveAudienceIdsAsync(IReadOnlyCollection<int> ids, CancellationToken ct = default)
         => Task.FromResult(Filter(ids, _activeAudienceIds));
 
-    public Task<IReadOnlySet<int>> GetActiveContentTemplateIdsAsync(
-        IReadOnlyCollection<int> ids,
-        ContentTemplateScope scope,
-        CancellationToken ct = default)
+    public Task<IReadOnlySet<int>> GetActiveCurrencyIdsAsync(IReadOnlyCollection<int> ids, CancellationToken ct = default)
+        => Task.FromResult(Filter(ids, _activeCurrencyIds));
+
+    public Task<IReadOnlySet<int>> GetActiveContentTemplateIdsAsync(IReadOnlyCollection<int> ids, ContentTemplateScope scope, CancellationToken ct = default)
     {
         _activeContentTemplateIds.TryGetValue(scope, out HashSet<int>? activeIds);
         return Task.FromResult(Filter(ids, activeIds ?? new HashSet<int>()));

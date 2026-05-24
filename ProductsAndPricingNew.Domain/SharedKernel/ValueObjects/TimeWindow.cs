@@ -1,4 +1,5 @@
 using ProductsAndPricingNew.Domain.Common.Exceptions;
+using ProductsAndPricingNew.Domain.SharedKernel.Definitions;
 
 namespace ProductsAndPricingNew.Domain.SharedKernel.ValueObjects;
 
@@ -21,4 +22,7 @@ public readonly record struct TimeWindow(TimeOnly? From, TimeOnly? To)
 
         return new TimeWindow(from, to);
     }
+
+    public static TimeWindow Create(TimeWindowDefinition? definition) =>
+        definition is null ? Undefined : Create(definition.From, definition.To);
 }

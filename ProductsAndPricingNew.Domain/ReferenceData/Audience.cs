@@ -6,12 +6,10 @@ namespace ProductsAndPricingNew.Domain.ReferenceData;
 
 public sealed class Audience : Entity<int>, ISoftDeletable
 {
-    public string Name { get; init; }
+    public string Name { get; init; } = null!;
     public bool IsDeleted { get; init; }
 
-    private Audience()
-    {
-    }
+    private Audience() { }
 
     public void EnsureActive()
     {

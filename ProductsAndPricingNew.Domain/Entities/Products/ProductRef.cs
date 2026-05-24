@@ -1,6 +1,6 @@
 ﻿namespace ProductsAndPricingNew.Domain.Entities.Products;
 
-public readonly struct ProductRef : IEquatable<ProductRef>, IComparable<ProductRef>, IComparable
+public readonly record struct ProductRef : IComparable<ProductRef>, IComparable
 {
     public ProductKind Kind { get; }
     public int Id { get; }
@@ -9,16 +9,6 @@ public readonly struct ProductRef : IEquatable<ProductRef>, IComparable<ProductR
     {
         Kind = kind;
         Id = id;
-    }
-
-    public bool Equals(ProductRef other)
-    {
-        return Kind == other.Kind && Id == other.Id;
-    }
-
-    public override bool Equals(object? obj)
-    {
-        return obj is ProductRef other && Equals(other);
     }
 
     public override int GetHashCode()
@@ -44,21 +34,6 @@ public readonly struct ProductRef : IEquatable<ProductRef>, IComparable<ProductR
             throw new ArgumentException("Object must be of type ProductRef.", nameof(obj));
 
         return CompareTo((ProductRef)obj);
-    }
-
-    public override string ToString()
-    {
-        return string.Format("{0}:{1}", Kind, Id);
-    }
-
-    public static bool operator ==(ProductRef left, ProductRef right)
-    {
-        return left.Equals(right);
-    }
-
-    public static bool operator !=(ProductRef left, ProductRef right)
-    {
-        return !left.Equals(right);
     }
 
     public static bool operator <(ProductRef left, ProductRef right)

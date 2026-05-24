@@ -5,7 +5,7 @@ namespace ProductsAndPricingNew.Application.Features.School.Abstractions;
 public interface ISchoolCommandPayload
 {
     string Name { get; }
-    string LegacyCode { get; }
+    string Code { get; }
     int MinimumStayInWeeks { get; }
     int? AgeFrom { get; }
     int? AgeTo { get; }

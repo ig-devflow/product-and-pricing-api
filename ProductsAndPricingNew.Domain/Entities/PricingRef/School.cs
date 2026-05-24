@@ -10,9 +10,9 @@ public sealed class School : AggregateRoot<int>
 {
     public int CentreId { get; private set; }
     public string Name { get; private set; } = null!;
-    public string LegacyCode { get; private set; }
+    public string Code { get; private set; } = null!;
     public int MinimumStayInWeeks { get; private set; }
-    public AgeRange AgeRange { get; private set; } = AgeRange.Empty;
+    public AgeRange AgeRange { get; private set; } = AgeRange.Open;
     public TelephoneNumber? Telephone { get; private set; } = TelephoneNumber.Empty;
     public TelephoneNumber? EmergencyTelephone { get; private set; } = TelephoneNumber.Empty;
     public Address ContactAddress { get; private set; } = Address.Empty;
@@ -23,18 +23,18 @@ public sealed class School : AggregateRoot<int>
 
     private School() { }
 
-    private School(int centreId, string name, string legacyCode)
+    private School(int centreId, string name, string code)
     {
         CentreId = centreId;
         Name = name;
-        LegacyCode = legacyCode;
+        Code = code;
     }
 
     public void Rename(string name)
         => Name = name.AsRequiredDomainText(nameof(Name), Rules.NameMaxLength);
 
     public void ChangeLegacyCode(string legacyCode)
-        => LegacyCode = legacyCode.AsRequiredDomainText(nameof(LegacyCode), Rules.LegacyCodeMaxLength);
+        => Code = legacyCode.AsRequiredDomainText(nameof(Code), Rules.CodeMaxLength);
 
     public void ChangeMinimumStayInWeeks(int weeks)
     {
@@ -42,8 +42,8 @@ public sealed class School : AggregateRoot<int>
         MinimumStayInWeeks = weeks;
     }
 
-    public void ChangeAgeRange(int? from, int? to)
-        => AgeRange = AgeRange.Create(from, to);
+    public void ChangeAgeRange(AgeRangeDefinition? definition)
+        => AgeRange = AgeRange.Create(definition);
 
     public void ChangeTelephone(string? value)
         => Telephone = TelephoneNumber.Create(value);
@@ -92,7 +92,7 @@ public sealed class School : AggregateRoot<int>
         private readonly string _legacyCode;
 
         private int _minimumStayInWeeks;
-        private AgeRange _ageRange;
+        private AgeRange _ageRange = AgeRange.Open;
         private TelephoneNumber _telephone = TelephoneNumber.Empty;
         private TelephoneNumber _emergencyTelephone = TelephoneNumber.Empty;
         private Address _contactAddress = Address.Empty;
@@ -107,7 +107,7 @@ public sealed class School : AggregateRoot<int>
 
             _centreId = centreId;
             _name = name.AsRequiredDomainText(nameof(Name), Rules.NameMaxLength);
-            _legacyCode = legacyCode.AsRequiredDomainText(nameof(LegacyCode), Rules.LegacyCodeMaxLength);
+            _legacyCode = legacyCode.AsRequiredDomainText(nameof(Code), Rules.CodeMaxLength);
         }
 
         public Builder MinimumStayInWeeks(int value)
@@ -118,9 +118,9 @@ public sealed class School : AggregateRoot<int>
             return this;
         }
 
-        public Builder SetAgeRange(int? from, int? to)
+        public Builder SetAgeRange(AgeRangeDefinition? definition)
         {
-            _ageRange = AgeRange.Create(from, to);
+            _ageRange = AgeRange.Create(definition);
             return this;
         }
 
@@ -188,6 +188,6 @@ public sealed class School : AggregateRoot<int>
     public static class Rules
     {
         public const int NameMaxLength = 100;
-        public const int LegacyCodeMaxLength = 50;
+        public const int CodeMaxLength = 50;
     }
 }

@@ -45,8 +45,7 @@
         "resolved": "4.0.0",
         "contentHash": "wKfdLvDnDVhXlSreU7u/NFNHH6EfoOhAloEID4ePAyk+ZliowKZJvX+aCL4hxhFc9Jj74t62amS4LyOYTjXGCg==",
         "dependencies": {
-          "Microsoft.Extensions.Logging.Abstractions": "2.1.1",
-          "System.Threading.Tasks.Extensions": "4.5.4"
+          "Microsoft.Extensions.Logging.Abstractions": "2.1.1"
         }
       },
       "FluentValidation": {
@@ -395,10 +394,7 @@
       "Microsoft.TestPlatform.ObjectModel": {
         "type": "Transitive",
         "resolved": "18.5.1",
-        "contentHash": "KNZd+M0S0rz5eNAln0pbZX+A/RbokYZCbGKx4fN4CkhtWhkz6nSJDO+9LGYjRE4d0WPVriJ2JnVubkjt3+PpMg==",
-        "dependencies": {
-          "System.Reflection.Metadata": "8.0.0"
-        }
+        "contentHash": "KNZd+M0S0rz5eNAln0pbZX+A/RbokYZCbGKx4fN4CkhtWhkz6nSJDO+9LGYjRE4d0WPVriJ2JnVubkjt3+PpMg=="
       },
       "Microsoft.TestPlatform.TestHost": {
         "type": "Transitive",
@@ -414,6 +410,36 @@
         "resolved": "13.0.3",
         "contentHash": "HrC5BXdl00IP9zeV+0Z848QWPAoCr9P3bDEZguI+gkLcBKAOxix/tLEAAHC+UvDNPv4a2d18lOReHMOagPa+zQ=="
       },
+      "NRules": {
+        "type": "Transitive",
+        "resolved": "1.0.4",
+        "contentHash": "q2qoCrrke6E/9dIYSJwBOnME4sXM4QG86QP/M4Hc1cL5iU+GQTgqSz3C25FsjP+9VRjjK4pK+9SOMtuSqCtClA==",
+        "dependencies": {
+          "NRules.Fluent": "1.0.4",
+          "NRules.Runtime": "1.0.4"
+        }
+      },
+      "NRules.Fluent": {
+        "type": "Transitive",
+        "resolved": "1.0.4",
+        "contentHash": "xI29FDLLrO66pj72o7E70AjM6GwsE135M/eLeEDSrWNh9SybJ7sxSEP1s3g1F1BGv3NR0xkcLdTXqrBPGwidNg==",
+        "dependencies": {
+          "NRules.RuleModel": "1.0.4"
+        }
+      },
+      "NRules.RuleModel": {
+        "type": "Transitive",
+        "resolved": "1.0.4",
+        "contentHash": "VpdlkaE6ImoAf9PnzqpF7rd/P0Sc1CvoCNIyFmTcA4V574a9TemxmN5RfM1ONhVmxIK3qkU8w6RakVHd3gPoGA=="
+      },
+      "NRules.Runtime": {
+        "type": "Transitive",
+        "resolved": "1.0.4",
+        "contentHash": "xDk+/nJJA8nOf+qayIo+hVUc8pBe5mdPCHY6ciSjJtEnwBRfVuVWGDMLOqOhAHUy3Hr17g0xW1LMIl4JTRhPXg==",
+        "dependencies": {
+          "NRules.RuleModel": "1.0.4"
+        }
+      },
       "Scrutor": {
         "type": "Transitive",
         "resolved": "7.0.0",
@@ -422,11 +448,6 @@
           "Microsoft.Extensions.DependencyInjection.Abstractions": "10.0.0",
           "Microsoft.Extensions.DependencyModel": "10.0.0"
         }
-      },
-      "System.Collections.Immutable": {
-        "type": "Transitive",
-        "resolved": "8.0.0",
-        "contentHash": "AurL6Y5BA1WotzlEvVaIDpqzpIPvYnnldxru8oXJU2yFxFUy3+pNXjXd1ymO+RA0rq0+590Q8gaz2l3Sr7fmqg=="
       },
       "System.Configuration.ConfigurationManager": {
         "type": "Transitive",
@@ -451,14 +472,6 @@
           "Microsoft.IdentityModel.Tokens": "8.16.0"
         }
       },
-      "System.Reflection.Metadata": {
-        "type": "Transitive",
-        "resolved": "8.0.0",
-        "contentHash": "ptvgrFh7PvWI8bcVqG5rsA/weWM09EnthFHR5SCnS6IN+P4mj6rE1lBDC4U8HL9/57htKAqy4KQ3bBj84cfYyQ==",
-        "dependencies": {
-          "System.Collections.Immutable": "8.0.0"
-        }
-      },
       "System.Security.Cryptography.Pkcs": {
         "type": "Transitive",
         "resolved": "9.0.13",
@@ -468,11 +481,6 @@
         "type": "Transitive",
         "resolved": "9.0.13",
         "contentHash": "t8S9IDpjJKsLpLkeBdW8cWtcPyYqrGu93Dej1RO6WwuL/lkFSqWlan3rMJfortqz1mRIh+sys2AFsSA6jWJ3Jg=="
-      },
-      "System.Threading.Tasks.Extensions": {
-        "type": "Transitive",
-        "resolved": "4.5.4",
-        "contentHash": "zteT+G8xuGu6mS+mzDzYXbzS7rd3K6Fjb9RiZlYlJPam2/hU7JCBZBVEcywNuR+oZ1ncTvc/cq0faRr3P01OVg=="
       },
       "xunit.abstractions": {
         "type": "Transitive",
@@ -542,6 +550,13 @@
           "ProductsAndPricingNew.Application": "[1.0.0, )",
           "ProductsAndPricingNew.Domain": "[1.0.0, )",
           "Scrutor": "[7.0.0, )"
+        }
+      },
+      "productsandpricingnew.pricing": {
+        "type": "Project",
+        "dependencies": {
+          "NRules": "[1.0.4, )",
+          "ProductsAndPricingNew.Domain": "[1.0.0, )"
         }
       }
     }

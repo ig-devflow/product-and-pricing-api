@@ -22,7 +22,7 @@ public sealed class SchoolMappingProfile : Profile
             .ConstructUsing((src, ctx) => new CreateSchoolCommand(
                 0,
                 src.Name,
-                src.LegacyCode,
+                src.Code,
                 src.MinimumStayInWeeks,
                 src.AgeFrom,
                 src.AgeTo,
@@ -38,7 +38,7 @@ public sealed class SchoolMappingProfile : Profile
             .ConstructUsing(src => new UpdateSchoolCommand(
                 0,
                 src.Name,
-                src.LegacyCode,
+                src.Code,
                 src.MinimumStayInWeeks,
                 src.AgeFrom,
                 src.AgeTo,

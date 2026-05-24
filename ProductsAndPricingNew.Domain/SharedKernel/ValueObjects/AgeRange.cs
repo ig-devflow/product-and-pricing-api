@@ -1,80 +1,56 @@
-﻿using ProductsAndPricingNew.Domain.Common.Exceptions;
+using ProductsAndPricingNew.Domain.Common.Exceptions;
+using ProductsAndPricingNew.Domain.SharedKernel.Definitions;
 
 namespace ProductsAndPricingNew.Domain.SharedKernel.ValueObjects;
 
-public readonly struct AgeRange : IEquatable<AgeRange>, IEmptyValueObject
+public readonly record struct AgeRange : IEmptyValueObject
 {
-    public int? From { get; }
-    public int? To { get; }
+    public int? Minimum { get; }
+    public int? Maximum { get; }
 
-    private AgeRange(int? from, int? to)
+    public static readonly AgeRange Open = new(null, null);
+    public bool IsEmpty => Minimum is null && Maximum is null;
+
+    private AgeRange(int? minimum, int? maximum)
     {
-        From = from;
-        To = to;
+        Minimum = minimum;
+        Maximum = maximum;
     }
 
-    public bool IsEmpty => From is null && To is null;
-    public static AgeRange Empty { get; } = new(null, null);
-
-    public static AgeRange Create(int? from, int? to)
+    public static AgeRange Create(int? min, int? max)
     {
-        if (from is null && to is null)
-            return Empty;
+        if (min is null && max is null)
+            return Open;
 
-        EnsureValid(from, to);
+        EnsureValid(min, max);
 
-        return new AgeRange(from, to);
+        return new AgeRange(min, max);
     }
 
-    public static bool IsValid(int? from, int? to)
+    public static AgeRange Create(AgeRangeDefinition? definition) =>
+        definition is null ? Open : Create(definition.From, definition.To);
+
+    public bool Contains(int age) =>
+        (!Minimum.HasValue || age >= Minimum.Value)
+        && (!Maximum.HasValue || age <= Maximum.Value);
+
+    private static void EnsureValid(int? min, int? max)
     {
-        if (from is null && to is null)
-            return true;
+        if (min is < Rules.MinAge)
+            throw new DomainException("Minimum age cannot be negative.");
 
-        if (from is < Rules.MinAge)
-            return false;
+        if (max is < Rules.MinAge)
+            throw new DomainException("Maximum age cannot be negative.");
 
-        if (to is < Rules.MinAge)
-            return false;
+        if (min > Rules.MaxAge)
+            throw new DomainException($"Minimum age must not exceed {Rules.MaxAge}.");
 
-        if (from > Rules.MaxAge)
-            return false;
+        if (max > Rules.MaxAge)
+            throw new DomainException($"Maximum age must not exceed {Rules.MaxAge}.");
 
-        if (to > Rules.MaxAge)
-            return false;
-
-        return !from.HasValue || !to.HasValue || from <= to;
+        if (min.HasValue && max.HasValue && min > max)
+            throw new DomainException("Minimum age must be less than or equal to maximum age.");
     }
-
-    private static void EnsureValid(int? from, int? to)
-    {
-        if (from is < Rules.MinAge)
-            throw new DomainException("Age from cannot be negative.");
-
-        if (to is < Rules.MinAge)
-            throw new DomainException("Age to cannot be negative.");
-
-        if (from > Rules.MaxAge)
-            throw new DomainException($"Age from must not exceed {Rules.MaxAge}.");
-
-        if (to > Rules.MaxAge)
-            throw new DomainException($"Age to must not exceed {Rules.MaxAge}.");
-
-        if (from.HasValue && to.HasValue && from > to)
-            throw new DomainException("Age from must be less than or equal to age to.");
-    }
-
-    public bool Equals(AgeRange other) => From == other.From && To == other.To;
-
-    public override bool Equals(object? obj) => obj is AgeRange other && Equals(other);
-
-    public override int GetHashCode() => HashCode.Combine(From, To);
-
-    public override string ToString() =>
-        IsEmpty ? string.Empty : $"{From?.ToString() ?? "-"}-{To?.ToString() ?? "-"}";
-
-    public static bool operator ==(AgeRange left, AgeRange right) => left.Equals(right);
-    public static bool operator !=(AgeRange left, AgeRange right) => !left.Equals(right);
 
     public static class Rules
     {

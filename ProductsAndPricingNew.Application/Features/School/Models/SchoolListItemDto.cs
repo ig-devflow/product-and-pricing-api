@@ -3,7 +3,7 @@
 public sealed record SchoolListItemDto(
     int Id,
     string Name,
-    string LegacyCode,
+    string Code,
     string CentreName,
     bool IsActive,
     string? City,

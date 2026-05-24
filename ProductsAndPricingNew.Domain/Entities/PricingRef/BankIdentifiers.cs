@@ -4,7 +4,7 @@ using ProductsAndPricingNew.Domain.SharedKernel.ValueObjects;
 
 namespace ProductsAndPricingNew.Domain.Entities.PricingRef;
 
-public sealed class BankIdentifiers : IEmptyValueObject, IEquatable<BankIdentifiers>
+public sealed record BankIdentifiers : IEmptyValueObject
 {
     public string? Iban { get; }
     public string? SwiftCode { get; }
@@ -49,19 +49,6 @@ public sealed class BankIdentifiers : IEmptyValueObject, IEquatable<BankIdentifi
         AchAba is null;
 
     public static BankIdentifiers Empty { get; } = new();
-
-    public bool Equals(BankIdentifiers? other) =>
-        other is not null
-        && Iban == other.Iban
-        && SwiftCode == other.SwiftCode
-        && BranchCode == other.BranchCode
-        && AbaRoutingNo == other.AbaRoutingNo
-        && AchAba == other.AchAba;
-
-    public override bool Equals(object? obj) => Equals(obj as BankIdentifiers);
-
-    public override int GetHashCode() =>
-        HashCode.Combine(Iban, SwiftCode, BranchCode, AbaRoutingNo, AchAba);
 
     public static class Rules
     {
