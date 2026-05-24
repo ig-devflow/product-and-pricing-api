@@ -4,7 +4,7 @@ namespace ProductsAndPricingNew.AdminApi.Contracts.School;
 
 public sealed record CreateSchoolRequest(
     string Name,
-    string LegacyCode,
+    string Code,
     int MinimumStayInWeeks,
     int? AgeFrom,
     int? AgeTo,

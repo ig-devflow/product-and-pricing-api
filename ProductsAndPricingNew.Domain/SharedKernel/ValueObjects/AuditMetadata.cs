@@ -2,7 +2,7 @@
 
 namespace ProductsAndPricingNew.Domain.SharedKernel.ValueObjects;
 
-public readonly struct AuditMetadata : IEquatable<AuditMetadata>
+public readonly record struct AuditMetadata
 {
     public int CreatedById { get; }
     public DateTimeOffset CreatedAt { get; }
@@ -35,19 +35,4 @@ public readonly struct AuditMetadata : IEquatable<AuditMetadata>
 
     public AuditMetadata MarkUpdated(int actorId, DateTimeOffset timestamp) =>
         new(CreatedById, CreatedAt, actorId, timestamp);
-
-    public bool Equals(AuditMetadata other) =>
-        CreatedById == other.CreatedById
-        && CreatedAt == other.CreatedAt
-        && UpdatedById == other.UpdatedById
-        && UpdatedAt == other.UpdatedAt;
-
-    public override bool Equals(object? obj) =>
-        obj is AuditMetadata other && Equals(other);
-
-    public override int GetHashCode() =>
-        HashCode.Combine(CreatedById, CreatedAt, UpdatedById, UpdatedAt);
-
-    public static bool operator ==(AuditMetadata left, AuditMetadata right) => left.Equals(right);
-    public static bool operator !=(AuditMetadata left, AuditMetadata right) => !left.Equals(right);
 }

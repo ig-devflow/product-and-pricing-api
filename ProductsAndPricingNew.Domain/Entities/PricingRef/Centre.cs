@@ -23,7 +23,7 @@ public sealed class Centre : AggregateRoot<int>
     public TelephoneNumber? Telephone { get; private set; } = TelephoneNumber.Empty;
     public TelephoneNumber? EmergencyTelephone { get; private set; } = TelephoneNumber.Empty;
     public TelephoneNumber? TransferEmergencyTelephone { get; private set; } = TelephoneNumber.Empty;
-    public HexColor? BrandColor { get; private set; } = HexColor.Empty;
+    public HexColor BrandColor { get; private set; } = HexColor.Default;
     public Address ContactAddress { get; private set; } = Address.Empty;
     public ImageFile LogoImage { get; private set; } = ImageFile.Empty;
     public string? SchoolSponsorshipNumber { get; private set; }
@@ -31,10 +31,10 @@ public sealed class Centre : AggregateRoot<int>
     public string? RegistrationNumber { get; private set; }
     public string? VatExemptionNumber { get; private set; }
     public string? ChequePayableTo { get; private set; }
-    public decimal? Guarantees { get; private set; }
-    public decimal? IndividualsRatio { get; private set; }
-    public decimal? StaffingRatio { get; private set; }
-    public decimal? EmptyBeds { get; private set; }
+    public Percentage? Guarantees { get; private set; } = Percentage.Zero;
+    public Percentage? IndividualsRatio { get; private set; } = Percentage.Zero;
+    public Percentage? StaffingRatio { get; private set; } = Percentage.Zero;
+    public Percentage? EmptyBeds { get; private set; } = Percentage.Zero;
     public CentreBankDetails BankDetails { get; private set; } = null!;
     public IReadOnlyCollection<CentreContact> Contacts => _contacts.AsReadOnly();
     public IReadOnlyCollection<CentreTextContent> Texts => _texts.AsReadOnly();
@@ -55,11 +55,8 @@ public sealed class Centre : AggregateRoot<int>
     public void ChangeCode(string code) =>
         Code = code.AsRequiredDomainText(nameof(Code), Rules.CodeMaxLength);
 
-    public void ChangeCurrency(int currencyId)
-    {
-        EnsureValidCurrency(currencyId);
-        CurrencyId = currencyId;
-    }
+    public void ChangeCurrency(int currencyId) =>
+        CurrencyId = Guard.PositiveId(currencyId, nameof(CurrencyId));
 
     public void ChangePrintFormat(PrintFormat printFormat)
     {
@@ -110,13 +107,13 @@ public sealed class Centre : AggregateRoot<int>
     public void ChangeChequePayableTo(string? value) =>
         ChequePayableTo = value.AsOptionalDomainText(nameof(ChequePayableTo), Rules.LegalTextMaxLength);
 
-    public void ChangeGuarantees(decimal? value) => Guarantees = value;
+    public void ChangeGuarantees(decimal? value) => Guarantees = Percentage.Create(value);
 
-    public void ChangeIndividualsRatio(decimal? value) => IndividualsRatio = value;
+    public void ChangeIndividualsRatio(decimal? value) => IndividualsRatio = Percentage.Create(value);
 
-    public void ChangeStaffingRatio(decimal? value) => StaffingRatio = value;
+    public void ChangeStaffingRatio(decimal? value) => StaffingRatio = Percentage.Create(value);
 
-    public void ChangeEmptyBeds(decimal? value) => EmptyBeds = value;
+    public void ChangeEmptyBeds(decimal? value) => EmptyBeds = Percentage.Create(value);
 
     public void ChangeBankDetails(CentreBankDetailsDefinition? definition) =>
         BankDetails = CentreBankDetails.Create(definition);
@@ -210,12 +207,6 @@ public sealed class Centre : AggregateRoot<int>
         }
     }
 
-    private static void EnsureValidCurrency(int currencyId)
-    {
-        if (currencyId <= 0)
-            throw new DomainException("CurrencyId must be greater than zero.");
-    }
-
     private static void EnsureValidPrintFormat(PrintFormat printFormat)
     {
         if (!Enum.IsDefined(printFormat) || printFormat == PrintFormat.None)
@@ -236,7 +227,7 @@ public sealed class Centre : AggregateRoot<int>
         private TelephoneNumber _telephone = TelephoneNumber.Empty;
         private TelephoneNumber _emergencyTelephone = TelephoneNumber.Empty;
         private TelephoneNumber _transferEmergencyTelephone = TelephoneNumber.Empty;
-        private HexColor _brandColor = HexColor.Empty;
+        private HexColor _brandColor = HexColor.Default;
         private Address _contactAddress = Address.Empty;
         private ImageFile _logoImage = ImageFile.Empty;
         private string? _schoolSponsorshipNumber;
@@ -244,17 +235,17 @@ public sealed class Centre : AggregateRoot<int>
         private string? _registrationNumber;
         private string? _vatExemptionNumber;
         private string? _chequePayableTo;
-        private decimal? _guarantees;
-        private decimal? _individualsRatio;
-        private decimal? _staffingRatio;
-        private decimal? _emptyBeds;
+        private Percentage _guarantees = Percentage.Zero;
+        private Percentage _individualsRatio = Percentage.Zero;
+        private Percentage _staffingRatio = Percentage.Zero;
+        private Percentage _emptyBeds = Percentage.Zero;
         private CentreBankDetailsDefinition? _bankDetails;
         private readonly List<CentreContactDefinition> _contacts = new();
         private readonly List<TextContentDefinition> _texts = new();
 
         public Builder(string name, string code, int currencyId, PrintFormat printFormat)
         {
-            EnsureValidCurrency(currencyId);
+            Guard.PositiveId(currencyId, nameof(CurrencyId));
             EnsureValidPrintFormat(printFormat);
 
             _name = name.AsRequiredDomainText(nameof(Name), Rules.NameMaxLength);
@@ -355,25 +346,25 @@ public sealed class Centre : AggregateRoot<int>
 
         public Builder Guarantees(decimal? value)
         {
-            _guarantees = value;
+            _guarantees = Percentage.Create(value);
             return this;
         }
 
         public Builder IndividualsRatio(decimal? value)
         {
-            _individualsRatio = value;
+            _individualsRatio = Percentage.Create(value);
             return this;
         }
 
         public Builder StaffingRatio(decimal? value)
         {
-            _staffingRatio = value;
+            _staffingRatio = Percentage.Create(value);
             return this;
         }
 
         public Builder EmptyBeds(decimal? value)
         {
-            _emptyBeds = value;
+            _emptyBeds = Percentage.Create(value);
             return this;
         }
 

@@ -8,7 +8,7 @@ public abstract class AggregateRoot<TId> : Entity<TId>, IAggregateRoot, IAuditab
     private readonly IList<object> _domainEvents = new List<object>();
     public IReadOnlyCollection<object> DomainEvents => _domainEvents.AsReadOnly();
     public AuditMetadata AuditMetadata { get; private set; }
-    public bool IsDeleted { get; protected set; }
+    public bool IsDeleted { get; private set; }
     public byte[] Version { get; private set; } = [];
 
     public bool HasVersion(string? version)

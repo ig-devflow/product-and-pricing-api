@@ -47,6 +47,30 @@ internal sealed class CentreConfiguration : IEntityTypeConfiguration<Centre>
         entity.Property(x => x.ChequePayableTo)
             .HasMaxLength(Centre.Rules.LegalTextMaxLength);
 
+        entity.Property(x => x.Guarantees)
+            .HasConversion(Converters.Percentage)
+            .HasColumnName("Guarantees")
+            .HasPrecision(18, 2)
+            .IsRequired(false);
+
+        entity.Property(x => x.IndividualsRatio)
+            .HasConversion(Converters.Percentage)
+            .HasColumnName("IndividualsRatio")
+            .HasPrecision(18, 2)
+            .IsRequired(false);
+
+        entity.Property(x => x.StaffingRatio)
+            .HasConversion(Converters.Percentage)
+            .HasColumnName("StaffingRatio")
+            .HasPrecision(18, 2)
+            .IsRequired(false);
+
+        entity.Property(x => x.EmptyBeds)
+            .HasConversion(Converters.Percentage)
+            .HasColumnName("EmptyBeds")
+            .HasPrecision(18, 2)
+            .IsRequired(false);
+
         entity.ConfigureAddress(x => x.ContactAddress, "Contact");
         entity.ConfigureBanner(x => x.LogoImage, "Logo");
         entity.ConfigureAuditMetadata(x => x.AuditMetadata);
@@ -86,7 +110,7 @@ internal sealed class CentreConfiguration : IEntityTypeConfiguration<Centre>
             .HasColumnName("BrandColor")
             .HasMaxLength(HexColor.Rules.MaxLengthWithHash)
             .IsFixedLength()
-            .IsRequired(false);
+            .IsRequired();
 
         entity.ComplexProperty(x => x.BankDetails, bank =>
         {

@@ -4,7 +4,7 @@ namespace ProductsAndPricingNew.AdminApi.Contracts.School;
 
 public record UpdateSchoolRequest(
     string Name,
-    string LegacyCode,
+    string Code,
     int MinimumStayInWeeks,
     int? AgeFrom,
     int? AgeTo,

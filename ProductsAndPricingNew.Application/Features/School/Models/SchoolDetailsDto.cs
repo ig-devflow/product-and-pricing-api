@@ -6,7 +6,7 @@ public sealed record SchoolDetailsDto(
     int Id,
     int CentreId,
     string Name,
-    string LegacyCode,
+    string Code,
     int MinimumStayInWeeks,
     int? AgeFrom,
     int? AgeTo,

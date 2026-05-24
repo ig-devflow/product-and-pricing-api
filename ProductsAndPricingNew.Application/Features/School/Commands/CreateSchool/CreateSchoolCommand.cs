@@ -8,7 +8,7 @@ namespace ProductsAndPricingNew.Application.Features.School.Commands.CreateSchoo
 public sealed record CreateSchoolCommand(
     int CentreId,
     string Name,
-    string LegacyCode,
+    string Code,
     int MinimumStayInWeeks,
     int? AgeFrom,
     int? AgeTo,

@@ -34,7 +34,7 @@ internal sealed class CreateSchoolCommandHandler : IRequestHandler<CreateSchoolC
         if (isNameTaken)
             return Result.Fail(new ConflictError($"School name: '{name}' already exists"));
 
-        SchoolEntity school = new SchoolEntity.Builder(request.CentreId, name, request.LegacyCode)
+        SchoolEntity school = new SchoolEntity.Builder(request.CentreId, name, request.Code)
             .MinimumStayInWeeks(request.MinimumStayInWeeks)
             .SetAgeRange(request.AgeFrom, request.AgeTo)
             .Telephone(request.Telephone)

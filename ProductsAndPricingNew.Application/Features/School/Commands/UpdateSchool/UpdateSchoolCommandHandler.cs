@@ -42,7 +42,7 @@ internal sealed class UpdateSchoolCommandHandler : IRequestHandler<UpdateSchoolC
             return Result.Fail(new ConflictError($"School name: '{name}' already exists"));
 
         school.Rename(request.Name);
-        school.ChangeLegacyCode(request.LegacyCode);
+        school.ChangeLegacyCode(request.Code);
         school.ChangeMinimumStayInWeeks(request.MinimumStayInWeeks);
         school.ChangeAgeRange(request.AgeFrom, request.AgeTo);
         school.ChangeTelephone(request.Telephone);

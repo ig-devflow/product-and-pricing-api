@@ -1,4 +1,4 @@
-﻿using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
+using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using ProductsAndPricingNew.Domain.SharedKernel.ValueObjects;
 
 namespace ProductsAndPricingNew.Persistence.Configuration;
@@ -15,8 +15,8 @@ internal static class Converters
         v => Domain.SharedKernel.ValueObjects.TelephoneNumber.Create(v)
     );
 
-    public static readonly ValueConverter<HexColor, string?> HexColor = new(
-        v => v.IsEmpty ? null : v.Value,
+    public static readonly ValueConverter<HexColor, string> HexColor = new(
+        v => v.Value,
         v => Domain.SharedKernel.ValueObjects.HexColor.Create(v)
     );
 

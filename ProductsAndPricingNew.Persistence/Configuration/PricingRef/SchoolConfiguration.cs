@@ -18,8 +18,8 @@ internal sealed class SchoolConfiguration : IEntityTypeConfiguration<School>
             .HasMaxLength(School.Rules.NameMaxLength)
             .IsRequired();
 
-        entity.Property(x => x.LegacyCode)
-            .HasMaxLength(School.Rules.LegacyCodeMaxLength)
+        entity.Property(x => x.Code)
+            .HasMaxLength(School.Rules.CodeMaxLength)
             .IsRequired();
 
         entity.Property(x => x.CentreId).IsRequired();

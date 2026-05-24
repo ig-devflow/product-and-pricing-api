@@ -31,9 +31,12 @@ internal abstract class CentreCommandValidatorBase<TCommand> : AbstractValidator
             .WithMessage($"Centre code must not exceed {CentreAggregate.Rules.CodeMaxLength} characters.");
 
         RuleFor(x => x.CurrencyId)
+            .Cascade(CascadeMode.Stop)
             .GreaterThan(0)
-            .WithMessage("Currency is required.");
-
+            .WithMessage("Currency is required.")
+            .MustAsync((currencyId, ct) => CurrencyIsActiveAsync(referenceData, currencyId, ct))
+            .WithMessage("Currency must reference an active currency.");
+        
         RuleFor(x => x.PrintFormat)
             .Must(pf => Enum.IsDefined(pf) && pf != PrintFormat.None)
             .WithMessage("PrintFormat must be a valid value.");
@@ -168,5 +171,14 @@ internal abstract class CentreCommandValidatorBase<TCommand> : AbstractValidator
         }
 
         return true;
+    }
+    
+    private static async Task<bool> CurrencyIsActiveAsync(IReferenceDataValidationQuery referenceData, int? currencyId, CancellationToken ct)
+    {
+        if (currencyId is null or <= 0)
+            return true;
+
+        IReadOnlySet<int> activeCurrencyIds = await referenceData.GetActiveCurrencyIdsAsync(new[] { currencyId.Value }, ct);
+        return activeCurrencyIds.Contains(currencyId.Value);
     }
 }

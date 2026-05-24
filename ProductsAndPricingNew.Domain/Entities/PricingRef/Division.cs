@@ -22,9 +22,7 @@ public sealed class Division : AggregateRoot<int>
     public ImageFile AccreditationBanner { get; private set; } = ImageFile.Empty;
     public IReadOnlyCollection<DivisionTextContent> Texts => _texts.AsReadOnly();
 
-    private Division()
-    {
-    }
+    private Division() { }
 
     private Division(string name, WebsiteUrl websiteUrl)
     {

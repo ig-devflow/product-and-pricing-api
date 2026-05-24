@@ -19,12 +19,12 @@ internal abstract class SchoolCommandValidatorBase<TCommand> : AbstractValidator
             .MaximumLength(SchoolAggregate.Rules.NameMaxLength)
             .WithMessage($"School name must not exceed {SchoolAggregate.Rules.NameMaxLength} characters.");
 
-        RuleFor(x => x.LegacyCode)
+        RuleFor(x => x.Code)
             .Cascade(CascadeMode.Stop)
             .NotEmpty()
             .WithMessage("Legacy code is required.")
-            .MaximumLength(SchoolAggregate.Rules.LegacyCodeMaxLength)
-            .WithMessage($"Legacy code must not exceed {SchoolAggregate.Rules.LegacyCodeMaxLength} characters.");
+            .MaximumLength(SchoolAggregate.Rules.CodeMaxLength)
+            .WithMessage($"Legacy code must not exceed {SchoolAggregate.Rules.CodeMaxLength} characters.");
 
         RuleFor(x => x.MinimumStayInWeeks)
             .GreaterThan(0)

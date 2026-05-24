@@ -50,7 +50,7 @@ internal sealed class SchoolQuery : ISchoolQuery
                 s.Id,
                 s.CentreId,
                 s.Name,
-                s.LegacyCode,
+                s.Code,
                 s.MinimumStayInWeeks,
                 s.AgeFrom,
                 s.AgeTo,
@@ -119,7 +119,7 @@ internal sealed class SchoolQuery : ISchoolQuery
              AND (
                  @Search IS NULL
                  OR s.Name LIKE '%' + @Search + '%'
-                 OR s.LegacyCode LIKE '%' + @Search + '%'
+                 OR s.Code LIKE '%' + @Search + '%'
                  OR centre.Name LIKE '%' + @Search + '%'
                  OR s.ContactCity LIKE '%' + @Search + '%'
                  OR country.Name LIKE '%' + @Search + '%'
@@ -132,7 +132,7 @@ internal sealed class SchoolQuery : ISchoolQuery
            SELECT
                s.Id,
                s.Name,
-               s.LegacyCode,
+               s.Code,
                centre.Name AS CentreName,
                s.IsActive,
                s.ContactCity AS City,
@@ -161,7 +161,7 @@ internal sealed class SchoolQuery : ISchoolQuery
              AND (
                  @Search IS NULL
                  OR s.Name LIKE '%' + @Search + '%'
-                 OR s.LegacyCode LIKE '%' + @Search + '%'
+                 OR s.Code LIKE '%' + @Search + '%'
                  OR centre.Name LIKE '%' + @Search + '%'
                  OR s.ContactCity LIKE '%' + @Search + '%'
                  OR country.Name LIKE '%' + @Search + '%'
@@ -214,7 +214,7 @@ internal sealed class SchoolQuery : ISchoolQuery
             row.Id,
             row.CentreId,
             row.Name,
-            row.LegacyCode,
+            row.Code,
             row.MinimumStayInWeeks,
             row.AgeFrom,
             row.AgeTo,
@@ -237,7 +237,7 @@ internal sealed class SchoolQuery : ISchoolQuery
         return new SchoolListItemDto(
             row.Id,
             row.Name,
-            row.LegacyCode,
+            row.Code,
             row.CentreName,
             row.IsActive,
             row.City,
@@ -270,7 +270,7 @@ internal sealed class SchoolQuery : ISchoolQuery
         public int Id { get; init; }
         public int CentreId { get; init; }
         public string Name { get; init; } = null!;
-        public string LegacyCode { get; init; } = null!;
+        public string Code { get; init; } = null!;
         public int MinimumStayInWeeks { get; init; }
         public int? AgeFrom { get; init; }
         public int? AgeTo { get; init; }
@@ -298,7 +298,7 @@ internal sealed class SchoolQuery : ISchoolQuery
     {
         public int Id { get; init; }
         public string Name { get; init; } = null!;
-        public string LegacyCode { get; init; } = null!;
+        public string Code { get; init; } = null!;
         public string CentreName { get; init; } = null!;
         public bool IsActive { get; init; }
         public string? City { get; init; }
