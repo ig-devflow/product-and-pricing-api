@@ -1,4 +1,8 @@
-﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore;
+using ProductsAndPricingNew.Domain.Entities.FeeOrDiscount.CancellationFees;
+using ProductsAndPricingNew.Domain.Entities.FeeOrDiscount.Fees;
+using ProductsAndPricingNew.Domain.Entities.Products;
+using ProductsAndPricingNew.Domain.Entities.Rules;
 
 namespace ProductsAndPricingNew.Persistence;
 
@@ -8,6 +12,8 @@ internal sealed class ProductsAndPricingDbContext : DbContext
         : base(options)
     {
     }
+
+    public DbSet<Ruleset> Rulesets => Set<Ruleset>();
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
