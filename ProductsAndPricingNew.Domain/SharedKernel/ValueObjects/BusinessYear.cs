@@ -49,7 +49,7 @@ public readonly record struct BusinessYear : IComparable<BusinessYear>
 
     public int CompareTo(BusinessYear other) => Year.CompareTo(other.Year);
 
-    public override string ToString() => $"BY{Year} [{Start:yyyy-MM-dd}..{End:yyyy-MM-dd}]";
+    public override string ToString() => $"Business Year: {Year} [{Start:yyyy-MM-dd}..{End:yyyy-MM-dd}]";
 
     private static DateOnly FirstMondayOf(int year)
     {
