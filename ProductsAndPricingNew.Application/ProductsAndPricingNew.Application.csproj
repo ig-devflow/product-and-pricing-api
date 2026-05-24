@@ -18,6 +18,8 @@
     </ItemGroup>
 
     <ItemGroup>
+      <Folder Include="Features\AccommodationRoom\Queries\" />
+      <Folder Include="Features\AccommodationRoom\Validation\" />
       <Folder Include="Features\Accommodation\Models\" />
       <Folder Include="Features\Accommodation\Queries\" />
       <Folder Include="Features\Accommodation\Validation\" />

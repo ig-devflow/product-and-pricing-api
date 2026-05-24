@@ -39,7 +39,7 @@ public sealed class AccommodationRoom : AggregateRoot<int>, IProductDefinition
         UnitTypeId = unitType.Id;
     }
 
-    public void ChangeIsActive(bool isActive) =>
+    public void SetIsActive(bool isActive) =>
         IsActive = isActive;
 
     public void SetOccupyRoom(bool occupyRoom) =>
@@ -54,7 +54,7 @@ public sealed class AccommodationRoom : AggregateRoot<int>, IProductDefinition
     public void ChangeFinanceCodes(FinanceCodesDefinition? definition) =>
         FinanceCodes = FinanceCodes.Create(definition);
 
-    public void ChangeClosurePolicy(DateOnly date) =>
+    public void ChangeClosurePolicy(DateOnly? date) =>
         ClosurePolicy = OfferingsClosurePolicy.Create(date);
 
     public sealed class Builder
@@ -64,12 +64,13 @@ public sealed class AccommodationRoom : AggregateRoot<int>, IProductDefinition
         private readonly int _unitTypeId;
         private readonly string _name;
 
-        private bool _isActive = true;
+        private bool _isActive;
         private bool _occupyRoom;
         private RoomDetails _roomDetails = RoomDetails.Unassigned;
         private ProductCategories _categories = ProductCategories.Unassigned;
         private FinanceCodes _financeCodes = FinanceCodes.Unassigned;
-
+        private OfferingsClosurePolicy _closurePolicy = OfferingsClosurePolicy.Open;
+        
         public Builder(int accommodationId, int divisionId, UnitType unitType, string name)
         {
             ArgumentNullException.ThrowIfNull(unitType);
@@ -81,13 +82,13 @@ public sealed class AccommodationRoom : AggregateRoot<int>, IProductDefinition
             _name = name.AsRequiredDomainText(nameof(Name), Rules.NameMaxLength);
         }
 
-        public Builder IsActive(bool value)
+        public Builder IsActive(bool value) // Set prefix
         {
             _isActive = value;
             return this;
         }
 
-        public Builder OccupyRoom(bool value)
+        public Builder OccupyRoom(bool value) //todo: Set prefix
         {
             _occupyRoom = value;
             return this;
@@ -110,6 +111,12 @@ public sealed class AccommodationRoom : AggregateRoot<int>, IProductDefinition
             _financeCodes = FinanceCodes.Create(definition);
             return this;
         }
+        
+        public Builder WithClosurePolicy(DateOnly? value)
+        {
+            _closurePolicy = OfferingsClosurePolicy.Create(value);
+            return this;
+        }
 
         public AccommodationRoom Build()
         {
@@ -119,7 +126,8 @@ public sealed class AccommodationRoom : AggregateRoot<int>, IProductDefinition
                 OccupyRoom = _occupyRoom,
                 RoomDetails = _roomDetails,
                 Categories = _categories,
-                FinanceCodes = _financeCodes
+                FinanceCodes = _financeCodes,
+                ClosurePolicy = _closurePolicy
             };
 
             return accommodationRoom;

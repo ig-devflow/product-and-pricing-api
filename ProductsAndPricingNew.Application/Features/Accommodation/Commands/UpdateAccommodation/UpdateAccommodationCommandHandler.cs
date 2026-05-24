@@ -43,7 +43,7 @@ internal sealed class UpdateAccommodationCommandHandler : IRequestHandler<Update
         
         accommodation.Rename(name);
         accommodation.ChangeAccommodationType(request.AccommodationTypeId);
-        accommodation.ChangeIsActive(request.IsActive);
+        accommodation.SetIsActive(request.IsActive);
         accommodation.ChangeMinimumStay(request.MinimumStayInWeeks);
         accommodation.ChangeAgeRange(new AgeRangeDefinition(request.AgeFrom, request.AgeTo));
         accommodation.ChangeCommitment(request.IsCommitted, request.IsNonCommitted);

@@ -3,10 +3,12 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
 using ProductsAndPricingNew.Application.Abstractions;
+using ProductsAndPricingNew.Domain.UnitOfMeasure;
 using ProductsAndPricingNew.Persistence.Interceptors;
 using ProductsAndPricingNew.Persistence.Options;
 using ProductsAndPricingNew.Persistence.Queries.Configuration;
 using ProductsAndPricingNew.Persistence.Repositories;
+using ProductsAndPricingNew.Persistence.UnitOfMeasure;
 
 namespace ProductsAndPricingNew.Persistence;
 
@@ -51,6 +53,8 @@ public static class ServiceCollectionExtensions
                 .WithScopedLifetime());
 
         services.AddScoped<IUnitOfWork, UnitOfWork>();
+
+        services.AddSingleton<IUnitTypeProvider, UnitTypeProvider>();
 
         return services;
     }

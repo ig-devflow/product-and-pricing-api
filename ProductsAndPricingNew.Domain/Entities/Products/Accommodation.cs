@@ -30,7 +30,7 @@ public sealed class Accommodation : AggregateRoot<int>
     public void ChangeAccommodationType(int accommodationTypeId) =>
         AccommodationTypeId = Guard.PositiveId(accommodationTypeId, nameof(AccommodationTypeId));
 
-    public void ChangeIsActive(bool isActive) =>
+    public void SetIsActive(bool isActive) =>
         IsActive = isActive;
 
     public void ChangeMinimumStay(int weeks)
