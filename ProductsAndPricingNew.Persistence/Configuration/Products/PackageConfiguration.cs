@@ -57,8 +57,8 @@ internal sealed class PackageConfiguration : IEntityTypeConfiguration<Package>
                 .HasColumnName("ProductDefinitionId")
                 .IsRequired();
 
-            owned.Property(x => x.Percentage)
-                .HasColumnName("Percentage")
+            owned.Property(x => x.PriceBreakdown)
+                .HasColumnName("PriceBreakdown")
                 .HasConversion(Converters.Percentage)
                 .HasPrecision(5, 2)
                 .IsRequired();

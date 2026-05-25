@@ -102,7 +102,7 @@ public sealed class Package : AggregateRoot<int>, IProductDefinition
 
     public void EnsureBreakdownTotalEquals100()
     {
-        decimal total = _items.Sum(x => x.Percentage.Value);
+        decimal total = _items.Sum(x => x.PriceBreakdown.Value);
 
         if (Math.Abs(total - 100m) > 0.01m)
             throw new DomainException($"Total percentage breakdown must equal 100%, current total is {total}%.");
@@ -110,7 +110,7 @@ public sealed class Package : AggregateRoot<int>, IProductDefinition
 
     private void EnsureBreakdownDoesNotExceed100()
     {
-        if (_items.Sum(x => x.Percentage.Value) > 100m)
+        if (_items.Sum(x => x.PriceBreakdown.Value) > 100m)
             throw new DomainException("Package breakdown total cannot exceed 100%.");
     }
 

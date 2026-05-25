@@ -33,7 +33,7 @@ public sealed class AddOn : AggregateRoot<int>, IProductDefinition
     public void Rename(string name) =>
         Name = name.AsRequiredDomainText(nameof(Name), Rules.NameMaxLength);
 
-    public void ChangeIsActive(bool isActive) =>
+    public void SetIsActive(bool isActive) =>
         IsActive = isActive;
 
     public void ChangeType(AddOnType type)

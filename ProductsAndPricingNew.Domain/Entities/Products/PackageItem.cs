@@ -7,20 +7,20 @@ public sealed class PackageItem : Entity<int>, IEquatable<PackageItem>
 {
     public ProductKind ProductKind { get; }
     public int ProductId { get; }
-    public Percentage Percentage { get; private set; }
+    public Percentage PriceBreakdown { get; private set; }
 
     public ProductRef Product => new(ProductKind, ProductId);
 
     private PackageItem() { }
 
-    internal PackageItem(ProductRef product, Percentage percentage)
+    internal PackageItem(ProductRef product, Percentage priceBreakdown)
     {
         ProductKind = product.Kind;
         ProductId = product.Id;
-        Percentage = percentage;
+        PriceBreakdown = priceBreakdown;
     }
 
-    internal void ChangePercentage(Percentage percentage) => Percentage = percentage;
+    internal void ChangePercentage(Percentage percentage) => PriceBreakdown = percentage;
 
     public bool Equals(PackageItem? other)
     {
@@ -31,7 +31,7 @@ public sealed class PackageItem : Entity<int>, IEquatable<PackageItem>
 
         return ProductKind == other.ProductKind &&
                ProductId == other.ProductId &&
-               Percentage.Equals(other.Percentage);
+               PriceBreakdown.Equals(other.PriceBreakdown);
     }
 
     public override bool Equals(object? obj)
@@ -41,7 +41,7 @@ public sealed class PackageItem : Entity<int>, IEquatable<PackageItem>
 
     public override int GetHashCode()
     {
-        return HashCode.Combine((int)ProductKind, ProductId, Percentage);
+        return HashCode.Combine((int)ProductKind, ProductId, PriceBreakdown);
     }
 
     public static bool operator ==(PackageItem left, PackageItem right) => left.Equals(right);

@@ -16,6 +16,7 @@ public static class UnitTypePolicy
         [ProductKind.Course] =
         [
             UnitCalculationKind.CalendarWeek,
+            UnitCalculationKind.CalendarNightWeek,
             UnitCalculationKind.WorkingWeek,
             UnitCalculationKind.Day
         ],
@@ -68,9 +69,7 @@ public static class UnitTypePolicy
             throw new DomainException($"No UnitType policy defined for {product}.");
 
         if (!allowed.Contains(unitType.CalculationKind))
-            throw new DomainException(
-                $"UnitType '{unitType.Name}' ({unitType.CalculationKind}) is not allowed for {product}. " +
-                $"Allowed: {string.Join(", ", allowed)}.");
+            throw new DomainException($"UnitType '{unitType.Name}' ({unitType.CalculationKind}) is not allowed for {product}. Allowed: {string.Join(", ", allowed)}.");
     }
 
     public static void EnsureAllowedForFee(UnitType unitType)
@@ -81,9 +80,7 @@ public static class UnitTypePolicy
         EnsureNotAny(unitType);
 
         if (!FeeRules.Contains(unitType.CalculationKind))
-            throw new DomainException(
-                $"UnitType '{unitType.Name}' ({unitType.CalculationKind}) is not allowed for Fee. " +
-                $"Allowed: {string.Join(", ", FeeRules)}.");
+            throw new DomainException($"UnitType '{unitType.Name}' ({unitType.CalculationKind}) is not allowed for Fee. Allowed: {string.Join(", ", FeeRules)}.");
     }
 
     public static void EnsureAllowedForCancellationFee(UnitType unitType)
@@ -94,14 +91,12 @@ public static class UnitTypePolicy
         EnsureNotAny(unitType);
 
         if (!CancellationFeeRules.Contains(unitType.CalculationKind))
-            throw new DomainException(
-                $"UnitType '{unitType.Name}' ({unitType.CalculationKind}) is not allowed for CancellationFee. " +
-                $"Allowed: {string.Join(", ", CancellationFeeRules)}.");
+            throw new DomainException($"UnitType '{unitType.Name}' ({unitType.CalculationKind}) is not allowed for CancellationFee. Allowed: {string.Join(", ", CancellationFeeRules)}.");
     }
 
     private static void EnsureNotAny(UnitType unitType)
     {
         if (unitType.CalculationKind == UnitCalculationKind.Any)
-            throw new DomainException("UnitType.Any is reserved for legacy Discount placeholders and must not be used on offerings or products.");
+            throw new DomainException("UnitType.Any is reserved for Discount placeholders and must not be used on offerings or products.");
     }
 }
