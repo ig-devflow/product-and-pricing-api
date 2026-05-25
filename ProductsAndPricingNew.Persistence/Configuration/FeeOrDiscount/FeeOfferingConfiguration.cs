@@ -42,7 +42,7 @@ internal sealed class FeeOfferingConfiguration : IEntityTypeConfiguration<FeeOff
         });
 
         b.HasIndex(x => new { x.SchoolId, x.FeeId });
-        
+
         b.HasOne<Fee>()
             .WithMany()
             .HasForeignKey(x => x.FeeId)

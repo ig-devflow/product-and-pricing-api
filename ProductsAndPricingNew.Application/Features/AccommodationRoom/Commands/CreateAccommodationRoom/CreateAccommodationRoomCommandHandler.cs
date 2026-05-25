@@ -49,7 +49,7 @@ internal sealed class CreateAccommodationRoomCommandHandler : IRequestHandler<Cr
             .WithFinanceCodes(new FinanceCodesDefinition(request.GeneralLedgerCode, request.CostCentreCode))
             .WithClosurePolicy(request.ClosurePolicy)
             .Build();
-        
+
         await _accommodationRoomRepository.AddAsync(accommodation, ct);
         await _unitOfWork.SaveChangesAsync(ct);
 

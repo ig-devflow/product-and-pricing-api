@@ -4,7 +4,7 @@ using ProductsAndPricingNew.Application.Features.AccommodationRoom.Models;
 
 namespace ProductsAndPricingNew.Application.Features.AccommodationRoom.Commands.CreateAccommodationRoom;
 
-public sealed record CreateAccommodationRoomCommand(  
+public sealed record CreateAccommodationRoomCommand(
     int AccommodationId,
     int DivisionId,
     string Name,

@@ -25,7 +25,7 @@ internal sealed class UpdateAccommodationCommandHandler : IRequestHandler<Update
         _accommodationRepository = accommodationRepository;
         _unitOfWork = unitOfWork;
     }
-    
+
     public async Task<Result<Unit>> Handle(UpdateAccommodationCommand request, CancellationToken ct)
     {
         AccommodationEntity? accommodation = await _accommodationRepository.GetByIdAsync(request.Id, ct);
@@ -40,14 +40,14 @@ internal sealed class UpdateAccommodationCommandHandler : IRequestHandler<Update
         bool isNameTaken = await _accommodationQuery.ExistsByNameAsync(name, request.Id, ct);
         if (isNameTaken)
             return Result.Fail(new ConflictError($"Accommodation name: '{name}' already exists"));
-        
+
         accommodation.Rename(name);
         accommodation.ChangeAccommodationType(request.AccommodationTypeId);
         accommodation.SetIsActive(request.IsActive);
         accommodation.ChangeMinimumStay(request.MinimumStayInWeeks);
         accommodation.ChangeAgeRange(new AgeRangeDefinition(request.AgeFrom, request.AgeTo));
         accommodation.ChangeCommitment(request.IsCommitted, request.IsNonCommitted);
-        
+
         await _unitOfWork.SaveChangesAsync(ct);
 
         return Result.Ok();

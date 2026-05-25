@@ -24,7 +24,7 @@ public readonly record struct ProductCategories : IEmptyValueObject
 
         Guard.PositiveId(definition.AccountCategoryId, nameof(AccountCategoryId));
         Guard.PositiveId(definition.ProductCategoryId, nameof(ProductCategoryId));
-        
+
         return new ProductCategories(definition.AccountCategoryId, definition.ProductCategoryId);
     }
 }

@@ -40,7 +40,7 @@ internal sealed class CreateAccommodationCommandHandler : IRequestHandler<Create
             .WithAgeRange(new AgeRangeDefinition(request.AgeFrom, request.AgeTo))
             .WithCommitment(request.IsCommitted, request.IsNonCommitted)
             .Build();
-        
+
         await _accommodationRepository.AddAsync(accommodation, ct);
         await _unitOfWork.SaveChangesAsync(ct);
 

@@ -12,7 +12,7 @@ using AccommodationRoomEntity = ProductsAndPricingNew.Domain.Entities.Products.A
 
 namespace ProductsAndPricingNew.Application.Features.AccommodationRoom.Commands.UpdateAccommodationRoom;
 
-internal sealed class UpdateAccommodationRoomCommandHandler : IRequestHandler<UpdateAccommodationRoomCommand , Result<Unit>>
+internal sealed class UpdateAccommodationRoomCommandHandler : IRequestHandler<UpdateAccommodationRoomCommand, Result<Unit>>
 {
     private readonly IAccommodationRoomQuery _accommodationRoomQuery;
     private readonly IAccommodationRoomRepository _accommodationRoomRepository;
@@ -30,7 +30,7 @@ internal sealed class UpdateAccommodationRoomCommandHandler : IRequestHandler<Up
         _unitTypeProvider = unitTypeProvider;
         _unitOfWork = unitOfWork;
     }
-    
+
     public async Task<Result<Unit>> Handle(UpdateAccommodationRoomCommand request, CancellationToken ct)
     {
         AccommodationRoomEntity? accommodationRoom = await _accommodationRoomRepository.GetByIdAsync(request.Id, ct);
@@ -45,9 +45,9 @@ internal sealed class UpdateAccommodationRoomCommandHandler : IRequestHandler<Up
         bool isNameTaken = await _accommodationRoomQuery.ExistsByNameAsync(name, request.Id, ct);
         if (isNameTaken)
             return Result.Fail(new ConflictError($"Accommodation room name: '{name}' already exists"));
-        
+
         UnitType unitType = _unitTypeProvider.Get(request.UnitTypeId);
-        
+
         accommodationRoom.Rename(name);
         accommodationRoom.ChangeUnitType(unitType);
         accommodationRoom.SetIsActive(request.IsActive);
@@ -56,7 +56,7 @@ internal sealed class UpdateAccommodationRoomCommandHandler : IRequestHandler<Up
         accommodationRoom.ChangeCategories(new ProductCategoriesDefinition(request.AccountCategoryId, request.ProductCategoryId));
         accommodationRoom.ChangeFinanceCodes(new FinanceCodesDefinition(request.GeneralLedgerCode, request.CostCentreCode));
         accommodationRoom.ChangeClosurePolicy(request.ClosurePolicy);
-        
+
         await _unitOfWork.SaveChangesAsync(ct);
 
         return Result.Ok();

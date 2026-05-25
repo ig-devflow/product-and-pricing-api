@@ -70,7 +70,7 @@ public sealed class AccommodationRoom : AggregateRoot<int>, IProductDefinition
         private ProductCategories _categories = ProductCategories.Unassigned;
         private FinanceCodes _financeCodes = FinanceCodes.Unassigned;
         private OfferingsClosurePolicy _closurePolicy = OfferingsClosurePolicy.Open;
-        
+
         public Builder(int accommodationId, int divisionId, UnitType unitType, string name)
         {
             ArgumentNullException.ThrowIfNull(unitType);
@@ -111,7 +111,7 @@ public sealed class AccommodationRoom : AggregateRoot<int>, IProductDefinition
             _financeCodes = FinanceCodes.Create(definition);
             return this;
         }
-        
+
         public Builder WithClosurePolicy(DateOnly? value)
         {
             _closurePolicy = OfferingsClosurePolicy.Create(value);

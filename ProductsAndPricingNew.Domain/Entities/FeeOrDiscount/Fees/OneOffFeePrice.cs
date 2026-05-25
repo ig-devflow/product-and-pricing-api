@@ -23,7 +23,7 @@ public sealed class OneOffFeePrice : Entity<int>
 
         return new OneOffFeePrice(year, currencyId, amount);
     }
-    
+
     internal void ChangeAmount(decimal amount)
     {
         if (amount < 0m)
