@@ -1,7 +1,6 @@
 using ProductsAndPricingNew.Domain.Common.Exceptions;
 using ProductsAndPricingNew.Domain.Common.Primitives;
 using ProductsAndPricingNew.Domain.Common.Text;
-using ProductsAndPricingNew.Domain.SharedKernel.Definitions;
 using ProductsAndPricingNew.Domain.SharedKernel.ValueObjects;
 using ProductsAndPricingNew.Domain.UnitOfMeasure;
 
@@ -33,10 +32,10 @@ public sealed class AddOn : AggregateRoot<int>, IProductDefinition
     public void Rename(string name) =>
         Name = name.AsRequiredDomainText(nameof(Name), Rules.NameMaxLength);
 
-    public void ChangeIsActive(bool isActive) =>
+    public void SetIsActive(bool isActive) =>
         IsActive = isActive;
 
-    public void ChangeType(AddOnType type)
+    public void WithType(AddOnType type)
     {
         Type = type;
 
@@ -44,16 +43,16 @@ public sealed class AddOn : AggregateRoot<int>, IProductDefinition
             OneToOneLessonsPerWeek = null;
     }
 
-    public void ChangeUnitType(UnitType unitType)
+    public void WithUnitType(UnitType unitType)
     {
         UnitTypePolicy.EnsureAllowedForProduct(ProductKind.AddOn, unitType);
         UnitTypeId = unitType.Id;
     }
 
-    public void ChangeAgeRange(AgeRangeDefinition? definition) =>
-        AgeRange = AgeRange.Create(definition);
+    public void WithAgeRange(int? ageFrom, int? ageTo) =>
+        AgeRange = AgeRange.Create(ageFrom, ageTo);
 
-    public void SetOneToOneLessonsPerWeek(int? lessonsPerWeek)
+    public void WithOneToOneLessonsPerWeek(int? lessonsPerWeek)
     {
         if (Type != AddOnType.OneToOneCourse)
         {
@@ -67,13 +66,13 @@ public sealed class AddOn : AggregateRoot<int>, IProductDefinition
         OneToOneLessonsPerWeek = lessonsPerWeek;
     }
 
-    public void ChangeCategories(ProductCategoriesDefinition? definition) =>
-        Categories = ProductCategories.Create(definition);
+    public void WithCategories(int accountCategoryId, int productCategoryId) =>
+        Categories = ProductCategories.Create(accountCategoryId, productCategoryId);
 
-    public void ChangeFinanceCodes(FinanceCodesDefinition? definition) =>
-        FinanceCodes = FinanceCodes.Create(definition);
+    public void WithFinanceCodes(string? generalLedgerCode, string? costCentreCode) =>
+        FinanceCodes = FinanceCodes.Create(generalLedgerCode, costCentreCode);
 
-    public void ChangeClosurePolicy(DateOnly date) =>
+    public void WithClosurePolicy(DateOnly? date) =>
         ClosurePolicy = OfferingsClosurePolicy.Create(date);
 
     public sealed class Builder
@@ -88,6 +87,7 @@ public sealed class AddOn : AggregateRoot<int>, IProductDefinition
         private ProductCategories _categories = ProductCategories.Unassigned;
         private int? _oneToOneLessonsPerWeek;
         private FinanceCodes _financeCodes = FinanceCodes.Unassigned;
+        private OfferingsClosurePolicy _closurePolicy = OfferingsClosurePolicy.Open;
 
         public Builder(int divisionId, string name, AddOnType type, UnitType unitType)
         {
@@ -100,25 +100,25 @@ public sealed class AddOn : AggregateRoot<int>, IProductDefinition
             _unitTypeId = unitType.Id;
         }
 
-        public Builder IsActive(bool value)
+        public Builder SetIsActive(bool value)
         {
             _isActive = value;
             return this;
         }
 
-        public Builder WithAgeRange(AgeRangeDefinition? definition)
+        public Builder WithAgeRange(int? ageFrom, int? ageTo)
         {
-            _ageRange = AgeRange.Create(definition);
+            _ageRange = AgeRange.Create(ageFrom, ageTo);
             return this;
         }
 
-        public Builder WithCategories(ProductCategoriesDefinition? definition)
+        public Builder WithCategories(int accountCategoryId, int productCategoryId)
         {
-            _categories = ProductCategories.Create(definition);
+            _categories = ProductCategories.Create(accountCategoryId, productCategoryId);
             return this;
         }
 
-        public Builder WithOneToOneLessonsPerWeek(int lessonsPerWeek)
+        public Builder WithOneToOneLessonsPerWeek(int? lessonsPerWeek)
         {
             if (_type != AddOnType.OneToOneCourse)
             {
@@ -133,9 +133,15 @@ public sealed class AddOn : AggregateRoot<int>, IProductDefinition
             return this;
         }
 
-        public Builder WithFinanceCodes(FinanceCodesDefinition? definition)
+        public Builder WithFinanceCodes(string? generalLedgerCode, string? costCentreCode)
         {
-            _financeCodes = FinanceCodes.Create(definition);
+            _financeCodes = FinanceCodes.Create(generalLedgerCode, costCentreCode);
+            return this;
+        }
+
+        public Builder WithClosurePolicy(DateOnly? value)
+        {
+            _closurePolicy = OfferingsClosurePolicy.Create(value);
             return this;
         }
 
@@ -151,7 +157,8 @@ public sealed class AddOn : AggregateRoot<int>, IProductDefinition
                 AgeRange = _ageRange,
                 Categories = _categories,
                 OneToOneLessonsPerWeek = _oneToOneLessonsPerWeek,
-                FinanceCodes = _financeCodes
+                FinanceCodes = _financeCodes,
+                ClosurePolicy = _closurePolicy
             };
 
             return addOn;

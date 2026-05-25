@@ -19,7 +19,7 @@ public sealed class IntermediaryBank : IEmptyValueObject, IEquatable<Intermediar
         BankAddress = bankAddress;
     }
 
-    public static IntermediaryBank Create(IntermediaryBankDefinition? definition)
+    internal static IntermediaryBank Create(IntermediaryBankDefinition? definition)
     {
         if (definition is null || definition.IsEmpty)
             return Empty;

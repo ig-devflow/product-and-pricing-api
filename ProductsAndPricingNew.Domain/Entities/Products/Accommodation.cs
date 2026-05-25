@@ -1,7 +1,6 @@
 using ProductsAndPricingNew.Domain.Common.Exceptions;
 using ProductsAndPricingNew.Domain.Common.Primitives;
 using ProductsAndPricingNew.Domain.Common.Text;
-using ProductsAndPricingNew.Domain.SharedKernel.Definitions;
 using ProductsAndPricingNew.Domain.SharedKernel.ValueObjects;
 
 namespace ProductsAndPricingNew.Domain.Entities.Products;
@@ -27,13 +26,13 @@ public sealed class Accommodation : AggregateRoot<int>
     public void Rename(string name) =>
         Name = name.AsRequiredDomainText(nameof(Name), Rules.NameMaxLength);
 
-    public void ChangeAccommodationType(int accommodationTypeId) =>
+    public void WithAccommodationType(int accommodationTypeId) =>
         AccommodationTypeId = Guard.PositiveId(accommodationTypeId, nameof(AccommodationTypeId));
 
-    public void ChangeIsActive(bool isActive) =>
+    public void SetIsActive(bool isActive) =>
         IsActive = isActive;
 
-    public void ChangeMinimumStay(int weeks)
+    public void WithMinimumStay(int weeks)
     {
         if (weeks < 0)
             throw new DomainException("Minimum stay in weeks cannot be negative.");
@@ -41,17 +40,14 @@ public sealed class Accommodation : AggregateRoot<int>
         MinimumStayInWeeks = weeks;
     }
 
-    public void ChangeAgeRange(AgeRangeDefinition? definition) =>
-        AgeRange = AgeRange.Create(definition);
+    public void WithAgeRange(int? ageFrom, int? ageTo) =>
+        AgeRange = AgeRange.Create(ageFrom, ageTo);
 
-    public void ChangeCommitment(bool isCommitted, bool isNonCommitted)
-    {
-        if (isCommitted && isNonCommitted)
-            throw new DomainException("Accommodation cannot be both committed and non-committed.");
-
+    public void SetCommitment(bool isCommitted) =>
         IsCommitted = isCommitted;
+
+    public void SetNonCommitment(bool isNonCommitted) =>
         IsNonCommitted = isNonCommitted;
-    }
 
     public sealed class Builder
     {
@@ -70,7 +66,7 @@ public sealed class Accommodation : AggregateRoot<int>
             _accommodationTypeId = Guard.PositiveId(accommodationTypeId, nameof(AccommodationTypeId));
         }
 
-        public Builder IsActive(bool value)
+        public Builder SetIsActive(bool value)
         {
             _isActive = value;
             return this;
@@ -85,18 +81,20 @@ public sealed class Accommodation : AggregateRoot<int>
             return this;
         }
 
-        public Builder WithAgeRange(AgeRangeDefinition? definition)
+        public Builder WithAgeRange(int? ageFrom, int? ageTo)
         {
-            _ageRange = AgeRange.Create(definition);
+            _ageRange = AgeRange.Create(ageFrom, ageTo);
             return this;
         }
 
-        public Builder WithCommitment(bool committed, bool nonCommitted)
+        public Builder WithCommitment(bool committed)
         {
-            if (committed && nonCommitted)
-                throw new DomainException("Accommodation cannot be both committed and non-committed.");
-
             _isCommitted = committed;
+            return this;
+        }
+
+        public Builder WithNonCommitment(bool nonCommitted)
+        {
             _isNonCommitted = nonCommitted;
             return this;
         }

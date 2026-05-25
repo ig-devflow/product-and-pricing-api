@@ -10,11 +10,13 @@ internal sealed class ReferenceDataQueryFake : IReferenceDataQuery
     private IReadOnlyCollection<CurrencyReferenceDto> _currencies = [];
     private IReadOnlyCollection<AudienceReferenceDto> _audiences = [];
     private IReadOnlyCollection<ContentTemplateReferenceDto> _contentTemplates = [];
+    private IReadOnlyCollection<UnitTypeReferenceDto> _unitTypes = [];
 
     public int GetCountriesCalls { get; private set; }
     public int GetCurrenciesCalls { get; private set; }
     public int GetAudiencesCalls { get; private set; }
     public int GetContentTemplatesCalls { get; private set; }
+    public int GetUnitTypesCalls { get; private set; }
     public ContentTemplateScope? LastContentTemplateScope { get; private set; }
 
     public ReferenceDataQueryFake WithCountries(IReadOnlyCollection<CountryReferenceDto> countries)
@@ -59,9 +61,13 @@ internal sealed class ReferenceDataQueryFake : IReferenceDataQuery
         return Task.FromResult(_audiences);
     }
 
-    public Task<IReadOnlyCollection<ContentTemplateReferenceDto>> GetContentTemplatesAsync(
-        ContentTemplateScope? scope,
-        CancellationToken ct = default)
+    public Task<IReadOnlyCollection<UnitTypeReferenceDto>> GetUnitTypesAsync(CancellationToken ct = default)
+    {
+        GetUnitTypesCalls++;
+        return Task.FromResult(_unitTypes);
+    }
+
+    public Task<IReadOnlyCollection<ContentTemplateReferenceDto>> GetContentTemplatesAsync(ContentTemplateScope? scope, CancellationToken ct = default)
     {
         GetContentTemplatesCalls++;
         LastContentTemplateScope = scope;

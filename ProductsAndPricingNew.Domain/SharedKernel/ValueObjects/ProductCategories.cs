@@ -1,12 +1,11 @@
-using ProductsAndPricingNew.Domain.Common.Exceptions;
-using ProductsAndPricingNew.Domain.SharedKernel.Definitions;
+using ProductsAndPricingNew.Domain.Common.Primitives;
 
 namespace ProductsAndPricingNew.Domain.SharedKernel.ValueObjects;
 
 public readonly record struct ProductCategories : IEmptyValueObject
 {
-    public int AccountCategoryId { get; init; }
-    public int ProductCategoryId { get; init; }
+    public int AccountCategoryId { get; }
+    public int ProductCategoryId { get; }
 
     public static readonly ProductCategories Unassigned = new(0, 0);
     public bool IsEmpty => AccountCategoryId <= 0 && ProductCategoryId <= 0;
@@ -19,17 +18,9 @@ public readonly record struct ProductCategories : IEmptyValueObject
 
     public static ProductCategories Create(int accountCategoryId, int productCategoryId)
     {
-        if (accountCategoryId <= 0)
-            throw new DomainException("AccountCategoryId must be greater than zero.");
-
-        if (productCategoryId <= 0)
-            throw new DomainException("ProductCategoryId must be greater than zero.");
+        Guard.PositiveId(accountCategoryId, nameof(AccountCategoryId));
+        Guard.PositiveId(productCategoryId, nameof(ProductCategoryId));
 
         return new ProductCategories(accountCategoryId, productCategoryId);
     }
-
-    public static ProductCategories Create(ProductCategoriesDefinition? definition) =>
-        definition is null
-            ? Unassigned
-            : Create(definition.AccountCategoryId, definition.ProductCategoryId);
 }

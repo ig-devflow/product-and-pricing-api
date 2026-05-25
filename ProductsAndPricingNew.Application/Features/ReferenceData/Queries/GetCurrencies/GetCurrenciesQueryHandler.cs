@@ -17,7 +17,6 @@ internal sealed class GetCurrenciesQueryHandler : IRequestHandler<GetCurrenciesQ
     public async Task<Result<IReadOnlyCollection<CurrencyReferenceDto>>> Handle(GetCurrenciesQuery request, CancellationToken ct)
     {
         IReadOnlyCollection<CurrencyReferenceDto> result = await _referenceDataQuery.GetCurrenciesAsync(ct);
-
         return Result.Ok(result);
     }
 }

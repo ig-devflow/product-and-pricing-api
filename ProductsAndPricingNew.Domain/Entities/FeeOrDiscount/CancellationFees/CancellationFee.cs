@@ -1,6 +1,5 @@
 using ProductsAndPricingNew.Domain.Common.Primitives;
 using ProductsAndPricingNew.Domain.Common.Text;
-using ProductsAndPricingNew.Domain.SharedKernel.Definitions;
 using ProductsAndPricingNew.Domain.SharedKernel.ValueObjects;
 
 namespace ProductsAndPricingNew.Domain.Entities.FeeOrDiscount.CancellationFees;
@@ -24,11 +23,11 @@ public sealed class CancellationFee : AggregateRoot<int>
     public void Rename(string name) =>
         Name = name.AsRequiredDomainText(nameof(Name), Rules.NameMaxLength);
 
-    public void ChangeIsActive(bool isActive) =>
+    public void SetIsActive(bool isActive) =>
         IsActive = isActive;
 
-    public void ChangeCategories(ProductCategoriesDefinition? definition) =>
-        Categories = ProductCategories.Create(definition);
+    public void WithCategories(int accountCategoryId, int productCategoryId) =>
+        Categories = ProductCategories.Create(accountCategoryId, productCategoryId);
 
     public sealed class Builder
     {
@@ -44,15 +43,15 @@ public sealed class CancellationFee : AggregateRoot<int>
             _divisionId = Guard.PositiveId(divisionId, nameof(DivisionId));
         }
 
-        public Builder IsActive(bool value)
+        public Builder SetIsActive(bool value)
         {
             _isActive = value;
             return this;
         }
 
-        public Builder WithCategories(ProductCategoriesDefinition? definition)
+        public Builder WithCategories(int accountCategoryId, int productCategoryId)
         {
-            _categories = ProductCategories.Create(definition);
+            _categories = ProductCategories.Create(accountCategoryId, productCategoryId);
             return this;
         }
 

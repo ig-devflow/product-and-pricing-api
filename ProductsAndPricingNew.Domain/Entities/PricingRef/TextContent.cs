@@ -32,7 +32,7 @@ public abstract class TextContent : Entity<int>
         => ContentTemplateId == contentTemplateId &&
            AudienceId == NormalizeAudienceId(audienceId);
 
-    internal void ChangeText(FormattedText text)
+    internal void WithText(FormattedText text)
     {
         ArgumentNullException.ThrowIfNull(text);
 

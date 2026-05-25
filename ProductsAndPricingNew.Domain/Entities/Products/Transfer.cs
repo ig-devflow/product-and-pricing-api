@@ -1,6 +1,5 @@
 using ProductsAndPricingNew.Domain.Common.Primitives;
 using ProductsAndPricingNew.Domain.Common.Text;
-using ProductsAndPricingNew.Domain.SharedKernel.Definitions;
 using ProductsAndPricingNew.Domain.SharedKernel.ValueObjects;
 using ProductsAndPricingNew.Domain.UnitOfMeasure;
 
@@ -33,31 +32,31 @@ public sealed class Transfer : AggregateRoot<int>, IProductDefinition
     public void Rename(string name) =>
         Name = name.AsRequiredDomainText(nameof(Name), Rules.NameMaxLength);
 
-    public void ChangeIsActive(bool isActive) =>
+    public void SetIsActive(bool isActive) =>
         IsActive = isActive;
 
-    public void ChangeTransferType(int transferTypeId) =>
+    public void WithTransferType(int transferTypeId) =>
         TransferTypeId = Guard.PositiveId(transferTypeId, nameof(TransferTypeId));
 
-    public void ChangeTransferPort(int transferPortId) =>
+    public void WithTransferPort(int transferPortId) =>
         TransferPortId = Guard.PositiveId(transferPortId, nameof(TransferPortId));
 
-    public void ChangeUnitType(UnitType unitType)
+    public void WithUnitType(UnitType unitType)
     {
         UnitTypePolicy.EnsureAllowedForProduct(ProductKind.Transfer, unitType);
         UnitTypeId = unitType.Id;
     }
 
-    public void ChangeTimeWindow(TimeWindowDefinition? definition) =>
-        TimeWindow = TimeWindow.Create(definition);
+    public void WithTimeWindow(TimeOnly? from, TimeOnly? to) =>
+        TimeWindow = TimeWindow.Create(from, to);
 
-    public void ChangeCategories(ProductCategoriesDefinition? definition) =>
-        Categories = ProductCategories.Create(definition);
+    public void WithCategories(int accountCategoryId, int productCategoryId) =>
+        Categories = ProductCategories.Create(accountCategoryId, productCategoryId);
 
-    public void ChangeFinanceCodes(FinanceCodesDefinition? definition) =>
-        FinanceCodes = FinanceCodes.Create(definition);
+    public void WithFinanceCodes(string? generalLedgerCode, string? costCentreCode) =>
+        FinanceCodes = FinanceCodes.Create(generalLedgerCode, costCentreCode);
 
-    public void ChangeClosurePolicy(DateOnly date) =>
+    public void WithClosurePolicy(DateOnly? date) =>
         ClosurePolicy = OfferingsClosurePolicy.Create(date);
 
     public sealed class Builder
@@ -72,6 +71,7 @@ public sealed class Transfer : AggregateRoot<int>, IProductDefinition
         private TimeWindow _timeWindow = TimeWindow.Undefined;
         private ProductCategories _categories = ProductCategories.Unassigned;
         private FinanceCodes _financeCodes = FinanceCodes.Unassigned;
+        private OfferingsClosurePolicy _closurePolicy = OfferingsClosurePolicy.Open;
 
         public Builder(int divisionId, string name, int transferTypeId, int transferPortId, UnitType unitType)
         {
@@ -85,27 +85,33 @@ public sealed class Transfer : AggregateRoot<int>, IProductDefinition
             _unitTypeId = unitType.Id;
         }
 
-        public Builder IsActive(bool value)
+        public Builder SetIsActive(bool value)
         {
             _isActive = value;
             return this;
         }
 
-        public Builder WithTimeWindow(TimeWindowDefinition? definition)
+        public Builder WithTimeWindow(TimeOnly? from, TimeOnly? to)
         {
-            _timeWindow = TimeWindow.Create(definition);
+            _timeWindow = TimeWindow.Create(from, to);
             return this;
         }
 
-        public Builder WithCategories(ProductCategoriesDefinition? definition)
+        public Builder WithCategories(int accountCategoryId, int productCategoryId)
         {
-            _categories = ProductCategories.Create(definition);
+            _categories = ProductCategories.Create(accountCategoryId, productCategoryId);
             return this;
         }
 
-        public Builder WithFinanceCodes(FinanceCodesDefinition? definition)
+        public Builder WithFinanceCodes(string? generalLedgerCode, string? costCentreCode)
         {
-            _financeCodes = FinanceCodes.Create(definition);
+            _financeCodes = FinanceCodes.Create(generalLedgerCode, costCentreCode);
+            return this;
+        }
+
+        public Builder WithClosurePolicy(DateOnly? value)
+        {
+            _closurePolicy = OfferingsClosurePolicy.Create(value);
             return this;
         }
 
@@ -116,7 +122,8 @@ public sealed class Transfer : AggregateRoot<int>, IProductDefinition
                 IsActive = _isActive,
                 TimeWindow = _timeWindow,
                 Categories = _categories,
-                FinanceCodes = _financeCodes
+                FinanceCodes = _financeCodes,
+                ClosurePolicy = _closurePolicy
             };
 
             return transfer;

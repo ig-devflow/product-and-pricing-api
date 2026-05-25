@@ -37,7 +37,7 @@ public sealed class PricingYearTests
     {
         PricingYear year = PricingYear.Create(7, 2026);
 
-        year.ChangeEarlyBirdRuleset(RulesetRef.Create(42));
+        year.WithEarlyBirdRuleset(RulesetRef.Create(42));
 
         Assert.Equal(RulesetRef.Create(42), year.EarlyBirdRuleset);
         Assert.True(year.EarlyBirdRuleset.IsSet);

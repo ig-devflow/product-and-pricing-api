@@ -27,40 +27,26 @@ public sealed class ProductOffering : AggregateRoot<int>
 
     private ProductOffering() { }
 
-    public void AddScheduleSegment(ScheduleSegmentDefinition definition)
+    public void WithScheduleSegments(IEnumerable<ScheduleSegmentDefinition> segments)
     {
-        ArgumentNullException.ThrowIfNull(definition);
+        ArgumentNullException.ThrowIfNull(segments);
 
-        EnsureKindAllowed(definition.Kind);
+        _scheduleSegments.Clear();
 
-        var segment = new ScheduleSegment(definition);
-        EnsureNoOverlap(segment);
+        foreach (ScheduleSegmentDefinition definition in segments)
+        {
+            EnsureKindAllowed(definition.Kind);
 
-        _scheduleSegments.Add(segment);
+            ScheduleSegment segment = new(definition);
+            EnsureNoOverlap(segment);
+
+            _scheduleSegments.Add(segment);
+        }
+
         RecomputeDateStrategiesClosure();
     }
 
-    public void CloseCurrentSegment(DateOnly endDate)
-    {
-        ScheduleSegment current = _scheduleSegments
-                                      .OrderByDescending(s => s.From)
-                                      .FirstOrDefault(s => s.IsOpenEnded)
-                                  ?? throw new DomainException("There is no open-ended schedule segment to close.");
-
-        current.Close(endDate);
-        RecomputeDateStrategiesClosure();
-    }
-
-    public void RemoveScheduleSegment(DateOnly from)
-    {
-        ScheduleSegment segment = _scheduleSegments.FirstOrDefault(s => s.From == from)
-            ?? throw new DomainException($"No schedule segment starts on {from:yyyy-MM-dd}.");
-
-        _scheduleSegments.Remove(segment);
-        RecomputeDateStrategiesClosure();
-    }
-
-    public void ChangeDecommission(DateOnly? date) =>
+    public void WithDecommission(DateOnly? date) =>
         Closure.WithDecommission(date);
 
     /// <summary>
@@ -129,8 +115,7 @@ public sealed class ProductOffering : AggregateRoot<int>
                 UnitTypeIsDateBased = _unitType.IsDateBased
             };
 
-            foreach (ScheduleSegmentDefinition segment in _segments)
-                offering.AddScheduleSegment(segment);
+            offering.WithScheduleSegments(_segments);
 
             return offering;
         }

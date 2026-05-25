@@ -33,30 +33,31 @@ public sealed class Division : AggregateRoot<int>
     public void Rename(string name)
         => Name = name.AsRequiredDomainText(nameof(Name), Rules.NameMaxLength);
 
-    public void ChangeWebsite(string website)
+    public void SetIsActive(bool isActive) =>
+        IsActive = isActive;
+
+    public void WithWebsite(string website)
         => WebsiteUrl = WebsiteUrl.Create(website).EnsureNotEmpty(nameof(WebsiteUrl));
 
-    public void ChangeActiveState(bool isActive) => IsActive = isActive;
-
-    public void ChangeTermsAndConditions(string? termsAndConditions)
+    public void WithTermsAndConditions(string? termsAndConditions)
         => TermsAndConditions = termsAndConditions.AsOptionalDomainText(nameof(TermsAndConditions), Rules.TermsAndConditionsMaxLength);
 
-    public void ChangeGroupsPaymentTerms(string? groupsPaymentTerms)
+    public void WithGroupsPaymentTerms(string? groupsPaymentTerms)
         => GroupsPaymentTerms = groupsPaymentTerms.AsOptionalDomainText(nameof(GroupsPaymentTerms), Rules.GroupsPaymentTermsMaxLength);
 
-    public void ChangeHeadOfficeEmail(string? headOfficeEmail)
+    public void WithHeadOfficeEmail(string? headOfficeEmail)
         => HeadOfficeEmail = EmailAddress.Create(headOfficeEmail);
 
-    public void ChangeHeadOfficeTelephone(string? headOfficeTelephone)
+    public void WithHeadOfficeTelephone(string? headOfficeTelephone)
         => HeadOfficeTelephoneNo = TelephoneNumber.Create(headOfficeTelephone);
 
-    public void ChangeContactAddress(AddressDefinition? definition) =>
+    public void WithContactAddress(AddressDefinition? definition) =>
         ContactAddress = Address.Create(definition);
 
-    public void ChangeAccreditationBanner(ImageFileDefinition? definition) =>
+    public void WithAccreditationBanner(ImageFileDefinition? definition) =>
         AccreditationBanner = ImageFile.Create(definition, Rules.AccreditationBannerMaxBytes);
 
-    public void ReplaceTexts(IEnumerable<TextContentDefinition> texts)
+    public void WithTexts(IEnumerable<TextContentDefinition> texts)
     {
         ArgumentNullException.ThrowIfNull(texts);
         var incomingKeys = new HashSet<(int ContentTemplateId, int? AudienceId)>();
@@ -100,7 +101,7 @@ public sealed class Division : AggregateRoot<int>
             return;
         }
 
-        existing.ChangeText(text);
+        existing.WithText(text);
     }
 
     private void EnsureNoDuplicateActiveTextKeys()
@@ -133,49 +134,49 @@ public sealed class Division : AggregateRoot<int>
             _websiteUrl = WebsiteUrl.Create(websiteUrl).EnsureNotEmpty(nameof(WebsiteUrl));
         }
 
-        public Builder IsActive(bool value)
+        public Builder SetIsActive(bool value)
         {
             _isActive = value;
             return this;
         }
 
-        public Builder TermsAndConditions(string? value)
+        public Builder WithTermsAndConditions(string? value)
         {
-            _termsAndConditions = value.AsOptionalDomainText(nameof(TermsAndConditions), Rules.TermsAndConditionsMaxLength);
+            _termsAndConditions = value.AsOptionalDomainText(nameof(WithTermsAndConditions), Rules.TermsAndConditionsMaxLength);
             return this;
         }
 
-        public Builder GroupsPaymentTerms(string? value)
+        public Builder WithGroupsPaymentTerms(string? value)
         {
-            _groupsPaymentTerms = value.AsOptionalDomainText(nameof(GroupsPaymentTerms), Rules.GroupsPaymentTermsMaxLength);
+            _groupsPaymentTerms = value.AsOptionalDomainText(nameof(WithGroupsPaymentTerms), Rules.GroupsPaymentTermsMaxLength);
             return this;
         }
 
-        public Builder HeadOfficeEmail(string? value)
+        public Builder WithHeadOfficeEmail(string? value)
         {
             _headOfficeEmail = EmailAddress.Create(value);
             return this;
         }
 
-        public Builder HeadOfficeTelephone(string? value)
+        public Builder WithHeadOfficeTelephone(string? value)
         {
             _headOfficeTelephoneNo = TelephoneNumber.Create(value);
             return this;
         }
 
-        public Builder ContactAddress(AddressDefinition? definition)
+        public Builder WithContactAddress(AddressDefinition? definition)
         {
             _contactAddress = Address.Create(definition);
             return this;
         }
 
-        public Builder AccreditationBanner(ImageFileDefinition definition)
+        public Builder WithAccreditationBanner(ImageFileDefinition definition)
         {
             _accreditationBanner = ImageFile.Create(definition, Rules.AccreditationBannerMaxBytes);
             return this;
         }
 
-        public Builder Texts(IEnumerable<TextContentDefinition> texts)
+        public Builder WithTexts(IEnumerable<TextContentDefinition> texts)
         {
             _texts.AddRange(texts);
             return this;
@@ -194,7 +195,7 @@ public sealed class Division : AggregateRoot<int>
                 AccreditationBanner = _accreditationBanner
             };
 
-            division.ReplaceTexts(_texts);
+            division.WithTexts(_texts);
             return division;
         }
     }

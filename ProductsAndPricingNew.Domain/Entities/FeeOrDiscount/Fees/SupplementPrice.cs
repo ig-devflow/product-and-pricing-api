@@ -29,10 +29,10 @@ public sealed class SupplementPrice : Entity<int>
         PeriodEnd = periodEnd;
 
         EnsurePeriodValid();
-        ChangePrice(pricePerMajorUnit, pricePerMinorUnit);
+        WithPrice(pricePerMajorUnit, pricePerMinorUnit);
     }
 
-    internal void ChangePrice(decimal pricePerMajorUnit, decimal pricePerMinorUnit)
+    internal void WithPrice(decimal pricePerMajorUnit, decimal pricePerMinorUnit)
     {
         if (pricePerMajorUnit < 0m || pricePerMinorUnit < 0m)
             throw new DomainException("A supplement price cannot be negative.");

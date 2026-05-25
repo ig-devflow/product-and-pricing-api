@@ -1,5 +1,4 @@
 using ProductsAndPricingNew.Domain.Common.Text;
-using ProductsAndPricingNew.Domain.SharedKernel.Definitions;
 
 namespace ProductsAndPricingNew.Domain.SharedKernel.ValueObjects;
 
@@ -16,11 +15,6 @@ public readonly record struct FinanceCodes(string? GeneralLedgerCode, string? Co
 
         return new FinanceCodes(normalizedLedgerCode, normalizedCentreCode);
     }
-
-    public static FinanceCodes Create(FinanceCodesDefinition? definition) =>
-        definition is null
-            ? Unassigned
-            : Create(definition.GeneralLedgerCode, definition.CostCentreCode);
 
     public static class Rules
     {

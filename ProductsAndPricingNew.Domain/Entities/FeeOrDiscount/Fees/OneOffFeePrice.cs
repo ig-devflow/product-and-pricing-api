@@ -15,7 +15,7 @@ public sealed class OneOffFeePrice : Entity<int>
     {
         Year = year;
         CurrencyId = Guard.PositiveId(currencyId, nameof(CurrencyId));
-        ChangeAmount(amount);
+        WithAmount(amount);
     }
 
     internal static OneOffFeePrice Create(int year, int currencyId, decimal amount)
@@ -23,7 +23,8 @@ public sealed class OneOffFeePrice : Entity<int>
 
         return new OneOffFeePrice(year, currencyId, amount);
     }
-    internal void ChangeAmount(decimal amount)
+
+    internal void WithAmount(decimal amount)
     {
         if (amount < 0m)
             throw new DomainException("A one-off fee amount cannot be negative.");

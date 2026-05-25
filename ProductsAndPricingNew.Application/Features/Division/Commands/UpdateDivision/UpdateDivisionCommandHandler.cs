@@ -42,15 +42,15 @@ internal sealed class UpdateDivisionCommandHandler : IRequestHandler<UpdateDivis
             return Result.Fail(new ConflictError($"Division name: '{name}' already exists"));
 
         division.Rename(name);
-        division.ChangeActiveState(request.IsActive);
-        division.ChangeTermsAndConditions(request.TermsAndConditions);
-        division.ChangeGroupsPaymentTerms(request.GroupsPaymentTerms);
-        division.ChangeWebsite(request.WebsiteUrl);
-        division.ChangeHeadOfficeEmail(request.HeadOfficeEmail);
-        division.ChangeHeadOfficeTelephone(request.HeadOfficeTelephoneNo);
-        division.ChangeContactAddress(request.ContactAddress.ToDefinition());
-        division.ChangeAccreditationBanner(request.AccreditationBanner.ToDefinition());
-        division.ReplaceTexts(request.Texts.ToDefinitions());
+        division.SetIsActive(request.IsActive);
+        division.WithTermsAndConditions(request.TermsAndConditions);
+        division.WithGroupsPaymentTerms(request.GroupsPaymentTerms);
+        division.WithWebsite(request.WebsiteUrl);
+        division.WithHeadOfficeEmail(request.HeadOfficeEmail);
+        division.WithHeadOfficeTelephone(request.HeadOfficeTelephoneNo);
+        division.WithContactAddress(request.ContactAddress.ToDefinition());
+        division.WithAccreditationBanner(request.AccreditationBanner.ToDefinition());
+        division.WithTexts(request.Texts.ToDefinitions());
 
         await _unitOfWork.SaveChangesAsync(ct);
 

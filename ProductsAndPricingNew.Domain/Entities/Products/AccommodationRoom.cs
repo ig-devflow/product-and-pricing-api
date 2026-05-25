@@ -1,7 +1,6 @@
 using ProductsAndPricingNew.Domain.Common.Primitives;
 using ProductsAndPricingNew.Domain.Common.Text;
 using ProductsAndPricingNew.Domain.Entities.Products.Definitions;
-using ProductsAndPricingNew.Domain.SharedKernel.Definitions;
 using ProductsAndPricingNew.Domain.SharedKernel.ValueObjects;
 using ProductsAndPricingNew.Domain.UnitOfMeasure;
 
@@ -33,28 +32,28 @@ public sealed class AccommodationRoom : AggregateRoot<int>, IProductDefinition
     public void Rename(string name) =>
         Name = name.AsRequiredDomainText(nameof(Name), Rules.NameMaxLength);
 
-    public void ChangeUnitType(UnitType unitType)
+    public void WithUnitType(UnitType unitType)
     {
         UnitTypePolicy.EnsureAllowedForProduct(ProductKind.AccommodationRoom, unitType);
         UnitTypeId = unitType.Id;
     }
 
-    public void ChangeIsActive(bool isActive) =>
+    public void SetIsActive(bool isActive) =>
         IsActive = isActive;
 
     public void SetOccupyRoom(bool occupyRoom) =>
         OccupyRoom = occupyRoom;
 
-    public void ChangeRoomDetails(RoomDetailsDefinition roomDetails) =>
+    public void WithRoomDetails(RoomDetailsDefinition roomDetails) =>
         RoomDetails = RoomDetails.Create(roomDetails);
 
-    public void ChangeCategories(ProductCategoriesDefinition? definition) =>
-        Categories = ProductCategories.Create(definition);
+    public void WithCategories(int accountCategoryId, int productCategoryId) =>
+        Categories = ProductCategories.Create(accountCategoryId, productCategoryId);
 
-    public void ChangeFinanceCodes(FinanceCodesDefinition? definition) =>
-        FinanceCodes = FinanceCodes.Create(definition);
+    public void WithFinanceCodes(string? generalLedgerCode, string? costCentreCode) =>
+        FinanceCodes = FinanceCodes.Create(generalLedgerCode, costCentreCode);
 
-    public void ChangeClosurePolicy(DateOnly date) =>
+    public void WithClosurePolicy(DateOnly? date) =>
         ClosurePolicy = OfferingsClosurePolicy.Create(date);
 
     public sealed class Builder
@@ -64,11 +63,12 @@ public sealed class AccommodationRoom : AggregateRoot<int>, IProductDefinition
         private readonly int _unitTypeId;
         private readonly string _name;
 
-        private bool _isActive = true;
+        private bool _isActive;
         private bool _occupyRoom;
         private RoomDetails _roomDetails = RoomDetails.Unassigned;
         private ProductCategories _categories = ProductCategories.Unassigned;
         private FinanceCodes _financeCodes = FinanceCodes.Unassigned;
+        private OfferingsClosurePolicy _closurePolicy = OfferingsClosurePolicy.Open;
 
         public Builder(int accommodationId, int divisionId, UnitType unitType, string name)
         {
@@ -81,13 +81,13 @@ public sealed class AccommodationRoom : AggregateRoot<int>, IProductDefinition
             _name = name.AsRequiredDomainText(nameof(Name), Rules.NameMaxLength);
         }
 
-        public Builder IsActive(bool value)
+        public Builder SetIsActive(bool value)
         {
             _isActive = value;
             return this;
         }
 
-        public Builder OccupyRoom(bool value)
+        public Builder SetOccupyRoom(bool value)
         {
             _occupyRoom = value;
             return this;
@@ -99,15 +99,21 @@ public sealed class AccommodationRoom : AggregateRoot<int>, IProductDefinition
             return this;
         }
 
-        public Builder WithCategories(ProductCategoriesDefinition? definition)
+        public Builder WithCategories(int accountCategoryId, int productCategoryId)
         {
-            _categories = ProductCategories.Create(definition);
+            _categories = ProductCategories.Create(accountCategoryId, productCategoryId);
             return this;
         }
 
-        public Builder WithFinanceCodes(FinanceCodesDefinition? definition)
+        public Builder WithFinanceCodes(string? generalLedgerCode, string? costCentreCode)
         {
-            _financeCodes = FinanceCodes.Create(definition);
+            _financeCodes = FinanceCodes.Create(generalLedgerCode, costCentreCode);
+            return this;
+        }
+
+        public Builder WithClosurePolicy(DateOnly? value)
+        {
+            _closurePolicy = OfferingsClosurePolicy.Create(value);
             return this;
         }
 
@@ -119,7 +125,8 @@ public sealed class AccommodationRoom : AggregateRoot<int>, IProductDefinition
                 OccupyRoom = _occupyRoom,
                 RoomDetails = _roomDetails,
                 Categories = _categories,
-                FinanceCodes = _financeCodes
+                FinanceCodes = _financeCodes,
+                ClosurePolicy = _closurePolicy
             };
 
             return accommodationRoom;

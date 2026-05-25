@@ -2,6 +2,7 @@
 using ProductsAndPricingNew.Application.Behaviors;
 using ProductsAndPricingNew.Application.Features.Rules;
 using ProductsAndPricingNew.Domain.Pricing.Specifications.Catalog;
+using ProductsAndPricingNew.Domain.UnitOfMeasure;
 using FluentValidation;
 
 namespace ProductsAndPricingNew.Application;
@@ -19,6 +20,7 @@ public static class ServiceCollectionExtensions
         services.AddValidatorsFromAssembly(typeof(ServiceCollectionExtensions).Assembly, includeInternalTypes: true);
 
         services.AddSingleton<IFieldCatalog, FieldCatalog>();
+        services.AddSingleton<IUnitTypeHandlerRegistry, UnitTypeHandlerRegistry>();
         services.AddSingleton<RuleSpecificationFactory>();
 
         return services;

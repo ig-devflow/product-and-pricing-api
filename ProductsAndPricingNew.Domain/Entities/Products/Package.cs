@@ -1,7 +1,7 @@
 using ProductsAndPricingNew.Domain.Common.Exceptions;
 using ProductsAndPricingNew.Domain.Common.Primitives;
 using ProductsAndPricingNew.Domain.Common.Text;
-using ProductsAndPricingNew.Domain.SharedKernel.Definitions;
+using ProductsAndPricingNew.Domain.Entities.Products.Definitions;
 using ProductsAndPricingNew.Domain.SharedKernel.ValueObjects;
 using ProductsAndPricingNew.Domain.UnitOfMeasure;
 
@@ -37,25 +37,25 @@ public sealed class Package : AggregateRoot<int>, IProductDefinition
     public void Rename(string name) =>
         Name = name.AsRequiredDomainText(nameof(Name), Rules.NameMaxLength);
 
-    public void ChangeDescription(string? description) =>
+    public void WithDescription(string? description) =>
         Description = description.AsOptionalText();
 
-    public void ChangeIsActive(bool isActive) =>
+    public void SetIsActive(bool isActive) =>
         IsActive = isActive;
 
-    public void ChangeUnitType(UnitType unitType)
+    public void WithUnitType(UnitType unitType)
     {
         UnitTypePolicy.EnsureAllowedForProduct(ProductKind.Package, unitType);
         UnitTypeId = unitType.Id;
     }
 
-    public void ChangeCommission(decimal commissionPercentage) =>
+    public void WithCommission(decimal commissionPercentage) =>
         Commission = Percentage.Create(commissionPercentage);
 
-    public void ChangeAgeRange(AgeRangeDefinition? definition) =>
-        AgeRange = AgeRange.Create(definition);
+    public void WithAgeRange(int? ageFrom, int? ageTo) =>
+        AgeRange = AgeRange.Create(ageFrom, ageTo);
 
-    public void ChangeMinimumWeeks(int? weeks)
+    public void WithMinimumWeeks(int? weeks)
     {
         if (weeks is < 0)
             throw new DomainException("Minimum weeks must be 0 or greater.");
@@ -63,46 +63,51 @@ public sealed class Package : AggregateRoot<int>, IProductDefinition
         MinimumWeeks = weeks;
     }
 
-    public void ChangeCategories(ProductCategoriesDefinition? definition) =>
-        Categories = ProductCategories.Create(definition);
+    public void WithCategories(int accountCategoryId, int productCategoryId) =>
+        Categories = ProductCategories.Create(accountCategoryId, productCategoryId);
 
-    public void ChangeFinanceCodes(FinanceCodesDefinition? definition) =>
-        FinanceCodes = FinanceCodes.Create(definition);
+    public void WithFinanceCodes(string? generalLedgerCode, string? costCentreCode) =>
+        FinanceCodes = FinanceCodes.Create(generalLedgerCode, costCentreCode);
 
-    public void ChangeClosurePolicy(DateOnly date) =>
+    public void WithClosurePolicy(DateOnly? date) =>
         ClosurePolicy = OfferingsClosurePolicy.Create(date);
 
-    public void AddItem(ProductRef product, decimal percentage)
+    public void WithItems(IEnumerable<PackageItemDefinition> items)
     {
-        EnsureNotSelfReference(product);
+        ArgumentNullException.ThrowIfNull(items);
 
-        if (_items.Any(x => x.Product == product))
-            throw new DomainException("Duplicate package item.");
+        List<PackageItemDefinition> incoming = items.ToList();
+        var incomingProducts = new HashSet<ProductRef>();
 
-        _items.Add(new PackageItem(product, Percentage.Create(percentage)));
+        foreach (PackageItemDefinition item in incoming)
+        {
+            ProductRef product = new(item.ProductKind, item.ProductId);
+
+            if (!incomingProducts.Add(product))
+                throw new DomainException("Duplicate package item.");
+
+            EnsureNotSelfReference(product);
+        }
+
+        _items.RemoveAll(x => !incomingProducts.Contains(x.Product));
+
+        foreach (PackageItemDefinition item in incoming)
+        {
+            ProductRef product = new(item.ProductKind, item.ProductId);
+            PackageItem? existing = _items.FirstOrDefault(x => x.Product == product);
+
+            if (existing is null)
+                _items.Add(new PackageItem(product, Percentage.Create(item.PriceBreakdown)));
+            else
+                existing.WithPercentage(Percentage.Create(item.PriceBreakdown));
+        }
+
         EnsureBreakdownDoesNotExceed100();
-    }
-
-    public void ChangeItemPercentage(ProductRef product, decimal percentage)
-    {
-        PackageItem item = _items.SingleOrDefault(x => x.Product == product)
-                           ?? throw new DomainException("Package item not found.");
-
-        item.ChangePercentage(Percentage.Create(percentage));
-        EnsureBreakdownDoesNotExceed100();
-    }
-
-    public void RemoveItem(ProductRef product)
-    {
-        PackageItem item = _items.SingleOrDefault(x => x.Product == product)
-                           ?? throw new DomainException("Package item not found.");
-
-        _items.Remove(item);
     }
 
     public void EnsureBreakdownTotalEquals100()
     {
-        decimal total = _items.Sum(x => x.Percentage.Value);
+        decimal total = _items.Sum(x => x.PriceBreakdown.Value);
 
         if (Math.Abs(total - 100m) > 0.01m)
             throw new DomainException($"Total percentage breakdown must equal 100%, current total is {total}%.");
@@ -110,7 +115,7 @@ public sealed class Package : AggregateRoot<int>, IProductDefinition
 
     private void EnsureBreakdownDoesNotExceed100()
     {
-        if (_items.Sum(x => x.Percentage.Value) > 100m)
+        if (_items.Sum(x => x.PriceBreakdown.Value) > 100m)
             throw new DomainException("Package breakdown total cannot exceed 100%.");
     }
 
@@ -133,7 +138,8 @@ public sealed class Package : AggregateRoot<int>, IProductDefinition
         private int? _minimumWeeks;
         private ProductCategories _categories = ProductCategories.Unassigned;
         private FinanceCodes _financeCodes = FinanceCodes.Unassigned;
-        private readonly List<(ProductRef Product, decimal Percentage)> _items = new();
+        private readonly List<PackageItemDefinition> _items = new();
+        private OfferingsClosurePolicy _closurePolicy = OfferingsClosurePolicy.Open;
 
         public Builder(int divisionId, string name, UnitType unitType)
         {
@@ -145,7 +151,7 @@ public sealed class Package : AggregateRoot<int>, IProductDefinition
             _unitTypeId = unitType.Id;
         }
 
-        public Builder IsActive(bool value)
+        public Builder SetIsActive(bool value)
         {
             _isActive = value;
             return this;
@@ -163,9 +169,9 @@ public sealed class Package : AggregateRoot<int>, IProductDefinition
             return this;
         }
 
-        public Builder WithAgeRange(AgeRangeDefinition? definition)
+        public Builder WithAgeRange(int? ageFrom, int? ageTo)
         {
-            _ageRange = AgeRange.Create(definition);
+            _ageRange = AgeRange.Create(ageFrom, ageTo);
             return this;
         }
 
@@ -178,21 +184,28 @@ public sealed class Package : AggregateRoot<int>, IProductDefinition
             return this;
         }
 
-        public Builder WithCategories(ProductCategoriesDefinition? definition)
+        public Builder WithCategories(int accountCategoryId, int productCategoryId)
         {
-            _categories = ProductCategories.Create(definition);
+            _categories = ProductCategories.Create(accountCategoryId, productCategoryId);
             return this;
         }
 
-        public Builder WithFinanceCodes(FinanceCodesDefinition? definition)
+        public Builder WithFinanceCodes(string? generalLedgerCode, string? costCentreCode)
         {
-            _financeCodes = FinanceCodes.Create(definition);
+            _financeCodes = FinanceCodes.Create(generalLedgerCode, costCentreCode);
             return this;
         }
 
-        public Builder WithItem(ProductRef product, decimal percentage)
+        public Builder WithItems(IEnumerable<PackageItemDefinition> items)
         {
-            _items.Add((product, percentage));
+            ArgumentNullException.ThrowIfNull(items);
+            _items.AddRange(items);
+            return this;
+        }
+
+        public Builder WithClosurePolicy(DateOnly? value)
+        {
+            _closurePolicy = OfferingsClosurePolicy.Create(value);
             return this;
         }
 
@@ -206,11 +219,11 @@ public sealed class Package : AggregateRoot<int>, IProductDefinition
                 AgeRange = _ageRange,
                 MinimumWeeks = _minimumWeeks,
                 Categories = _categories,
-                FinanceCodes = _financeCodes
+                FinanceCodes = _financeCodes,
+                ClosurePolicy = _closurePolicy
             };
 
-            foreach ((ProductRef product, decimal percentage) in _items)
-                package.AddItem(product, percentage);
+            package.WithItems(_items);
 
             return package;
         }

@@ -10,7 +10,7 @@ public sealed class DivisionTextContentTests
     public void ReplaceTexts_CreatesActiveChildEntity()
     {
         Division division = new Division.Builder("Division", "https://example.com")
-            .Texts([new TextContentDefinition(100, 10, "Audience text", ContentFormat.PlainText)])
+            .WithTexts([new TextContentDefinition(100, 10, "Audience text", ContentFormat.PlainText)])
             .Build();
 
         DivisionTextContent text = Assert.Single(division.Texts);
@@ -24,10 +24,10 @@ public sealed class DivisionTextContentTests
     public void ReplaceTexts_EmptyExistingTextSoftDeletesChildEntity()
     {
         Division division = new Division.Builder("Division", "https://example.com")
-            .Texts([new TextContentDefinition(100, 10, "Audience text", ContentFormat.PlainText)])
+            .WithTexts([new TextContentDefinition(100, 10, "Audience text", ContentFormat.PlainText)])
             .Build();
 
-        division.ReplaceTexts([new TextContentDefinition(100, 10, null, ContentFormat.None)]);
+        division.WithTexts([new TextContentDefinition(100, 10, null, ContentFormat.None)]);
 
         DivisionTextContent text = Assert.Single(division.Texts);
         Assert.True(text.IsDeleted);

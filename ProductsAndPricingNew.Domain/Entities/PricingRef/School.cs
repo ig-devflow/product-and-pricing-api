@@ -33,34 +33,34 @@ public sealed class School : AggregateRoot<int>
     public void Rename(string name)
         => Name = name.AsRequiredDomainText(nameof(Name), Rules.NameMaxLength);
 
-    public void ChangeLegacyCode(string legacyCode)
+    public void WithCode(string legacyCode)
         => Code = legacyCode.AsRequiredDomainText(nameof(Code), Rules.CodeMaxLength);
 
-    public void ChangeMinimumStayInWeeks(int weeks)
+    public void WithMinimumStayInWeeks(int weeks)
     {
         EnsureValidMinimumStayInWeeks(weeks);
         MinimumStayInWeeks = weeks;
     }
 
-    public void ChangeAgeRange(AgeRangeDefinition? definition)
-        => AgeRange = AgeRange.Create(definition);
+    public void WithAgeRange(int? ageFrom, int? ageTo)
+        => AgeRange = AgeRange.Create(ageFrom, ageTo);
 
-    public void ChangeTelephone(string? value)
+    public void WithTelephone(string? value)
         => Telephone = TelephoneNumber.Create(value);
 
-    public void ChangeEmergencyTelephone(string? value)
+    public void WithEmergencyTelephone(string? value)
         => EmergencyTelephone = TelephoneNumber.Create(value);
 
-    public void ChangeContactAddress(AddressDefinition? definition) =>
+    public void WithContactAddress(AddressDefinition? definition) =>
         ContactAddress = Address.Create(definition);
 
-    public void ChangeFinanceCode(string? value)
+    public void WithFinanceCode(string? value)
         => FinanceCode = FinanceCode.Create(value);
 
-    public void ChangeLmsAccess(bool value)
+    public void SetLmsAccess(bool value)
         => LmsAccess = value;
 
-    public void ChangeActive(bool isActive)
+    public void SetIsActive(bool isActive)
     {
         var today = DateOnly.FromDateTime(DateTime.Now);
 
@@ -70,7 +70,7 @@ public sealed class School : AggregateRoot<int>
         IsActive = isActive;
     }
 
-    public void ChangeDecommissionDate(DateOnly? date)
+    public void WithDecommissionDate(DateOnly? date)
         => DecommissionDate = date;
 
     private static void EnsureValidCentre(int centreId)
@@ -110,7 +110,7 @@ public sealed class School : AggregateRoot<int>
             _legacyCode = legacyCode.AsRequiredDomainText(nameof(Code), Rules.CodeMaxLength);
         }
 
-        public Builder MinimumStayInWeeks(int value)
+        public Builder WithMinimumStayInWeeks(int value)
         {
             EnsureValidMinimumStayInWeeks(value);
 
@@ -118,49 +118,49 @@ public sealed class School : AggregateRoot<int>
             return this;
         }
 
-        public Builder SetAgeRange(AgeRangeDefinition? definition)
+        public Builder WithAgeRange(int? ageFrom, int? ageTo)
         {
-            _ageRange = AgeRange.Create(definition);
+            _ageRange = AgeRange.Create(ageFrom, ageTo);
             return this;
         }
 
-        public Builder Telephone(string? value)
+        public Builder WithTelephone(string? value)
         {
             _telephone = TelephoneNumber.Create(value);
             return this;
         }
 
-        public Builder EmergencyTelephone(string? value)
+        public Builder WithEmergencyTelephone(string? value)
         {
             _emergencyTelephone = TelephoneNumber.Create(value);
             return this;
         }
 
-        public Builder ContactAddress(AddressDefinition definition)
+        public Builder WithContactAddress(AddressDefinition definition)
         {
             _contactAddress = Address.Create(definition);
             return this;
         }
 
-        public Builder SetFinanceCode(string? code)
+        public Builder WithFinanceCode(string? code)
         {
             _financeCode = FinanceCode.Create(code);
             return this;
         }
 
-        public Builder LmsActive(bool value)
+        public Builder SetLmsActive(bool value)
         {
             _lmsAccess = value;
             return this;
         }
 
-        public Builder IsActive(bool value)
+        public Builder SetIsActive(bool value)
         {
             _isActive = value;
             return this;
         }
 
-        public Builder DecommissionDate(DateOnly? value)
+        public Builder WithDecommissionDate(DateOnly? value)
         {
             _decommissionDate = value;
             return this;

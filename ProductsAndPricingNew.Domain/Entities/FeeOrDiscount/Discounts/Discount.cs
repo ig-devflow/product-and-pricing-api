@@ -42,12 +42,12 @@ public sealed class Discount : AggregateRoot<int>
     public void Rename(string name) =>
         Name = name.AsRequiredDomainText(nameof(Name), Rules.NameMaxLength);
 
-    public void ChangeDescription(string? description) =>
+    public void WithDescription(string? description) =>
         Description = string.IsNullOrWhiteSpace(description) ? null : description.Trim();
 
-    public void ChangeType(DiscountType type) => Type = type;
+    public void WithType(DiscountType type) => Type = type;
 
-    public void ChangeShouldApplyRuleset(RulesetRef ruleset) => ShouldApplyRuleset = ruleset;
+    public void WithShouldApplyRuleset(RulesetRef ruleset) => ShouldApplyRuleset = ruleset;
 
     public void Activate() => IsActive = true;
 
