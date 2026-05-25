@@ -17,7 +17,6 @@ internal sealed class GetAudiencesQueryHandler : IRequestHandler<GetAudiencesQue
     public async Task<Result<IReadOnlyCollection<AudienceReferenceDto>>> Handle(GetAudiencesQuery request, CancellationToken ct)
     {
         IReadOnlyCollection<AudienceReferenceDto> result = await _referenceDataQuery.GetAudiencesAsync(ct);
-
         return Result.Ok(result);
     }
 }

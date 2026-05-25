@@ -1,8 +1,7 @@
 ﻿namespace ProductsAndPricingNew.Application.Features.ReferenceData.Models;
 
-public sealed record UnitTypeDto(
+public sealed record UnitTypeReferenceDto(
     int Id,
     string Name,
-    bool IsDateBased,
-    string CalculationKind
+    string Description
 );

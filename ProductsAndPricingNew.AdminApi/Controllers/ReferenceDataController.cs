@@ -7,6 +7,7 @@ using ProductsAndPricingNew.Application.Features.ReferenceData.Queries.GetAudien
 using ProductsAndPricingNew.Application.Features.ReferenceData.Queries.GetContentTemplates;
 using ProductsAndPricingNew.Application.Features.ReferenceData.Queries.GetCountries;
 using ProductsAndPricingNew.Application.Features.ReferenceData.Queries.GetCurrencies;
+using ProductsAndPricingNew.Application.Features.ReferenceData.Queries.GetUnitTypes;
 using ProductsAndPricingNew.Domain.ReferenceData;
 
 namespace ProductsAndPricingNew.AdminApi.Controllers;
@@ -66,6 +67,20 @@ public sealed class ReferenceDataController : ControllerBase
     public async Task<ActionResult> GetAudiences(CancellationToken ct)
     {
         Result<IReadOnlyCollection<AudienceReferenceDto>> result = await _sender.Send(new GetAudiencesQuery(), ct);
+        return result.ToActionResult(this);
+    }
+    
+    /// <summary>
+    /// Gets active unit types.
+    /// </summary>
+    /// <param name="ct">Cancellation token.</param>
+    /// <returns>A list of active unit types.</returns>
+    /// <response code="200">Returns active unit types.</response>
+    [HttpGet("unit-types")]
+    [ProducesResponseType(typeof(IReadOnlyCollection<UnitTypeReferenceDto>), StatusCodes.Status200OK)]
+    public async Task<ActionResult> GetUnitTypes(CancellationToken ct)
+    {
+        Result<IReadOnlyCollection<UnitTypeReferenceDto>> result = await _sender.Send(new GetUnitTypesQuery(), ct);
         return result.ToActionResult(this);
     }
 

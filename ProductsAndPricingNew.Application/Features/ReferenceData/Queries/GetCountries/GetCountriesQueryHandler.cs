@@ -17,7 +17,6 @@ internal sealed class GetCountriesQueryHandler : IRequestHandler<GetCountriesQue
     public async Task<Result<IReadOnlyCollection<CountryReferenceDto>>> Handle(GetCountriesQuery request, CancellationToken ct)
     {
         IReadOnlyCollection<CountryReferenceDto> result = await _referenceDataQuery.GetCountriesAsync(ct);
-
         return Result.Ok(result);
     }
 }

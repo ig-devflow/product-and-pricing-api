@@ -17,7 +17,6 @@ internal sealed class GetContentTemplatesQueryHandler : IRequestHandler<GetConte
     public async Task<Result<IReadOnlyCollection<ContentTemplateReferenceDto>>> Handle(GetContentTemplatesQuery request, CancellationToken ct)
     {
         IReadOnlyCollection<ContentTemplateReferenceDto> result = await _referenceDataQuery.GetContentTemplatesAsync(request.Scope, ct);
-
         return Result.Ok(result);
     }
 }

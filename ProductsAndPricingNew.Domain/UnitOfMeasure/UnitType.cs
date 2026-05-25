@@ -12,6 +12,7 @@ namespace ProductsAndPricingNew.Domain.UnitOfMeasure;
 public sealed class UnitType : Entity<int>, ISoftDeletable
 {
     public string Name { get; init; } = null!;
+    public string Description { get; init; } = null!;
     public bool IsDateBased { get; init; }
     public UnitCalculationKind CalculationKind { get; init; }
     public int MinMajorUnits { get; init; }
@@ -29,5 +30,6 @@ public sealed class UnitType : Entity<int>, ISoftDeletable
     public static class Rules
     {
         public const int NameMaxLength = 100;
+        public const int DescriptionMaxLength = 200;
     }
 }
