@@ -66,7 +66,7 @@ internal sealed class ReferenceDataQueryFake : IReferenceDataQuery
         GetUnitTypesCalls++;
         return Task.FromResult(_unitTypes);
     }
-    
+
     public Task<IReadOnlyCollection<ContentTemplateReferenceDto>> GetContentTemplatesAsync(ContentTemplateScope? scope, CancellationToken ct = default)
     {
         GetContentTemplatesCalls++;

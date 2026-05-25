@@ -69,7 +69,7 @@ public sealed class ReferenceDataController : ControllerBase
         Result<IReadOnlyCollection<AudienceReferenceDto>> result = await _sender.Send(new GetAudiencesQuery(), ct);
         return result.ToActionResult(this);
     }
-    
+
     /// <summary>
     /// Gets active unit types.
     /// </summary>

@@ -87,7 +87,7 @@ internal sealed class ReferenceDataQuery : IReferenceDataQuery
 
         return (await connection.QueryAsync<UnitTypeReferenceDto>(command)).AsList();
     }
-    
+
     public async Task<IReadOnlyCollection<ContentTemplateReferenceDto>> GetContentTemplatesAsync(ContentTemplateScope? scope, CancellationToken ct = default)
     {
         const string sql = """

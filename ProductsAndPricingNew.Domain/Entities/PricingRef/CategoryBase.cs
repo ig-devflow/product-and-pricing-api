@@ -23,7 +23,7 @@ public abstract class CategoryBase : AggregateRoot<int>
 
     public void Rename(string name) =>
         Name = name.AsRequiredDomainText(nameof(Name), Rules.NameMaxLength);
-    
+
     public void SetIsActive(bool active) =>
         IsActive = active;
 

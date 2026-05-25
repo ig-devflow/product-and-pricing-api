@@ -35,7 +35,7 @@ public sealed class Division : AggregateRoot<int>
 
     public void SetIsActive(bool isActive) =>
         IsActive = isActive;
-    
+
     public void WithWebsite(string website)
         => WebsiteUrl = WebsiteUrl.Create(website).EnsureNotEmpty(nameof(WebsiteUrl));
 

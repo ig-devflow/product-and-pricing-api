@@ -45,7 +45,7 @@ public sealed class Accommodation : AggregateRoot<int>
 
     public void SetCommitment(bool isCommitted) =>
         IsCommitted = isCommitted;
-    
+
     public void SetNonCommitment(bool isNonCommitted) =>
         IsNonCommitted = isNonCommitted;
 
@@ -92,7 +92,7 @@ public sealed class Accommodation : AggregateRoot<int>
             _isCommitted = committed;
             return this;
         }
-        
+
         public Builder WithNonCommitment(bool nonCommitted)
         {
             _isNonCommitted = nonCommitted;
