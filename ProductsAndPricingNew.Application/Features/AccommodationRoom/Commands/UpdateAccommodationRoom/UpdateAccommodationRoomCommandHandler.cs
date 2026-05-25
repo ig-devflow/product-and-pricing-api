@@ -6,7 +6,6 @@ using ProductsAndPricingNew.Application.Features.AccommodationRoom.Abstractions;
 using ProductsAndPricingNew.Application.Features.AccommodationRoom.Mappings;
 using ProductsAndPricingNew.Domain.Common.Text;
 using ProductsAndPricingNew.Domain.Repositories;
-using ProductsAndPricingNew.Domain.SharedKernel.Definitions;
 using ProductsAndPricingNew.Domain.UnitOfMeasure;
 using AccommodationRoomEntity = ProductsAndPricingNew.Domain.Entities.Products.AccommodationRoom;
 
@@ -49,13 +48,13 @@ internal sealed class UpdateAccommodationRoomCommandHandler : IRequestHandler<Up
         UnitType unitType = _unitTypeProvider.Get(request.UnitTypeId);
 
         accommodationRoom.Rename(name);
-        accommodationRoom.ChangeUnitType(unitType);
+        accommodationRoom.WithUnitType(unitType);
         accommodationRoom.SetIsActive(request.IsActive);
         accommodationRoom.SetOccupyRoom(request.OccupyRoom);
-        accommodationRoom.ChangeRoomDetails(request.roomDetails.ToDefinition());
-        accommodationRoom.ChangeCategories(new ProductCategoriesDefinition(request.AccountCategoryId, request.ProductCategoryId));
-        accommodationRoom.ChangeFinanceCodes(new FinanceCodesDefinition(request.GeneralLedgerCode, request.CostCentreCode));
-        accommodationRoom.ChangeClosurePolicy(request.ClosurePolicy);
+        accommodationRoom.WithRoomDetails(request.roomDetails.ToDefinition());
+        accommodationRoom.WithCategories(request.AccountCategoryId, request.ProductCategoryId);
+        accommodationRoom.WithFinanceCodes(request.GeneralLedgerCode, request.CostCentreCode);
+        accommodationRoom.WithClosurePolicy(request.ClosurePolicy);
 
         await _unitOfWork.SaveChangesAsync(ct);
 

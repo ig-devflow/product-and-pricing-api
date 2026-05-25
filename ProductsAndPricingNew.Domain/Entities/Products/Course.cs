@@ -1,7 +1,6 @@
 using ProductsAndPricingNew.Domain.Common.Exceptions;
 using ProductsAndPricingNew.Domain.Common.Primitives;
 using ProductsAndPricingNew.Domain.Common.Text;
-using ProductsAndPricingNew.Domain.SharedKernel.Definitions;
 using ProductsAndPricingNew.Domain.SharedKernel.ValueObjects;
 using ProductsAndPricingNew.Domain.UnitOfMeasure;
 
@@ -35,25 +34,25 @@ public sealed class Course : AggregateRoot<int>, IProductDefinition
     public void Rename(string name) =>
         Name = name.AsRequiredDomainText(nameof(Name), Rules.NameMaxLength);
 
-    public void ChangeIsActive(bool isActive) =>
+    public void SetIsActive(bool isActive) =>
         IsActive = isActive;
 
-    public void ChangeLanguage(int courseLanguageId) =>
+    public void WithLanguage(int courseLanguageId) =>
         CourseLanguageId = Guard.PositiveId(courseLanguageId, nameof(CourseLanguageId));
 
-    public void ChangeIntensity(int courseIntensityId) =>
+    public void WithIntensity(int courseIntensityId) =>
         CourseIntensityId = Guard.PositiveId(courseIntensityId, nameof(CourseIntensityId));
 
-    public void ChangeUnitType(UnitType unitType)
+    public void WithUnitType(UnitType unitType)
     {
         UnitTypePolicy.EnsureAllowedForProduct(ProductKind.Course, unitType);
         UnitTypeId = unitType.Id;
     }
 
-    public void ChangeAgeRange(AgeRangeDefinition? definition) =>
-        AgeRange = AgeRange.Create(definition);
+    public void WithAgeRange(int? ageFrom, int? ageTo) =>
+        AgeRange = AgeRange.Create(ageFrom, ageTo);
 
-    public void ChangeMinimumWeeks(int? weeks)
+    public void WithMinimumWeeks(int? weeks)
     {
         if (weeks is < 0)
             throw new DomainException("Minimum weeks must be 0 or greater.");
@@ -61,13 +60,13 @@ public sealed class Course : AggregateRoot<int>, IProductDefinition
         MinimumWeeks = weeks;
     }
 
-    public void ChangeCategories(ProductCategoriesDefinition? definition) =>
-        Categories = ProductCategories.Create(definition);
+    public void WithCategories(int accountCategoryId, int productCategoryId) =>
+        Categories = ProductCategories.Create(accountCategoryId, productCategoryId);
 
-    public void ChangeFinanceCodes(FinanceCodesDefinition? definition) =>
-        FinanceCodes = FinanceCodes.Create(definition);
+    public void WithFinanceCodes(string? generalLedgerCode, string? costCentreCode) =>
+        FinanceCodes = FinanceCodes.Create(generalLedgerCode, costCentreCode);
 
-    public void ChangeClosurePolicy(DateOnly date) =>
+    public void WithClosurePolicy(DateOnly? date) =>
         ClosurePolicy = OfferingsClosurePolicy.Create(date);
 
     public sealed class Builder
@@ -83,6 +82,7 @@ public sealed class Course : AggregateRoot<int>, IProductDefinition
         private int? _minimumWeeks;
         private ProductCategories _categories = ProductCategories.Unassigned;
         private FinanceCodes _financeCodes = FinanceCodes.Unassigned;
+        private OfferingsClosurePolicy _closurePolicy = OfferingsClosurePolicy.Open;
 
         public Builder(int divisionId, string name, int courseLanguageId, int courseIntensityId, UnitType unitType)
         {
@@ -96,15 +96,15 @@ public sealed class Course : AggregateRoot<int>, IProductDefinition
             _unitTypeId = unitType.Id;
         }
 
-        public Builder IsActive(bool value)
+        public Builder SetIsActive(bool value)
         {
             _isActive = value;
             return this;
         }
 
-        public Builder WithAgeRange(AgeRangeDefinition? definition)
+        public Builder WithAgeRange(int? ageFrom, int? ageTo)
         {
-            _ageRange = AgeRange.Create(definition);
+            _ageRange = AgeRange.Create(ageFrom, ageTo);
             return this;
         }
 
@@ -117,15 +117,21 @@ public sealed class Course : AggregateRoot<int>, IProductDefinition
             return this;
         }
 
-        public Builder WithCategories(ProductCategoriesDefinition? definition)
+        public Builder WithCategories(int accountCategoryId, int productCategoryId)
         {
-            _categories = ProductCategories.Create(definition);
+            _categories = ProductCategories.Create(accountCategoryId, productCategoryId);
             return this;
         }
 
-        public Builder WithFinanceCodes(FinanceCodesDefinition? definition)
+        public Builder WithFinanceCodes(string? generalLedgerCode, string? costCentreCode)
         {
-            _financeCodes = FinanceCodes.Create(definition);
+            _financeCodes = FinanceCodes.Create(generalLedgerCode, costCentreCode);
+            return this;
+        }
+
+        public Builder WithClosurePolicy(DateOnly? value)
+        {
+            _closurePolicy = OfferingsClosurePolicy.Create(value);
             return this;
         }
 
@@ -137,7 +143,8 @@ public sealed class Course : AggregateRoot<int>, IProductDefinition
                 AgeRange = _ageRange,
                 MinimumWeeks = _minimumWeeks,
                 Categories = _categories,
-                FinanceCodes = _financeCodes
+                FinanceCodes = _financeCodes,
+                ClosurePolicy = _closurePolicy
             };
 
             return course;

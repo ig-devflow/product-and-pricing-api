@@ -5,7 +5,6 @@ using ProductsAndPricingNew.Application.Common.Errors;
 using ProductsAndPricingNew.Application.Features.Accommodation.Abstractions;
 using ProductsAndPricingNew.Domain.Common.Text;
 using ProductsAndPricingNew.Domain.Repositories;
-using ProductsAndPricingNew.Domain.SharedKernel.Definitions;
 using AccommodationEntity = ProductsAndPricingNew.Domain.Entities.Products.Accommodation;
 
 namespace ProductsAndPricingNew.Application.Features.Accommodation.Commands.UpdateAccommodation;
@@ -42,11 +41,12 @@ internal sealed class UpdateAccommodationCommandHandler : IRequestHandler<Update
             return Result.Fail(new ConflictError($"Accommodation name: '{name}' already exists"));
 
         accommodation.Rename(name);
-        accommodation.ChangeAccommodationType(request.AccommodationTypeId);
+        accommodation.WithAccommodationType(request.AccommodationTypeId);
         accommodation.SetIsActive(request.IsActive);
-        accommodation.ChangeMinimumStay(request.MinimumStayInWeeks);
-        accommodation.ChangeAgeRange(new AgeRangeDefinition(request.AgeFrom, request.AgeTo));
-        accommodation.ChangeCommitment(request.IsCommitted, request.IsNonCommitted);
+        accommodation.WithMinimumStay(request.MinimumStayInWeeks);
+        accommodation.WithAgeRange(request.AgeFrom, request.AgeTo);
+        accommodation.SetCommitment(request.IsCommitted);
+        accommodation.SetNonCommitment(request.IsNonCommitted);
 
         await _unitOfWork.SaveChangesAsync(ct);
 

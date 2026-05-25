@@ -28,7 +28,7 @@ public sealed record BankIdentifiers : IEmptyValueObject
         AchAba = achAba;
     }
 
-    public static BankIdentifiers Create(BankIdentifiersDefinition? definition)
+    internal static BankIdentifiers Create(BankIdentifiersDefinition? definition)
     {
         if (definition is null || definition.IsEmpty)
             return Empty;

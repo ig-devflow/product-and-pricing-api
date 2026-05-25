@@ -20,7 +20,7 @@ public sealed class PackageItem : Entity<int>, IEquatable<PackageItem>
         PriceBreakdown = priceBreakdown;
     }
 
-    internal void ChangePercentage(Percentage percentage) => PriceBreakdown = percentage;
+    internal void WithPercentage(Percentage percentage) => PriceBreakdown = percentage;
 
     public bool Equals(PackageItem? other)
     {
@@ -45,6 +45,5 @@ public sealed class PackageItem : Entity<int>, IEquatable<PackageItem>
     }
 
     public static bool operator ==(PackageItem left, PackageItem right) => left.Equals(right);
-
     public static bool operator !=(PackageItem left, PackageItem right) => !left.Equals(right);
 }

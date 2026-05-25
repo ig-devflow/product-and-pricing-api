@@ -1,5 +1,6 @@
 using ProductsAndPricingNew.Domain.Common.Exceptions;
 using ProductsAndPricingNew.Domain.Common.Primitives;
+using ProductsAndPricingNew.Domain.Entities.FeeOrDiscount.Fees.Definitions;
 using ProductsAndPricingNew.Domain.SharedKernel.ValueObjects;
 
 namespace ProductsAndPricingNew.Domain.Entities.FeeOrDiscount.Fees;
@@ -22,26 +23,34 @@ public sealed class OneOffFeeOffering : FeeOffering
     public static OneOffFeeOffering Create(int schoolId, int feeId, ActivePricingYears years) =>
         new(schoolId, feeId, years);
 
-    public void SetPrice(int year, int currencyId, decimal amount)
+    public void WithPrices(IEnumerable<OneOffFeePriceDefinition> prices)
     {
-        if (!Years.Includes(year))
-            throw new DomainException($"Pricing year {year} is outside the offering's active years.");
+        ArgumentNullException.ThrowIfNull(prices);
 
-        Guard.PositiveId(currencyId, nameof(currencyId));
+        List<OneOffFeePriceDefinition> incoming = prices.ToList();
+        var incomingKeys = new HashSet<(int Year, int CurrencyId)>();
 
-        OneOffFeePrice? existing = _prices.SingleOrDefault(p => p.Year == year && p.CurrencyId == currencyId);
+        foreach (OneOffFeePriceDefinition def in incoming)
+        {
+            if (!Years.Includes(def.Year))
+                throw new DomainException($"Pricing year {def.Year} is outside the offering's active years.");
 
-        if (existing is null)
-            _prices.Add(new OneOffFeePrice(year, currencyId, amount));
-        else
-            existing.ChangeAmount(amount);
-    }
+            Guard.PositiveId(def.CurrencyId, nameof(def.CurrencyId));
 
-    public void RemovePrice(int year, int currencyId)
-    {
-        OneOffFeePrice? existing = _prices.SingleOrDefault(p => p.Year == year && p.CurrencyId == currencyId);
+            if (!incomingKeys.Add((def.Year, def.CurrencyId)))
+                throw new DomainException($"Duplicate price for year {def.Year} and currency {def.CurrencyId}.");
+        }
 
-        if (existing is not null)
-            _prices.Remove(existing);
+        _prices.RemoveAll(p => !incomingKeys.Contains((p.Year, p.CurrencyId)));
+
+        foreach (OneOffFeePriceDefinition def in incoming)
+        {
+            OneOffFeePrice? existing = _prices.SingleOrDefault(p => p.Year == def.Year && p.CurrencyId == def.CurrencyId);
+
+            if (existing is null)
+                _prices.Add(new OneOffFeePrice(def.Year, def.CurrencyId, def.Amount));
+            else
+                existing.WithAmount(def.Amount);
+        }
     }
 }

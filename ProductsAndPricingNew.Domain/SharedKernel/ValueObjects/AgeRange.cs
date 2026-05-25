@@ -1,5 +1,4 @@
 using ProductsAndPricingNew.Domain.Common.Exceptions;
-using ProductsAndPricingNew.Domain.SharedKernel.Definitions;
 
 namespace ProductsAndPricingNew.Domain.SharedKernel.ValueObjects;
 
@@ -27,12 +26,9 @@ public readonly record struct AgeRange : IEmptyValueObject
         return new AgeRange(min, max);
     }
 
-    public static AgeRange Create(AgeRangeDefinition? definition) =>
-        definition is null ? Open : Create(definition.From, definition.To);
-
     public bool Contains(int age) =>
-        (!Minimum.HasValue || age >= Minimum.Value)
-        && (!Maximum.HasValue || age <= Maximum.Value);
+        (!Minimum.HasValue || age >= Minimum.Value) &&
+        (!Maximum.HasValue || age <= Maximum.Value);
 
     private static void EnsureValid(int? min, int? max)
     {

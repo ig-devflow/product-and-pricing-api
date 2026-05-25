@@ -28,9 +28,9 @@ public sealed class CancellationFeeOffering : AggregateRoot<int>
         };
     }
 
-    public void ChangeApplyRuleset(RulesetRef rs) => ApplyRuleset = rs;
+    public void WithApplyRuleset(RulesetRef rs) => ApplyRuleset = rs;
 
-    public void ChangeChargeRuleset(RulesetRef rs) => ChargeRuleset = rs;
+    public void WithChargeRuleset(RulesetRef rs) => ChargeRuleset = rs;
 
     public void ExtendYears(int year) => Years = Years.Extend(year);
 }

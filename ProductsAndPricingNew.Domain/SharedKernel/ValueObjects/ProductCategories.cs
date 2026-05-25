@@ -1,5 +1,4 @@
 using ProductsAndPricingNew.Domain.Common.Primitives;
-using ProductsAndPricingNew.Domain.SharedKernel.Definitions;
 
 namespace ProductsAndPricingNew.Domain.SharedKernel.ValueObjects;
 
@@ -17,14 +16,11 @@ public readonly record struct ProductCategories : IEmptyValueObject
         ProductCategoryId = productCategoryId;
     }
 
-    public static ProductCategories Create(ProductCategoriesDefinition? definition)
+    public static ProductCategories Create(int accountCategoryId, int productCategoryId)
     {
-        if (definition is null)
-            return Unassigned;
+        Guard.PositiveId(accountCategoryId, nameof(AccountCategoryId));
+        Guard.PositiveId(productCategoryId, nameof(ProductCategoryId));
 
-        Guard.PositiveId(definition.AccountCategoryId, nameof(AccountCategoryId));
-        Guard.PositiveId(definition.ProductCategoryId, nameof(ProductCategoryId));
-
-        return new ProductCategories(definition.AccountCategoryId, definition.ProductCategoryId);
+        return new ProductCategories(accountCategoryId, productCategoryId);
     }
 }

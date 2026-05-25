@@ -1,5 +1,6 @@
 using ProductsAndPricingNew.Domain.Common.Exceptions;
 using ProductsAndPricingNew.Domain.Common.Primitives;
+using ProductsAndPricingNew.Domain.Entities.FeeOrDiscount.Fees.Definitions;
 using ProductsAndPricingNew.Domain.SharedKernel.ValueObjects;
 using ProductsAndPricingNew.Domain.UnitOfMeasure;
 
@@ -37,7 +38,7 @@ public sealed class SupplementFeeOffering : FeeOffering
         return new SupplementFeeOffering(schoolId, fee.Id, years);
     }
 
-    public void SetMaximumUnits(int? maximumUnits)
+    public void WithMaximumUnits(int? maximumUnits)
     {
         if (maximumUnits is < 1)
             throw new DomainException("Maximum units must be at least 1.");
@@ -45,54 +46,43 @@ public sealed class SupplementFeeOffering : FeeOffering
         MaximumUnits = maximumUnits;
     }
 
-    public void UseAllDatesPricing()
+    public void WithPrices(bool hasSpecificDates, IEnumerable<SupplementPriceDefinition> prices)
     {
-        HasSpecificDates = false;
-        _prices.RemoveAll(p => !p.IsAllDates);
-    }
+        ArgumentNullException.ThrowIfNull(prices);
 
-    public void UseSpecificDatesPricing()
-    {
-        HasSpecificDates = true;
-        _prices.RemoveAll(p => p.IsAllDates);
-    }
+        List<SupplementPriceDefinition> incoming = prices.ToList();
 
-    public void SetAllDatesPrice(int year, int currencyId, decimal pricePerMajorUnit, decimal pricePerMinorUnit)
-    {
-        if (HasSpecificDates)
-            throw new DomainException("This supplement uses specific-date pricing; call SetPeriodPrice instead.");
+        foreach (SupplementPriceDefinition def in incoming)
+        {
+            if (!Years.Includes(def.Year))
+                throw new DomainException($"Pricing year {def.Year} is outside the offering's active years.");
 
-        Upsert(year, currencyId, periodStart: null, periodEnd: null, pricePerMajorUnit, pricePerMinorUnit);
-    }
+            Guard.PositiveId(def.CurrencyId, nameof(def.CurrencyId));
 
-    public void SetPeriodPrice(int year, DateOnly periodStart, DateOnly periodEnd, int currencyId, decimal pricePerMajorUnit, decimal pricePerMinorUnit)
-    {
-        if (!HasSpecificDates)
-            throw new DomainException("This supplement uses all-dates pricing; call SetAllDatesPrice instead.");
+            bool defIsSpecific = def.PeriodStart.HasValue;
+            if (hasSpecificDates && !defIsSpecific)
+                throw new DomainException("All prices must have a specific period when HasSpecificDates is true.");
+            if (!hasSpecificDates && defIsSpecific)
+                throw new DomainException("Prices must not have a period when HasSpecificDates is false.");
+        }
 
-        Upsert(year, currencyId, periodStart, periodEnd, pricePerMajorUnit, pricePerMinorUnit);
-    }
+        HasSpecificDates = hasSpecificDates;
 
-    public void RemovePrice(int year, int currencyId, DateOnly? periodStart, DateOnly? periodEnd)
-    {
-        SupplementPrice? existing = _prices.SingleOrDefault(p => p.Matches(year, currencyId, periodStart, periodEnd));
+        var incomingKeys = incoming
+            .Select(d => (d.Year, d.CurrencyId, d.PeriodStart, d.PeriodEnd))
+            .ToHashSet();
 
-        if (existing is not null)
-            _prices.Remove(existing);
-    }
+        _prices.RemoveAll(p => !incomingKeys.Contains((p.Year, p.CurrencyId, p.PeriodStart, p.PeriodEnd)));
 
-    private void Upsert(int year, int currencyId, DateOnly? periodStart, DateOnly? periodEnd, decimal pricePerMajorUnit, decimal pricePerMinorUnit)
-    {
-        if (!Years.Includes(year))
-            throw new DomainException($"Pricing year {year} is outside the offering's active years.");
+        foreach (SupplementPriceDefinition def in incoming)
+        {
+            SupplementPrice? existing = _prices.SingleOrDefault(p =>
+                p.Matches(def.Year, def.CurrencyId, def.PeriodStart, def.PeriodEnd));
 
-        Guard.PositiveId(currencyId, nameof(currencyId));
-
-        SupplementPrice? existing = _prices.SingleOrDefault(p => p.Matches(year, currencyId, periodStart, periodEnd));
-
-        if (existing is null)
-            _prices.Add(new SupplementPrice(year, currencyId, pricePerMajorUnit, pricePerMinorUnit, periodStart, periodEnd));
-        else
-            existing.ChangePrice(pricePerMajorUnit, pricePerMinorUnit);
+            if (existing is null)
+                _prices.Add(new SupplementPrice(def.Year, def.CurrencyId, def.PricePerMajorUnit, def.PricePerMinorUnit, def.PeriodStart, def.PeriodEnd));
+            else
+                existing.WithPrice(def.PricePerMajorUnit, def.PricePerMinorUnit);
+        }
     }
 }

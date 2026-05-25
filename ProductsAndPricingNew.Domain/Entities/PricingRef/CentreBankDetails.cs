@@ -24,7 +24,7 @@ public sealed class CentreBankDetails : IEquatable<CentreBankDetails>
         BankName = bankName;
     }
 
-    public static CentreBankDetails Create(CentreBankDetailsDefinition? definition)
+    internal static CentreBankDetails Create(CentreBankDetailsDefinition? definition)
     {
         if (definition is null)
             throw new DomainException("CentreBankDetailsDefinition cannot be null.");

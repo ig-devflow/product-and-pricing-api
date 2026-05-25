@@ -77,10 +77,10 @@ internal sealed class DivisionBuilder
     public Division Build()
     {
         Division division = new Division.Builder(_name, _websiteUrl)
-            .IsActive(_isActive)
-            .ContactAddress(new AddressDefinition(_countryId, _street, _district, _city, _postalCode))
-            .AccreditationBanner(new ImageFileDefinition(_bannerData, _bannerContentType, _bannerFileName))
-            .Texts(_texts)
+            .SetIsActive(_isActive)
+            .WithContactAddress(new AddressDefinition(_countryId, _street, _district, _city, _postalCode))
+            .WithAccreditationBanner(new ImageFileDefinition(_bannerData, _bannerContentType, _bannerFileName))
+            .WithTexts(_texts)
             .Build();
 
         if (_id.HasValue)

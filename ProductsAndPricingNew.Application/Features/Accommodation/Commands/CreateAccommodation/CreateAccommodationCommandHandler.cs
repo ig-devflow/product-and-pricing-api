@@ -5,7 +5,6 @@ using ProductsAndPricingNew.Application.Common.Errors;
 using ProductsAndPricingNew.Application.Features.Accommodation.Abstractions;
 using ProductsAndPricingNew.Domain.Common.Text;
 using ProductsAndPricingNew.Domain.Repositories;
-using ProductsAndPricingNew.Domain.SharedKernel.Definitions;
 using AccommodationEntity = ProductsAndPricingNew.Domain.Entities.Products.Accommodation;
 
 namespace ProductsAndPricingNew.Application.Features.Accommodation.Commands.CreateAccommodation;
@@ -36,9 +35,10 @@ internal sealed class CreateAccommodationCommandHandler : IRequestHandler<Create
 
         AccommodationEntity accommodation = new AccommodationEntity.Builder(name, request.AccommodationTypeId)
             .WithMinimumStayInWeeks(request.MinimumStayInWeeks)
-            .IsActive(request.IsActive)
-            .WithAgeRange(new AgeRangeDefinition(request.AgeFrom, request.AgeTo))
-            .WithCommitment(request.IsCommitted, request.IsNonCommitted)
+            .SetIsActive(request.IsActive)
+            .WithAgeRange(request.AgeFrom, request.AgeTo)
+            .WithCommitment(request.IsCommitted)
+            .WithNonCommitment(request.IsNonCommitted)
             .Build();
 
         await _accommodationRepository.AddAsync(accommodation, ct);

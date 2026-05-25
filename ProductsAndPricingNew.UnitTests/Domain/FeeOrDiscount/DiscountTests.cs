@@ -35,7 +35,7 @@ public sealed class DiscountTests
     {
         Discount discount = NewDiscount();
 
-        discount.ChangeShouldApplyRuleset(RulesetRef.Create(13));
+        discount.WithShouldApplyRuleset(RulesetRef.Create(13));
 
         Assert.Equal(RulesetRef.Create(13), discount.ShouldApplyRuleset);
     }
@@ -45,7 +45,7 @@ public sealed class DiscountTests
     {
         Discount discount = NewDiscount();
 
-        discount.ChangeDescription("   ");
+        discount.WithDescription("   ");
 
         Assert.Null(discount.Description);
     }
@@ -55,7 +55,7 @@ public sealed class DiscountTests
     {
         Discount discount = NewDiscount();
 
-        discount.ChangeDescription("  10% off courses  ");
+        discount.WithDescription("  10% off courses  ");
 
         Assert.Equal("10% off courses", discount.Description);
     }

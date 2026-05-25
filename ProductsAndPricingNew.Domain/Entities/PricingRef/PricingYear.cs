@@ -28,7 +28,7 @@ public sealed class PricingYear : AggregateRoot<int>
         return new PricingYear(divisionId, year);
     }
 
-    public void ChangeEarlyBirdRuleset(RulesetRef ruleset) =>
+    public void WithEarlyBirdRuleset(RulesetRef ruleset) =>
         EarlyBirdRuleset = ruleset;
 
     public BusinessYear AsBusinessYear() => BusinessYear.Of(Year);

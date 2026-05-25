@@ -12,14 +12,14 @@ public sealed class DivisionTests
     public void Builder_WithValidData_CreatesDivision()
     {
         Division division = new Division.Builder(" Division ", " https://example.com ")
-            .IsActive(true)
-            .TermsAndConditions("  Terms   and conditions  ")
-            .GroupsPaymentTerms("  Groups   payment terms  ")
-            .HeadOfficeEmail("  office@example.com  ")
-            .HeadOfficeTelephone("  +1   555   1234567  ")
-            .ContactAddress(new AddressDefinition(1, " Street ", null, " City ", " 10001 "))
-            .AccreditationBanner(new ImageFileDefinition([1], " IMAGE/PNG ", " banner.png "))
-            .Texts([new TextContentDefinition(100, null, " Text ", ContentFormat.PlainText)])
+            .SetIsActive(true)
+            .WithTermsAndConditions("  Terms   and conditions  ")
+            .WithGroupsPaymentTerms("  Groups   payment terms  ")
+            .WithHeadOfficeEmail("  office@example.com  ")
+            .WithHeadOfficeTelephone("  +1   555   1234567  ")
+            .WithContactAddress(new AddressDefinition(1, " Street ", null, " City ", " 10001 "))
+            .WithAccreditationBanner(new ImageFileDefinition([1], " IMAGE/PNG ", " banner.png "))
+            .WithTexts([new TextContentDefinition(100, null, " Text ", ContentFormat.PlainText)])
             .Build();
 
         Assert.Equal("Division", division.Name);
@@ -73,7 +73,7 @@ public sealed class DivisionTests
     {
         Division division = CreateDivision();
 
-        division.ChangeWebsite(" https://new.example.com ");
+        division.WithWebsite(" https://new.example.com ");
 
         Assert.Equal("https://new.example.com", division.WebsiteUrl.ToString());
     }
@@ -84,7 +84,7 @@ public sealed class DivisionTests
         Division division = CreateDivision();
         string tooLong = new('A', WebsiteUrl.Rules.MaxLength + 1);
 
-        Assert.Throws<DomainException>(() => division.ChangeWebsite(tooLong));
+        Assert.Throws<DomainException>(() => division.WithWebsite(tooLong));
     }
 
     [Fact]
@@ -92,7 +92,7 @@ public sealed class DivisionTests
     {
         Division division = CreateDivision();
 
-        division.ChangeActiveState(false);
+        division.SetIsActive(false);
 
         Assert.False(division.IsActive);
     }
@@ -102,7 +102,7 @@ public sealed class DivisionTests
     {
         Division division = CreateDivision();
 
-        division.ChangeContactAddress(new AddressDefinition(2, " Main   Street ", null, " Boston ", " 02108 "));
+        division.WithContactAddress(new AddressDefinition(2, " Main   Street ", null, " Boston ", " 02108 "));
         Assert.Equal(2, division.ContactAddress.CountryId);
         Assert.Equal("Main Street", division.ContactAddress.Street);
         Assert.Equal("Boston", division.ContactAddress.City);
@@ -114,7 +114,7 @@ public sealed class DivisionTests
     {
         Division division = CreateDivision();
 
-        division.ChangeContactAddress(new AddressDefinition(null, " ", null, null, null));
+        division.WithContactAddress(new AddressDefinition(null, " ", null, null, null));
 
         Assert.Same(Address.Empty, division.ContactAddress);
     }
@@ -124,7 +124,7 @@ public sealed class DivisionTests
     {
         Division division = CreateDivision();
 
-        division.ChangeAccreditationBanner(new ImageFileDefinition([9], "image/webp", "banner.webp"));
+        division.WithAccreditationBanner(new ImageFileDefinition([9], "image/webp", "banner.webp"));
 
         Assert.Equal(new byte[] { 9 }, division.AccreditationBanner.Data);
         Assert.Equal("image/webp", division.AccreditationBanner.ContentType);
@@ -136,7 +136,7 @@ public sealed class DivisionTests
     {
         Division division = CreateDivision();
 
-        division.ChangeAccreditationBanner(new ImageFileDefinition(null, null, null));
+        division.WithAccreditationBanner(new ImageFileDefinition(null, null, null));
 
         Assert.Same(ImageFile.Empty, division.AccreditationBanner);
     }
@@ -147,7 +147,7 @@ public sealed class DivisionTests
         Division division = CreateDivision();
         byte[] tooLarge = new byte[Division.Rules.AccreditationBannerMaxBytes + 1];
 
-        Assert.Throws<DomainException>(() => division.ChangeAccreditationBanner(new ImageFileDefinition(tooLarge, "image/png", "banner.png")));
+        Assert.Throws<DomainException>(() => division.WithAccreditationBanner(new ImageFileDefinition(tooLarge, "image/png", "banner.png")));
     }
 
     [Fact]
@@ -155,7 +155,7 @@ public sealed class DivisionTests
     {
         Division division = CreateDivisionWithoutTexts();
 
-        division.ReplaceTexts([new TextContentDefinition(100, null, "Public copy", ContentFormat.PlainText)]);
+        division.WithTexts([new TextContentDefinition(100, null, "Public copy", ContentFormat.PlainText)]);
 
         DivisionTextContent text = Assert.Single(division.Texts);
         Assert.False(text.IsDeleted);
@@ -168,7 +168,7 @@ public sealed class DivisionTests
     {
         Division division = CreateDivision(new TextContentDefinition(100, null, "Old copy", ContentFormat.PlainText));
 
-        division.ReplaceTexts([new TextContentDefinition(100, null, "New copy", ContentFormat.PlainText)]);
+        division.WithTexts([new TextContentDefinition(100, null, "New copy", ContentFormat.PlainText)]);
 
         DivisionTextContent text = Assert.Single(division.Texts);
         Assert.False(text.IsDeleted);
@@ -182,7 +182,7 @@ public sealed class DivisionTests
             new TextContentDefinition(100, null, "Keep me", ContentFormat.PlainText),
             new TextContentDefinition(101, null, "Delete me", ContentFormat.PlainText));
 
-        division.ReplaceTexts([new TextContentDefinition(100, null, "Keep me", ContentFormat.PlainText)]);
+        division.WithTexts([new TextContentDefinition(100, null, "Keep me", ContentFormat.PlainText)]);
 
         DivisionTextContent deletedText = division.Texts.Single(x => x.ContentTemplateId == 101);
         Assert.True(deletedText.IsDeleted);
@@ -193,11 +193,11 @@ public sealed class DivisionTests
     {
         Division division = CreateDivision(new TextContentDefinition(100, null, "Original copy", ContentFormat.PlainText));
 
-        division.ReplaceTexts([]);
+        division.WithTexts([]);
         DivisionTextContent deletedText = Assert.Single(division.Texts);
         Assert.True(deletedText.IsDeleted);
 
-        division.ReplaceTexts([new TextContentDefinition(100, null, "Restored copy", ContentFormat.PlainText)]);
+        division.WithTexts([new TextContentDefinition(100, null, "Restored copy", ContentFormat.PlainText)]);
 
         DivisionTextContent restoredText = Assert.Single(division.Texts);
         Assert.False(restoredText.IsDeleted);
@@ -214,7 +214,7 @@ public sealed class DivisionTests
             new(100, null, "Duplicate public copy", ContentFormat.PlainText)
         ];
 
-        Assert.Throws<DomainException>(() => division.ReplaceTexts(texts));
+        Assert.Throws<DomainException>(() => division.WithTexts(texts));
     }
 
     [Fact]
@@ -222,7 +222,7 @@ public sealed class DivisionTests
     {
         Division division = CreateDivisionWithoutTexts();
 
-        division.ReplaceTexts([
+        division.WithTexts([
             new TextContentDefinition(100, null, "Public copy", ContentFormat.PlainText),
             new TextContentDefinition(100, 10, "Audience copy", ContentFormat.PlainText)
         ]);
@@ -237,7 +237,7 @@ public sealed class DivisionTests
     {
         Division division = CreateDivisionWithoutTexts();
 
-        division.ReplaceTexts([new TextContentDefinition(100, 0, "Public copy", ContentFormat.PlainText)]);
+        division.WithTexts([new TextContentDefinition(100, 0, "Public copy", ContentFormat.PlainText)]);
 
         DivisionTextContent text = Assert.Single(division.Texts);
         Assert.Null(text.AudienceId);
@@ -248,7 +248,7 @@ public sealed class DivisionTests
     {
         Division division = CreateDivision(new TextContentDefinition(100, null, "Old copy", ContentFormat.PlainText));
 
-        division.ReplaceTexts([new TextContentDefinition(100, null, " ", ContentFormat.None)]);
+        division.WithTexts([new TextContentDefinition(100, null, " ", ContentFormat.None)]);
 
         DivisionTextContent text = Assert.Single(division.Texts);
         Assert.True(text.IsDeleted);
@@ -259,7 +259,7 @@ public sealed class DivisionTests
     {
         Division division = CreateDivisionWithoutTexts();
 
-        division.ReplaceTexts([new TextContentDefinition(100, null, " ", ContentFormat.None)]);
+        division.WithTexts([new TextContentDefinition(100, null, " ", ContentFormat.None)]);
 
         Assert.Empty(division.Texts);
     }
@@ -269,7 +269,7 @@ public sealed class DivisionTests
     {
         Division division = CreateDivision();
 
-        Assert.Throws<DomainException>(() => division.ReplaceTexts([
+        Assert.Throws<DomainException>(() => division.WithTexts([
             new TextContentDefinition(0, null, "Text", ContentFormat.PlainText)
         ]));
     }
@@ -279,23 +279,23 @@ public sealed class DivisionTests
     {
         Division division = CreateDivision();
 
-        Assert.Throws<DomainException>(() => division.ReplaceTexts([
+        Assert.Throws<DomainException>(() => division.WithTexts([
             new TextContentDefinition(100, null, "Text", (ContentFormat)999)
         ]));
     }
 
     private static Division CreateDivision(params TextContentDefinition[] texts)
         => new Division.Builder("Division", "https://example.com")
-            .IsActive(true)
-            .ContactAddress(new AddressDefinition(1, "Street", null, "City", "10001"))
-            .AccreditationBanner(new ImageFileDefinition([1], "image/png", "banner.png"))
-            .Texts(texts.Length == 0
+            .SetIsActive(true)
+            .WithContactAddress(new AddressDefinition(1, "Street", null, "City", "10001"))
+            .WithAccreditationBanner(new ImageFileDefinition([1], "image/png", "banner.png"))
+            .WithTexts(texts.Length == 0
                 ? [new TextContentDefinition(100, null, "Text", ContentFormat.PlainText)]
                 : texts)
             .Build();
 
     private static Division CreateDivisionWithoutTexts()
         => new Division.Builder("Division", "https://example.com")
-            .IsActive(true)
+            .SetIsActive(true)
             .Build();
 }

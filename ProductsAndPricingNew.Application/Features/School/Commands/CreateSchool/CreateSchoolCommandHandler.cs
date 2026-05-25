@@ -6,7 +6,6 @@ using ProductsAndPricingNew.Application.Common.Mapping;
 using ProductsAndPricingNew.Application.Features.School.Abstractions;
 using ProductsAndPricingNew.Domain.Common.Text;
 using ProductsAndPricingNew.Domain.Repositories;
-using ProductsAndPricingNew.Domain.SharedKernel.Definitions;
 using SchoolEntity = ProductsAndPricingNew.Domain.Entities.PricingRef.School;
 
 namespace ProductsAndPricingNew.Application.Features.School.Commands.CreateSchool;
@@ -36,15 +35,15 @@ internal sealed class CreateSchoolCommandHandler : IRequestHandler<CreateSchoolC
             return Result.Fail(new ConflictError($"School name: '{name}' already exists"));
 
         SchoolEntity school = new SchoolEntity.Builder(request.CentreId, name, request.Code)
-            .MinimumStayInWeeks(request.MinimumStayInWeeks)
-            .SetAgeRange(new AgeRangeDefinition(request.AgeFrom, request.AgeTo))
-            .Telephone(request.Telephone)
-            .EmergencyTelephone(request.EmergencyTelephone)
-            .ContactAddress(request.ContactAddress.ToDefinition())
-            .SetFinanceCode(request.FinanceCode)
-            .LmsActive(request.LmsAccess)
-            .IsActive(request.IsActive)
-            .DecommissionDate(request.DecommissionDate)
+            .WithMinimumStayInWeeks(request.MinimumStayInWeeks)
+            .WithAgeRange(request.AgeFrom, request.AgeTo)
+            .WithTelephone(request.Telephone)
+            .WithEmergencyTelephone(request.EmergencyTelephone)
+            .WithContactAddress(request.ContactAddress.ToDefinition())
+            .WithFinanceCode(request.FinanceCode)
+            .SetLmsActive(request.LmsAccess)
+            .SetIsActive(request.IsActive)
+            .WithDecommissionDate(request.DecommissionDate)
             .Build();
 
         await _schoolRepository.AddAsync(school, ct);

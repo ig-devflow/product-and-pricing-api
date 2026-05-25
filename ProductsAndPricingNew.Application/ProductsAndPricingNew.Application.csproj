@@ -23,8 +23,19 @@
       <Folder Include="Features\Accommodation\Models\" />
       <Folder Include="Features\Accommodation\Queries\" />
       <Folder Include="Features\Accommodation\Validation\" />
+      <Folder Include="Features\AddOn\Models\" />
+      <Folder Include="Features\AddOn\Queries\" />
+      <Folder Include="Features\AddOn\Validation\" />
       <Folder Include="Features\Centre\Validation\" />
+      <Folder Include="Features\Course\Models\" />
+      <Folder Include="Features\Course\Queries\" />
+      <Folder Include="Features\Course\Validation\" />
+      <Folder Include="Features\Package\Queries\" />
+      <Folder Include="Features\Package\Validation\" />
       <Folder Include="Features\School\Validation\" />
+      <Folder Include="Features\Transfer\Models\" />
+      <Folder Include="Features\Transfer\Queries\" />
+      <Folder Include="Features\Transfer\Validation\" />
     </ItemGroup>
 
     <ItemGroup>

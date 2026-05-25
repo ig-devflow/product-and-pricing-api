@@ -6,7 +6,6 @@ using ProductsAndPricingNew.Application.Common.Mapping;
 using ProductsAndPricingNew.Application.Features.School.Abstractions;
 using ProductsAndPricingNew.Domain.Common.Text;
 using ProductsAndPricingNew.Domain.Repositories;
-using ProductsAndPricingNew.Domain.SharedKernel.Definitions;
 using SchoolEntity = ProductsAndPricingNew.Domain.Entities.PricingRef.School;
 
 namespace ProductsAndPricingNew.Application.Features.School.Commands.UpdateSchool;
@@ -43,16 +42,16 @@ internal sealed class UpdateSchoolCommandHandler : IRequestHandler<UpdateSchoolC
             return Result.Fail(new ConflictError($"School name: '{name}' already exists"));
 
         school.Rename(request.Name);
-        school.ChangeLegacyCode(request.Code);
-        school.ChangeMinimumStayInWeeks(request.MinimumStayInWeeks);
-        school.ChangeAgeRange(new AgeRangeDefinition(request.AgeFrom, request.AgeTo));
-        school.ChangeTelephone(request.Telephone);
-        school.ChangeEmergencyTelephone(request.EmergencyTelephone);
-        school.ChangeContactAddress(request.ContactAddress.ToDefinition());
-        school.ChangeFinanceCode(request.FinanceCode);
-        school.ChangeLmsAccess(request.LmsAccess);
-        school.ChangeActive(request.IsActive);
-        school.ChangeDecommissionDate(request.DecommissionDate);
+        school.WithCode(request.Code);
+        school.WithMinimumStayInWeeks(request.MinimumStayInWeeks);
+        school.WithAgeRange(request.AgeFrom, request.AgeTo);
+        school.WithTelephone(request.Telephone);
+        school.WithEmergencyTelephone(request.EmergencyTelephone);
+        school.WithContactAddress(request.ContactAddress.ToDefinition());
+        school.WithFinanceCode(request.FinanceCode);
+        school.SetLmsAccess(request.LmsAccess);
+        school.SetIsActive(request.IsActive);
+        school.WithDecommissionDate(request.DecommissionDate);
 
         await _unitOfWork.SaveChangesAsync(ct);
 

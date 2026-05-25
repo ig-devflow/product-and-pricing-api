@@ -6,7 +6,6 @@ using ProductsAndPricingNew.Application.Features.AccommodationRoom.Abstractions;
 using ProductsAndPricingNew.Application.Features.AccommodationRoom.Mappings;
 using ProductsAndPricingNew.Domain.Common.Text;
 using ProductsAndPricingNew.Domain.Repositories;
-using ProductsAndPricingNew.Domain.SharedKernel.Definitions;
 using ProductsAndPricingNew.Domain.UnitOfMeasure;
 using AccommodationRoomEntity = ProductsAndPricingNew.Domain.Entities.Products.AccommodationRoom;
 
@@ -42,11 +41,11 @@ internal sealed class CreateAccommodationRoomCommandHandler : IRequestHandler<Cr
         UnitType unitType = _unitTypeProvider.Get(request.UnitTypeId);
 
         AccommodationRoomEntity accommodation = new AccommodationRoomEntity.Builder(request.AccommodationId, request.DivisionId, unitType, name)
-            .IsActive(request.IsActive)
-            .OccupyRoom(request.OccupyRoom)
+            .SetIsActive(request.IsActive)
+            .SetOccupyRoom(request.OccupyRoom)
             .WithRoomDetails(request.roomDetails.ToDefinition())
-            .WithCategories(new ProductCategoriesDefinition(request.AccountCategoryId, request.ProductCategoryId))
-            .WithFinanceCodes(new FinanceCodesDefinition(request.GeneralLedgerCode, request.CostCentreCode))
+            .WithCategories(request.AccountCategoryId, request.ProductCategoryId)
+            .WithFinanceCodes(request.GeneralLedgerCode, request.CostCentreCode)
             .WithClosurePolicy(request.ClosurePolicy)
             .Build();
 

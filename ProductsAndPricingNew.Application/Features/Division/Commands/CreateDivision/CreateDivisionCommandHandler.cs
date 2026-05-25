@@ -35,14 +35,14 @@ internal sealed class CreateDivisionCommandHandler : IRequestHandler<CreateDivis
             return Result.Fail(new ConflictError($"Division name: '{name}' already exists"));
 
         DivisionEntity division = new DivisionEntity.Builder(name, request.WebsiteUrl)
-            .IsActive(request.IsActive)
-            .TermsAndConditions(request.TermsAndConditions)
-            .GroupsPaymentTerms(request.GroupsPaymentTerms)
-            .HeadOfficeEmail(request.HeadOfficeEmail)
-            .HeadOfficeTelephone(request.HeadOfficeTelephoneNo)
-            .ContactAddress(request.ContactAddress.ToDefinition())
-            .AccreditationBanner(request.AccreditationBanner.ToDefinition())
-            .Texts(request.Texts.ToDefinitions())
+            .SetIsActive(request.IsActive)
+            .WithTermsAndConditions(request.TermsAndConditions)
+            .WithGroupsPaymentTerms(request.GroupsPaymentTerms)
+            .WithHeadOfficeEmail(request.HeadOfficeEmail)
+            .WithHeadOfficeTelephone(request.HeadOfficeTelephoneNo)
+            .WithContactAddress(request.ContactAddress.ToDefinition())
+            .WithAccreditationBanner(request.AccreditationBanner.ToDefinition())
+            .WithTexts(request.Texts.ToDefinitions())
             .Build();
 
         await _divisionRepository.AddAsync(division, ct);

@@ -1,6 +1,7 @@
-﻿using ProductsAndPricingNew.Domain.Common.Exceptions;
+using ProductsAndPricingNew.Domain.Common.Exceptions;
 using ProductsAndPricingNew.Domain.Common.Text;
 using ProductsAndPricingNew.Domain.Common.Primitives;
+using ProductsAndPricingNew.Domain.Entities.Products.Definitions;
 
 namespace ProductsAndPricingNew.Domain.Entities.Products;
 
@@ -27,6 +28,7 @@ public sealed class TransferPort : AggregateRoot<int>
     public IReadOnlyCollection<TransferPortInstruction> Instructions => _instructions.AsReadOnly();
 
     public void Rename(string name) => Name = name.AsRequiredDomainText(nameof(Name), Rules.NameMaxLength);
+
     public void ChangePortType(int transferPortTypeId)
     {
         if (transferPortTypeId <= 0)
@@ -38,45 +40,67 @@ public sealed class TransferPort : AggregateRoot<int>
     public void Activate() => IsActive = true;
     public void Deactivate() => IsActive = false;
 
-    public void AddOrUpdateInstruction(int divisionId, string instructions)
+    public void ReplaceInstructions(IEnumerable<TransferPortInstructionDefinition> instructions)
     {
-        if (divisionId <= 0)
-            throw new DomainException("DivisionId must be greater than zero");
+        ArgumentNullException.ThrowIfNull(instructions);
 
-        TransferPortInstruction? existing = _instructions.FirstOrDefault(x => x.DivisionId == divisionId);
-        if (existing is not null)
+        List<TransferPortInstructionDefinition> incoming = instructions.ToList();
+        var incomingDivisions = new HashSet<int>();
+
+        foreach (TransferPortInstructionDefinition def in incoming)
         {
-            existing.UpdateInstructions(instructions);
-            return;
+            if (def.DivisionId <= 0)
+                throw new DomainException("DivisionId must be greater than zero");
+
+            if (!incomingDivisions.Add(def.DivisionId))
+                throw new DomainException($"Duplicate instruction for division {def.DivisionId}.");
         }
 
-        _instructions.Add(new TransferPortInstruction(divisionId, instructions));
+        foreach (TransferPortInstruction existing in _instructions.Where(x => !x.IsDeleted && !incomingDivisions.Contains(x.DivisionId)).ToList())
+            existing.Delete();
+
+        foreach (TransferPortInstructionDefinition def in incoming)
+        {
+            TransferPortInstruction? existing = _instructions.FirstOrDefault(x => x.DivisionId == def.DivisionId);
+            if (existing is not null)
+                existing.UpdateInstructions(def.Instructions);
+            else
+                _instructions.Add(new TransferPortInstruction(def.DivisionId, def.Instructions));
+        }
     }
 
-    public void RemoveInstruction(int divisionId)
+    public void ReplaceTerminals(IEnumerable<TransferPortTerminalDefinition> terminals)
     {
-        TransferPortInstruction? existing = _instructions.FirstOrDefault(x => x.DivisionId == divisionId);
-        if (existing is null)
-            return;
+        ArgumentNullException.ThrowIfNull(terminals);
 
-        existing.Delete();
-    }
+        List<TransferPortTerminalDefinition> incoming = terminals.ToList();
+        var incomingNumbers = new HashSet<int>();
 
-    public void AddTerminal(int number, string name, int order)
-    {
-        if (_terminals.Any(x => x.Number == number && !x.IsDeleted))
-            throw new DomainException("Terminal with the same number already exists");
+        foreach (TransferPortTerminalDefinition def in incoming)
+        {
+            if (!incomingNumbers.Add(def.Number))
+                throw new DomainException($"Duplicate terminal number {def.Number}.");
+        }
 
-        _terminals.Add(new TransferPortTerminal(number, name, order));
-    }
+        foreach (TransferPortTerminal existing in _terminals.Where(x => !x.IsDeleted && !incomingNumbers.Contains(x.Number)).ToList())
+            existing.Delete();
 
-    public void RemoveTerminal(int number)
-    {
-        TransferPortTerminal? terminal = _terminals.FirstOrDefault(x => x.Number == number && !x.IsDeleted);
-        if (terminal is null)
-            return;
+        foreach (TransferPortTerminalDefinition def in incoming)
+        {
+            TransferPortTerminal? existing = _terminals.FirstOrDefault(x => x.Number == def.Number);
+            if (existing is not null)
+            {
+                if (existing.IsDeleted)
+                    existing.Restore();
 
-        terminal.Delete();
+                existing.Rename(def.Name);
+                existing.ChangeOrder(def.Order);
+            }
+            else
+            {
+                _terminals.Add(new TransferPortTerminal(def.Number, def.Name, def.Order));
+            }
+        }
     }
 
     public static class Rules

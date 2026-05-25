@@ -52,73 +52,79 @@ public sealed class Centre : AggregateRoot<int>
     public void Rename(string name) =>
         Name = name.AsRequiredDomainText(nameof(Name), Rules.NameMaxLength);
 
-    public void ChangeCode(string code) =>
+    public void WithCode(string code) =>
         Code = code.AsRequiredDomainText(nameof(Code), Rules.CodeMaxLength);
 
-    public void ChangeCurrency(int currencyId) =>
+    public void WithCurrency(int currencyId) =>
         CurrencyId = Guard.PositiveId(currencyId, nameof(CurrencyId));
 
-    public void ChangePrintFormat(PrintFormat printFormat)
+    public void WithPrintFormat(PrintFormat printFormat)
     {
         EnsureValidPrintFormat(printFormat);
         PrintFormat = printFormat;
     }
 
-    public void ChangeActive(bool isActive) => IsActive = isActive;
+    public void SetIsActive(bool isActive) =>
+        IsActive = isActive;
 
-    public void ChangePhysicalCentre(bool value) => IsPhysicalCentre = value;
+    public void SetIsPhysicalCentre(bool value) =>
+        IsPhysicalCentre = value;
 
-    public void ChangeGeneralEmail(string? value) =>
+    public void WithGeneralEmail(string? value) =>
         GeneralEmail = EmailAddress.Create(value);
 
-    public void ChangeAccommodationEmail(string? value) =>
+    public void WithAccommodationEmail(string? value) =>
         AccommodationEmail = EmailAddress.Create(value);
 
-    public void ChangeTelephone(string? value) =>
+    public void WithTelephone(string? value) =>
         Telephone = TelephoneNumber.Create(value);
 
-    public void ChangeEmergencyTelephone(string? value) =>
+    public void WithEmergencyTelephone(string? value) =>
         EmergencyTelephone = TelephoneNumber.Create(value);
 
-    public void ChangeTransferEmergencyTelephone(string? value) =>
+    public void WithTransferEmergencyTelephone(string? value) =>
         TransferEmergencyTelephone = TelephoneNumber.Create(value);
 
     public void ChangeBrandColor(string? value) =>
         BrandColor = HexColor.Create(value);
 
-    public void ChangeContactAddress(AddressDefinition? definition) => // todo: CountryId is obligatory field
+    public void WithContactAddress(AddressDefinition? definition) => // todo: CountryId is obligatory field
         ContactAddress = Address.Create(definition);
 
-    public void ChangeLogo(ImageFileDefinition? definition) =>
+    public void WithLogo(ImageFileDefinition? definition) =>
         LogoImage = ImageFile.Create(definition, Rules.LogoMaxBytes);
 
-    public void ChangeSchoolSponsorshipNumber(string? value) =>
+    public void WithSchoolSponsorshipNumber(string? value) =>
         SchoolSponsorshipNumber = value.AsOptionalDomainText(nameof(SchoolSponsorshipNumber), Rules.LegalTextMaxLength);
 
-    public void ChangeVatNumber(string? value) =>
+    public void WithVatNumber(string? value) =>
         VatNumber = value.AsOptionalDomainText(nameof(VatNumber), Rules.LegalTextMaxLength);
 
-    public void ChangeRegistrationNumber(string? value) =>
+    public void WithRegistrationNumber(string? value) =>
         RegistrationNumber = value.AsOptionalDomainText(nameof(RegistrationNumber), Rules.LegalTextMaxLength);
 
-    public void ChangeVatExemptionNumber(string? value) =>
+    public void WithVatExemptionNumber(string? value) =>
         VatExemptionNumber = value.AsOptionalDomainText(nameof(VatExemptionNumber), Rules.LegalTextMaxLength);
 
-    public void ChangeChequePayableTo(string? value) =>
+    public void WithChequePayableTo(string? value) =>
         ChequePayableTo = value.AsOptionalDomainText(nameof(ChequePayableTo), Rules.LegalTextMaxLength);
 
-    public void ChangeGuarantees(decimal? value) => Guarantees = Percentage.Create(value);
+    public void WithGuarantees(decimal? value) =>
+        Guarantees = Percentage.Create(value);
 
-    public void ChangeIndividualsRatio(decimal? value) => IndividualsRatio = Percentage.Create(value);
+    public void WithIndividualsRatio(decimal? value) =>
+        IndividualsRatio = Percentage.Create(value);
 
-    public void ChangeStaffingRatio(decimal? value) => StaffingRatio = Percentage.Create(value);
+    public void WithStaffingRatio(decimal? value) =>
+        StaffingRatio = Percentage.Create(value);
 
-    public void ChangeEmptyBeds(decimal? value) => EmptyBeds = Percentage.Create(value);
+    public void WithEmptyBeds(decimal? value) =>
+        EmptyBeds = Percentage.Create(value);
 
-    public void ChangeBankDetails(CentreBankDetailsDefinition? definition) =>
+    public void WithBankDetails(CentreBankDetailsDefinition? definition) =>
         BankDetails = CentreBankDetails.Create(definition);
 
-    public void ReplaceContacts(IEnumerable<CentreContactDefinition> contacts)
+    public void WithContacts(IEnumerable<CentreContactDefinition> contacts)
     {
         ArgumentNullException.ThrowIfNull(contacts);
 
@@ -151,7 +157,7 @@ public sealed class Centre : AggregateRoot<int>
         _contacts.Add(CentreContact.Create(definition));
     }
 
-    public void ReplaceTexts(IEnumerable<TextContentDefinition> texts)
+    public void WithTexts(IEnumerable<TextContentDefinition> texts)
     {
         ArgumentNullException.ThrowIfNull(texts);
         var incomingKeys = new HashSet<(int ContentTemplateId, int? AudienceId)>();
@@ -194,7 +200,7 @@ public sealed class Centre : AggregateRoot<int>
             return;
         }
 
-        existing.ChangeText(text);
+        existing.WithText(text);
     }
 
     private void EnsureNoDuplicateActiveTextKeys()
@@ -254,134 +260,134 @@ public sealed class Centre : AggregateRoot<int>
             _printFormat = printFormat;
         }
 
-        public Builder IsActive(bool value)
+        public Builder SetIsActive(bool value)
         {
             _isActive = value;
             return this;
         }
 
-        public Builder IsPhysicalCentre(bool value)
+        public Builder SetIsPhysicalCentre(bool value)
         {
             _isPhysicalCentre = value;
             return this;
         }
 
-        public Builder GeneralEmail(string? value)
+        public Builder WithGeneralEmail(string? value)
         {
             _generalEmail = EmailAddress.Create(value);
             return this;
         }
 
-        public Builder AccommodationEmail(string? value)
+        public Builder WithAccommodationEmail(string? value)
         {
             _accommodationEmail = EmailAddress.Create(value);
             return this;
         }
 
-        public Builder Telephone(string? value)
+        public Builder WithTelephone(string? value)
         {
             _telephone = TelephoneNumber.Create(value);
             return this;
         }
 
-        public Builder EmergencyTelephone(string? value)
+        public Builder WithEmergencyTelephone(string? value)
         {
             _emergencyTelephone = TelephoneNumber.Create(value);
             return this;
         }
 
-        public Builder TransferEmergencyTelephone(string? value)
+        public Builder WithTransferEmergencyTelephone(string? value)
         {
             _transferEmergencyTelephone = TelephoneNumber.Create(value);
             return this;
         }
 
-        public Builder BrandColor(string? value)
+        public Builder WithBrandColor(string? value)
         {
             _brandColor = HexColor.Create(value);
             return this;
         }
 
-        public Builder ContactAddress(AddressDefinition definition)
+        public Builder WithContactAddress(AddressDefinition definition)
         {
             _contactAddress = Address.Create(definition);
             return this;
         }
 
-        public Builder LogoImage(ImageFileDefinition definition)
+        public Builder WithLogoImage(ImageFileDefinition definition)
         {
             _logoImage = ImageFile.Create(definition, Rules.LogoMaxBytes);
             return this;
         }
 
-        public Builder SchoolSponsorshipNumber(string? value)
+        public Builder WithSchoolSponsorshipNumber(string? value)
         {
-            _schoolSponsorshipNumber = value.AsOptionalDomainText(nameof(SchoolSponsorshipNumber), Rules.LegalTextMaxLength);
+            _schoolSponsorshipNumber = value.AsOptionalDomainText(nameof(WithSchoolSponsorshipNumber), Rules.LegalTextMaxLength);
             return this;
         }
 
-        public Builder VatNumber(string? value)
+        public Builder WithVatNumber(string? value)
         {
-            _vatNumber = value.AsOptionalDomainText(nameof(VatNumber), Rules.LegalTextMaxLength);
+            _vatNumber = value.AsOptionalDomainText(nameof(WithVatNumber), Rules.LegalTextMaxLength);
             return this;
         }
 
-        public Builder RegistrationNumber(string? value)
+        public Builder WithRegistrationNumber(string? value)
         {
-            _registrationNumber = value.AsOptionalDomainText(nameof(RegistrationNumber), Rules.LegalTextMaxLength);
+            _registrationNumber = value.AsOptionalDomainText(nameof(WithRegistrationNumber), Rules.LegalTextMaxLength);
             return this;
         }
 
-        public Builder VatExemptionNumber(string? value)
+        public Builder WithVatExemptionNumber(string? value)
         {
-            _vatExemptionNumber = value.AsOptionalDomainText(nameof(VatExemptionNumber), Rules.LegalTextMaxLength);
+            _vatExemptionNumber = value.AsOptionalDomainText(nameof(WithVatExemptionNumber), Rules.LegalTextMaxLength);
             return this;
         }
 
-        public Builder ChequePayableTo(string? value)
+        public Builder WithChequePayableTo(string? value)
         {
-            _chequePayableTo = value.AsOptionalDomainText(nameof(ChequePayableTo), Rules.LegalTextMaxLength);
+            _chequePayableTo = value.AsOptionalDomainText(nameof(WithChequePayableTo), Rules.LegalTextMaxLength);
             return this;
         }
 
-        public Builder Guarantees(decimal? value)
+        public Builder WithGuarantees(decimal? value)
         {
             _guarantees = Percentage.Create(value);
             return this;
         }
 
-        public Builder IndividualsRatio(decimal? value)
+        public Builder WithIndividualsRatio(decimal? value)
         {
             _individualsRatio = Percentage.Create(value);
             return this;
         }
 
-        public Builder StaffingRatio(decimal? value)
+        public Builder WithStaffingRatio(decimal? value)
         {
             _staffingRatio = Percentage.Create(value);
             return this;
         }
 
-        public Builder EmptyBeds(decimal? value)
+        public Builder WithEmptyBeds(decimal? value)
         {
             _emptyBeds = Percentage.Create(value);
             return this;
         }
 
-        public Builder BankDetails(CentreBankDetailsDefinition definition)
+        public Builder WithBankDetails(CentreBankDetailsDefinition definition)
         {
             _bankDetails = definition;
             return this;
         }
 
-        public Builder Contacts(IEnumerable<CentreContactDefinition> definitions)
+        public Builder WithContacts(IEnumerable<CentreContactDefinition> definitions)
         {
             ArgumentNullException.ThrowIfNull(definitions);
             _contacts.AddRange(definitions);
             return this;
         }
 
-        public Builder Texts(IEnumerable<TextContentDefinition> definitions)
+        public Builder WithTexts(IEnumerable<TextContentDefinition> definitions)
         {
             ArgumentNullException.ThrowIfNull(definitions);
             _texts.AddRange(definitions);
@@ -413,9 +419,9 @@ public sealed class Centre : AggregateRoot<int>
                 EmptyBeds = _emptyBeds,
             };
 
-            centre.ChangeBankDetails(_bankDetails);
-            centre.ReplaceContacts(_contacts);
-            centre.ReplaceTexts(_texts);
+            centre.WithBankDetails(_bankDetails);
+            centre.WithContacts(_contacts);
+            centre.WithTexts(_texts);
 
             return centre;
         }

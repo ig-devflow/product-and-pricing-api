@@ -22,9 +22,9 @@ public abstract class FeeOffering : AggregateRoot<int>
         Years = years;
     }
 
-    public void ChangeApplyRuleset(RulesetRef ruleset) => ApplyRuleset = ruleset;
+    public void WithApplyRuleset(RulesetRef ruleset) => ApplyRuleset = ruleset;
 
-    public void ChangeApplicableRowRuleset(RulesetRef ruleset) => ApplicableRowRuleset = ruleset;
+    public void WithApplicableRowRuleset(RulesetRef ruleset) => ApplicableRowRuleset = ruleset;
 
     public void ExtendYears(int year) => Years = Years.Extend(year);
 }
