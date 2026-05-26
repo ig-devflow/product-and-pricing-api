@@ -66,7 +66,7 @@ internal abstract class SchoolCommandValidatorBase<TCommand> : AbstractValidator
             .When(x => x.ContactAddress is not null);
 
         RuleFor(x => x.FinanceCode)
-            .MaximumLength(FinanceCode.Rules.MaxLength)
+            .Must(FinanceCode.IsValid)
             .WithMessage($"Finance code must not exceed {FinanceCode.Rules.MaxLength} characters.")
             .When(x => !string.IsNullOrWhiteSpace(x.FinanceCode));
     }

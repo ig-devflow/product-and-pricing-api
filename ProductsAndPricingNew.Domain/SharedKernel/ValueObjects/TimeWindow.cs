@@ -3,7 +3,7 @@ using ProductsAndPricingNew.Domain.SharedKernel.Definitions;
 
 namespace ProductsAndPricingNew.Domain.SharedKernel.ValueObjects;
 
-public readonly record struct TimeWindow
+public readonly record struct TimeWindow : IEmptyValueObject
 {
     public TimeOnly? From { get; }
     public TimeOnly? To { get; }
@@ -14,8 +14,8 @@ public readonly record struct TimeWindow
         To = to;
     }
 
+    public bool IsEmpty => !From.HasValue && !To.HasValue;
     public static readonly TimeWindow Undefined = new(null, null);
-    public bool HasValue => From.HasValue;
 
     internal static TimeWindow Create(TimeOnly? from, TimeOnly? to)
     {

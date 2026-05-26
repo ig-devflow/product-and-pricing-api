@@ -2,8 +2,17 @@ using ProductsAndPricingNew.Domain.Common.Exceptions;
 
 namespace ProductsAndPricingNew.Domain.SharedKernel.ValueObjects;
 
-public readonly record struct ActivePricingYears(int From, int? To)
+public readonly record struct ActivePricingYears
 {
+    public int From { get; }
+    public int? To { get; private init; }
+
+    private ActivePricingYears(int from, int? to)
+    {
+        From = from;
+        To = to;
+    }
+
     public static ActivePricingYears Create(int from, int? to)
     {
         if (from <= 0)

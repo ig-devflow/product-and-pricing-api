@@ -3,7 +3,7 @@ using ProductsAndPricingNew.Domain.Common.Text;
 
 namespace ProductsAndPricingNew.Domain.SharedKernel.ValueObjects;
 
-public readonly struct WebsiteUrl : IEquatable<WebsiteUrl>, IEmptyValueObject
+public readonly record struct WebsiteUrl : IEmptyValueObject
 {
     public string? Value { get; }
 
@@ -53,20 +53,6 @@ public readonly struct WebsiteUrl : IEquatable<WebsiteUrl>, IEmptyValueObject
 
         return !string.IsNullOrWhiteSpace(uri.Host);
     }
-
-    public bool Equals(WebsiteUrl other) =>
-        string.Equals(Value, other.Value, StringComparison.OrdinalIgnoreCase);
-
-    public override bool Equals(object? obj) =>
-        obj is WebsiteUrl other && Equals(other);
-
-    public override int GetHashCode() =>
-        Value is null ? 0 : StringComparer.OrdinalIgnoreCase.GetHashCode(Value);
-
-    public override string ToString() => Value ?? string.Empty;
-
-    public static bool operator ==(WebsiteUrl left, WebsiteUrl right) => left.Equals(right);
-    public static bool operator !=(WebsiteUrl left, WebsiteUrl right) => !left.Equals(right);
 
     public static class Rules
     {
