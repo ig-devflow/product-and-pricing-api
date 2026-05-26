@@ -51,7 +51,7 @@ internal abstract class AccommodationCommandValidatorBase<TCommand> : AbstractVa
         if (accommodationTypeId <= 0)
             return false;
 
-        IReadOnlySet<int> accommodationTypeIds = await referenceDataValidation.GetActiveAccommodationRoomGradesIdsAsync(new[] { accommodationTypeId }, ct);
+        IReadOnlySet<int> accommodationTypeIds = await referenceDataValidation.GetActiveAccommodationTypesIdsAsync(new[] { accommodationTypeId }, ct);
         return accommodationTypeIds.Contains(accommodationTypeId);
     }
 }
