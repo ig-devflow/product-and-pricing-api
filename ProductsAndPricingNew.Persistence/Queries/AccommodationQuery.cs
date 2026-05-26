@@ -214,7 +214,7 @@ internal sealed class AccommodationQuery : IAccommodationQuery
             ToDateOnly(row.UpdatedAt),
             BuildEditorName(row.UpdatedByFirstName, row.UpdatedByLastName));
     }
-    
+
     private sealed class AccommodationDetailsRow
     {
         public int Id { get; init; }
@@ -234,7 +234,7 @@ internal sealed class AccommodationQuery : IAccommodationQuery
         public string UpdatedByFirstName { get; init; } = null!;
         public string UpdatedByLastName { get; init; } = null!;
     }
-    
+
     private sealed class AccommodationListItemRow
     {
         public int Id { get; init; }

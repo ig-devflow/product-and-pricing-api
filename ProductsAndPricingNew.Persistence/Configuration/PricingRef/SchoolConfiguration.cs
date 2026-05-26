@@ -56,14 +56,9 @@ internal sealed class SchoolConfiguration : IEntityTypeConfiguration<School>
             .IsRequired(false);
 
         entity.ConfigureAddress(x => x.ContactAddress, "Contact");
-        entity.ConfigureAuditMetadata(x => x.AuditMetadata);
-
-        entity.Property(x => x.Version).IsRowVersion();
+        entity.ConfigureAuditAndConcurrency();
 
         entity.HasIndex(x => x.Name)
-            .IsUnique()
-            .HasFilter("[IsDeleted] = 0");
-
-        entity.Ignore(x => x.DomainEvents);
+            .IsUnique();
     }
 }

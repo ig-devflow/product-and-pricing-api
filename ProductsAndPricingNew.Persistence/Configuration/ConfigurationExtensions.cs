@@ -8,27 +8,15 @@ namespace ProductsAndPricingNew.Persistence.Configuration;
 
 internal static class ConfigurationExtensions
 {
-    public static void ConfigureAuditMetadata<TEntity>(this EntityTypeBuilder<TEntity> builder, Expression<Func<TEntity, AuditMetadata>> propertyExpression)
-        where TEntity : class
-    {
-        builder.ComplexProperty(propertyExpression, audit =>
-        {
-            audit.Property(x => x.CreatedById).HasColumnName("CreatedById").IsRequired();
-            audit.Property(x => x.CreatedAt).HasColumnName("CreatedAt").IsRequired();
-            audit.Property(x => x.UpdatedById).HasColumnName("UpdatedById").IsRequired();
-            audit.Property(x => x.UpdatedAt).HasColumnName("UpdatedAt").IsRequired();
-        });
-    }
-
     public static EntityTypeBuilder<T> ConfigureAuditAndConcurrency<T>(this EntityTypeBuilder<T> builder)
         where T : AggregateRoot<int>
     {
         builder.ComplexProperty<AuditMetadata>(nameof(AggregateRoot<int>.AuditMetadata), audit =>
         {
             audit.Property(x => x.CreatedById).HasColumnName("CreatedById").IsRequired();
-            audit.Property(x => x.CreatedAt).HasColumnName("CreateTimestamp").IsRequired();
+            audit.Property(x => x.CreatedAt).HasColumnName("CreatedAt").IsRequired();
             audit.Property(x => x.UpdatedById).HasColumnName("UpdatedById").IsRequired();
-            audit.Property(x => x.UpdatedAt).HasColumnName("UpdateTimestamp").IsRequired();
+            audit.Property(x => x.UpdatedAt).HasColumnName("UpdatedAt").IsRequired();
         });
 
         builder.Property(x => x.IsDeleted).HasDefaultValue(false).IsRequired();

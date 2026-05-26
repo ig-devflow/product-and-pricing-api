@@ -191,7 +191,7 @@ internal sealed class AccommodationRoomQuery : IAccommodationRoomQuery
             Page: page,
             PageSize: pageSize);
     }
-    
+
     private static string BuildEditorName(string firstName, string lastName) =>
         string.Join(" ", new[] { firstName, lastName }.Where(v => !string.IsNullOrWhiteSpace(v)));
 
@@ -239,7 +239,7 @@ internal sealed class AccommodationRoomQuery : IAccommodationRoomQuery
 
     private static RoomDetailsDto BuildRoomDetails(int roomTypeId, int boardTypeId, int bathroomTypeId, int roomGradeId) =>
         new(roomTypeId, boardTypeId, bathroomTypeId, roomGradeId);
-    
+
     private sealed class AccommodationRoomDetailsRow
     {
         public int Id { get; init; }
@@ -266,7 +266,7 @@ internal sealed class AccommodationRoomQuery : IAccommodationRoomQuery
         public string UpdatedByFirstName { get; init; } = null!;
         public string UpdatedByLastName { get; init; } = null!;
     }
-    
+
     private sealed class AccommodationRoomListItemRow
     {
         public int Id { get; init; }

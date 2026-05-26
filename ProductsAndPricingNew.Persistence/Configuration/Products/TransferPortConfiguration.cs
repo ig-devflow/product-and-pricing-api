@@ -28,7 +28,7 @@ internal sealed class TransferPortConfiguration : IEntityTypeConfiguration<Trans
 
         entity.OwnsMany(x => x.Instructions, owned =>
         {
-            owned.ToTable("TransferPortInstruction");
+            owned.ToTable("TransferPortInstruction", "Product");
 
             owned.WithOwner().HasForeignKey("TransferPortId");
 
@@ -51,7 +51,7 @@ internal sealed class TransferPortConfiguration : IEntityTypeConfiguration<Trans
 
         entity.OwnsMany(x => x.Terminals, owned =>
         {
-            owned.ToTable("TransferPortTerminal");
+            owned.ToTable("TransferPortTerminal", "Product");
 
             owned.WithOwner().HasForeignKey("TransferPortId");
 
@@ -73,13 +73,6 @@ internal sealed class TransferPortConfiguration : IEntityTypeConfiguration<Trans
                 .IsUnique();
         });
 
-        entity.ConfigureAuditMetadata(x => x.AuditMetadata);
-        entity.Property(x => x.IsDeleted)
-            .HasDefaultValue(false)
-            .IsRequired();
-
-        entity.Property(x => x.Version).IsRowVersion();
-
-        entity.Ignore(x => x.DomainEvents);
+        entity.ConfigureAuditAndConcurrency();
     }
 }

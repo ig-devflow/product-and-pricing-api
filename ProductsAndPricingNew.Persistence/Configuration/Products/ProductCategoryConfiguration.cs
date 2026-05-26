@@ -20,18 +20,10 @@ internal sealed class ProductCategoryConfiguration : IEntityTypeConfiguration<Pr
             .IsRequired();
 
         entity.Property(x => x.IsActive).IsRequired();
-        entity.Property(x => x.IsDeleted).IsRequired();
 
         entity.HasIndex(x => new { x.DivisionId, x.Name });
         entity.HasIndex(x => new { x.DivisionId, x.IsDeleted, x.IsActive });
 
-        entity.ConfigureAuditMetadata(x => x.AuditMetadata);
-        entity.Property(x => x.IsDeleted)
-            .HasDefaultValue(false)
-            .IsRequired();
-
-        entity.Property(x => x.Version).IsRowVersion();
-
-        entity.Ignore(x => x.DomainEvents);
+        entity.ConfigureAuditAndConcurrency();
     }
 }

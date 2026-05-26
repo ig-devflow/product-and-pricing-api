@@ -39,7 +39,7 @@ internal sealed class CreateCentreCommandHandler : IRequestHandler<CreateCentreC
         var legalInfo = request.LegalInfo;
         var ratios = request.OperationalRatios;
 
-        CentreEntity centre = new CentreEntity.Builder(name, request.Code, request.CurrencyId, request.PrintFormat)
+        CentreEntity centre = new CentreEntity.Builder(name, request.Code, request.CurrencyId, request.PrintFormatId)
             .SetIsActive(request.IsActive)
             .SetIsPhysicalCentre(request.IsPhysicalCentre)
             .WithGeneralEmail(contactInfo.GeneralEmail)

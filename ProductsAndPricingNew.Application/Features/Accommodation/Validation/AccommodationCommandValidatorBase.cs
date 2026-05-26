@@ -17,17 +17,17 @@ internal abstract class AccommodationCommandValidatorBase<TCommand> : AbstractVa
             .WithMessage("Accommodation name is required.")
             .MaximumLength(AccommodationAggregate.Rules.NameMaxLength)
             .WithMessage($"Accommodation name must not exceed {AccommodationAggregate.Rules.NameMaxLength} characters.");
-        
+
         RuleFor(x => x.AccommodationTypeId) // referenceData
             .Cascade(CascadeMode.Stop)
             .GreaterThan(0)
             .WithMessage("AccommodationTypeId is required.");
-        
+
         RuleFor(x => x.MinimumStayInWeeks)
             .Cascade(CascadeMode.Stop)
             .GreaterThanOrEqualTo(0)
             .WithMessage("MinimumStayInWeeks cannot be less than 0.");
-        
+
         RuleFor(x => x.AgeFrom)
             .InclusiveBetween(AgeRange.Rules.MinAge, AgeRange.Rules.MaxAge)
             .WithMessage($"Age from must be between {AgeRange.Rules.MinAge} and {AgeRange.Rules.MaxAge}.")
@@ -37,7 +37,7 @@ internal abstract class AccommodationCommandValidatorBase<TCommand> : AbstractVa
             .InclusiveBetween(AgeRange.Rules.MinAge, AgeRange.Rules.MaxAge)
             .WithMessage($"Age to must be between {AgeRange.Rules.MinAge} and {AgeRange.Rules.MaxAge}.")
             .When(x => x.AgeTo.HasValue);
-        
+
         RuleFor(x => x)
             .Must(x => !x.AgeFrom.HasValue || !x.AgeTo.HasValue || x.AgeFrom <= x.AgeTo)
             .WithMessage("Age from must be less than or equal to age to.")

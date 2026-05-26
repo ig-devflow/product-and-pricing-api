@@ -1,5 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
+using ProductsAndPricingNew.Domain.Entities.PricingRef;
 using ProductsAndPricingNew.Domain.Entities.Products;
 
 namespace ProductsAndPricingNew.Persistence.Configuration.Products;
@@ -44,6 +45,11 @@ internal sealed class AccommodationRoomConfiguration : IEntityTypeConfiguration<
         entity.HasOne<Accommodation>()
             .WithMany()
             .HasForeignKey(x => x.AccommodationId)
+            .OnDelete(DeleteBehavior.Restrict);
+
+        entity.HasOne<Division>()
+            .WithMany()
+            .HasForeignKey(x => x.DivisionId)
             .OnDelete(DeleteBehavior.Restrict);
 
         entity.ConfigureAuditAndConcurrency();

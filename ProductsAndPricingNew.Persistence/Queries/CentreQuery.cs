@@ -4,7 +4,6 @@ using ProductsAndPricingNew.Application.Common.Models;
 using ProductsAndPricingNew.Application.Common.Pagination;
 using ProductsAndPricingNew.Application.Features.Centre.Abstractions;
 using ProductsAndPricingNew.Application.Features.Centre.Models;
-using ProductsAndPricingNew.Domain.Entities.PricingRef;
 using ProductsAndPricingNew.Persistence.Queries.Configuration;
 
 namespace ProductsAndPricingNew.Persistence.Queries;
@@ -52,7 +51,7 @@ internal sealed class CentreQuery : ICentreQuery
                 c.Name,
                 c.Code,
                 c.CurrencyId,
-                c.PrintFormat,
+                c.PrintFormatId,
                 c.IsActive,
                 c.IsPhysicalCentre,
                 c.GeneralEmail,
@@ -119,7 +118,7 @@ internal sealed class CentreQuery : ICentreQuery
               AND c.IsDeleted = 0;
 
             SELECT
-                cc.ContactType,
+                cc.ContactTypeId,
                 cc.Name,
                 cc.Email,
                 cc.SignatureData,
@@ -280,7 +279,7 @@ internal sealed class CentreQuery : ICentreQuery
             row.Name,
             row.Code,
             row.CurrencyId,
-            row.PrintFormat,
+            row.PrintFormatId,
             row.IsActive,
             row.IsPhysicalCentre,
             MapContactInfo(row),
@@ -367,7 +366,7 @@ internal sealed class CentreQuery : ICentreQuery
     private static CentreContactDto MapContact(CentreContactRow row)
     {
         return new CentreContactDto(
-            row.ContactType,
+            row.ContactTypeId,
             row.Name,
             row.Email,
             MapImage(row.SignatureData, row.SignatureContentType, row.SignatureFileName)!);
@@ -401,7 +400,7 @@ internal sealed class CentreQuery : ICentreQuery
         public string Name { get; init; } = null!;
         public string Code { get; init; } = null!;
         public int CurrencyId { get; init; }
-        public PrintFormat PrintFormat { get; init; }
+        public int PrintFormatId { get; init; }
         public bool IsActive { get; init; }
         public bool IsPhysicalCentre { get; init; }
         // ContactInfo
@@ -468,7 +467,7 @@ internal sealed class CentreQuery : ICentreQuery
 
     private sealed class CentreContactRow
     {
-        public CentreContactType ContactType { get; init; }
+        public int ContactTypeId { get; init; }
         public string Name { get; init; } = null!;
         public string? Email { get; init; }
         public byte[]? SignatureData { get; init; }

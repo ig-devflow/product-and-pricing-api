@@ -45,7 +45,7 @@ public sealed class CentreMappingProfile : Profile
 
         CreateMap<CentreContactRequest, CentreContactDto>()
             .ConstructUsing((src, ctx) => new CentreContactDto(
-                src.ContactType,
+                src.ContactTypeId,
                 src.Name,
                 src.Email,
                 ctx.Mapper.Map<ImageFileDto>(src.SignatureImage)));
@@ -61,7 +61,7 @@ public sealed class CentreMappingProfile : Profile
                 src.Name,
                 src.Code,
                 src.CurrencyId,
-                src.PrintFormat,
+                src.PrintFormatId,
                 src.IsActive,
                 src.IsPhysicalCentre,
                 ctx.Mapper.Map<CentreContactInfoDto>(src.ContactInfo),
@@ -77,7 +77,7 @@ public sealed class CentreMappingProfile : Profile
                 src.Name,
                 src.Code,
                 src.CurrencyId,
-                src.PrintFormat,
+                src.PrintFormatId,
                 src.IsActive,
                 src.IsPhysicalCentre,
                 ctx.Mapper.Map<CentreContactInfoDto>(src.ContactInfo),

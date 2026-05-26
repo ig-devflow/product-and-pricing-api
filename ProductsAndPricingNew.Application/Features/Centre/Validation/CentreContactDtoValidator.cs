@@ -1,5 +1,4 @@
 using FluentValidation;
-using ProductsAndPricingNew.Application.Common.Validation.Abstractions;
 using ProductsAndPricingNew.Application.Common.Validation.Validators;
 using ProductsAndPricingNew.Application.Features.Centre.Models;
 using ProductsAndPricingNew.Domain.Entities.PricingRef;
@@ -11,8 +10,8 @@ internal sealed class CentreContactDtoValidator : AbstractValidator<CentreContac
 {
     public CentreContactDtoValidator()
     {
-        RuleFor(x => x.ContactType)
-            .Must(ct => Enum.IsDefined(ct) && ct != CentreContactType.None)
+        RuleFor(x => x.ContactTypeId)
+            .GreaterThan(0) // todo: 
             .WithMessage("Contact type must be specified.");
 
         RuleFor(x => x.Name)

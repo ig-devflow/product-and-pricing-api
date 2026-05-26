@@ -15,7 +15,7 @@ public sealed class Centre : AggregateRoot<int>
     public string Name { get; private set; } = null!;
     public string Code { get; private set; } = null!;
     public int CurrencyId { get; private set; }
-    public PrintFormat PrintFormat { get; private set; } = PrintFormat.None;
+    public int PrintFormatId { get; private set; }
     public bool IsActive { get; private set; }
     public bool IsPhysicalCentre { get; private set; }
     public EmailAddress? GeneralEmail { get; private set; } = EmailAddress.Empty;
@@ -41,12 +41,12 @@ public sealed class Centre : AggregateRoot<int>
 
     private Centre() { }
 
-    private Centre(string name, string code, int currencyId, PrintFormat printFormat)
+    private Centre(string name, string code, int currencyId, int printFormatId)
     {
         Name = name;
         Code = code;
         CurrencyId = currencyId;
-        PrintFormat = printFormat;
+        PrintFormatId = printFormatId;
     }
 
     public void Rename(string name) =>
@@ -58,11 +58,8 @@ public sealed class Centre : AggregateRoot<int>
     public void WithCurrency(int currencyId) =>
         CurrencyId = Guard.PositiveId(currencyId, nameof(CurrencyId));
 
-    public void WithPrintFormat(PrintFormat printFormat)
-    {
-        EnsureValidPrintFormat(printFormat);
-        PrintFormat = printFormat;
-    }
+    public void WithPrintFormat(int printFormatId) =>
+        PrintFormatId = Guard.PositiveId(printFormatId, nameof(PrintFormatId));
 
     public void SetIsActive(bool isActive) =>
         IsActive = isActive;
@@ -128,16 +125,16 @@ public sealed class Centre : AggregateRoot<int>
     {
         ArgumentNullException.ThrowIfNull(contacts);
 
-        var incomingTypes = new HashSet<CentreContactType>();
+        var incomingTypeIds = new HashSet<int>();
         foreach (CentreContactDefinition definition in contacts)
         {
-            if (!incomingTypes.Add(definition.ContactType))
-                throw new DomainException($"Duplicate contact for type '{definition.ContactType}'.");
+            if (!incomingTypeIds.Add(definition.ContactTypeId))
+                throw new DomainException($"Duplicate contact for type id '{definition.ContactTypeId}'.");
 
             UpsertContact(definition);
         }
 
-        foreach (CentreContact existing in _contacts.Where(x => !incomingTypes.Contains(x.ContactType)).ToList())
+        foreach (CentreContact existing in _contacts.Where(x => !incomingTypeIds.Contains(x.ContactTypeId)).ToList())
         {
             _contacts.Remove(existing);
         }
@@ -147,7 +144,7 @@ public sealed class Centre : AggregateRoot<int>
     {
         ArgumentNullException.ThrowIfNull(definition);
 
-        CentreContact? existing = _contacts.FirstOrDefault(x => x.ContactType == definition.ContactType);
+        CentreContact? existing = _contacts.FirstOrDefault(x => x.ContactTypeId == definition.ContactTypeId);
         if (existing is not null)
         {
             existing.Change(definition);
@@ -213,18 +210,12 @@ public sealed class Centre : AggregateRoot<int>
         }
     }
 
-    private static void EnsureValidPrintFormat(PrintFormat printFormat)
-    {
-        if (!Enum.IsDefined(printFormat) || printFormat == PrintFormat.None)
-            throw new DomainException("PrintFormat must be a valid value.");
-    }
-
     public sealed class Builder
     {
         private readonly string _name;
         private readonly string _code;
         private readonly int _currencyId;
-        private readonly PrintFormat _printFormat;
+        private readonly int _printFormatId;
 
         private bool _isActive;
         private bool _isPhysicalCentre;
@@ -249,15 +240,15 @@ public sealed class Centre : AggregateRoot<int>
         private readonly List<CentreContactDefinition> _contacts = new();
         private readonly List<TextContentDefinition> _texts = new();
 
-        public Builder(string name, string code, int currencyId, PrintFormat printFormat)
+        public Builder(string name, string code, int currencyId, int printFormatId)
         {
             Guard.PositiveId(currencyId, nameof(CurrencyId));
-            EnsureValidPrintFormat(printFormat);
+            Guard.PositiveId(printFormatId, nameof(PrintFormatId));
 
             _name = name.AsRequiredDomainText(nameof(Name), Rules.NameMaxLength);
             _code = code.AsRequiredDomainText(nameof(Code), Rules.CodeMaxLength);
             _currencyId = currencyId;
-            _printFormat = printFormat;
+            _printFormatId = printFormatId;
         }
 
         public Builder SetIsActive(bool value)
@@ -396,7 +387,7 @@ public sealed class Centre : AggregateRoot<int>
 
         public Centre Build()
         {
-            Centre centre = new(_name, _code, _currencyId, _printFormat)
+            Centre centre = new(_name, _code, _currencyId, _printFormatId)
             {
                 IsActive = _isActive,
                 IsPhysicalCentre = _isPhysicalCentre,

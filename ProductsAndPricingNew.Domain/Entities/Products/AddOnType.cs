@@ -1,5 +1,6 @@
 namespace ProductsAndPricingNew.Domain.Entities.Products;
 
+// todo: create api mapping with String conventers
 public enum AddOnType
 {
     OneToOneCourse = 1,

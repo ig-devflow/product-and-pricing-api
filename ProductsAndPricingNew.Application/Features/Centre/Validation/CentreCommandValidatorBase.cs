@@ -4,7 +4,6 @@ using ProductsAndPricingNew.Application.Common.Validation.Abstractions;
 using ProductsAndPricingNew.Application.Common.Validation.Validators;
 using ProductsAndPricingNew.Application.Features.Centre.Abstractions;
 using ProductsAndPricingNew.Application.Features.Centre.Models;
-using ProductsAndPricingNew.Domain.Entities.PricingRef;
 using ProductsAndPricingNew.Domain.ReferenceData;
 using ProductsAndPricingNew.Domain.SharedKernel.ValueObjects;
 using CentreAggregate = ProductsAndPricingNew.Domain.Entities.PricingRef.Centre;
@@ -37,9 +36,9 @@ internal abstract class CentreCommandValidatorBase<TCommand> : AbstractValidator
             .MustAsync((currencyId, ct) => CurrencyIsActiveAsync(referenceData, currencyId, ct))
             .WithMessage("Currency must reference an active currency.");
 
-        RuleFor(x => x.PrintFormat)
-            .Must(pf => Enum.IsDefined(pf) && pf != PrintFormat.None)
-            .WithMessage("PrintFormat must be a valid value.");
+        RuleFor(x => x.PrintFormatId)
+            .GreaterThan(0) // todo: ref check
+            .WithMessage("PrintFormat is required.");
 
         RuleFor(x => x.ContactInfo.GeneralEmail)
             .Cascade(CascadeMode.Stop)
@@ -140,10 +139,10 @@ internal abstract class CentreCommandValidatorBase<TCommand> : AbstractValidator
         if (contacts is null)
             return true;
 
-        var types = new HashSet<CentreContactType>();
+        var typeIds = new HashSet<int>();
         foreach (CentreContactDto contact in contacts)
         {
-            if (!types.Add(contact.ContactType))
+            if (!typeIds.Add(contact.ContactTypeId))
                 return false;
         }
 
