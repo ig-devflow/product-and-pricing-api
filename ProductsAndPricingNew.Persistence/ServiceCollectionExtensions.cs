@@ -23,7 +23,7 @@ public static class ServiceCollectionExtensions
             .Validate(options => !string.IsNullOrWhiteSpace(options.ProductsAndPricing), "Connection string 'ProductsAndPricing' was not found.")
             .ValidateOnStart();
 
-        services.AddScoped<AuditSaveChangesInterceptor>();
+        services.AddScoped<AuditInterceptor>();
         services.AddScoped<SoftDeleteInterceptor>();
 
         services.AddDbContext<ProductsAndPricingDbContext>((serviceProvider, optionsBuilder) =>
@@ -33,7 +33,7 @@ public static class ServiceCollectionExtensions
             optionsBuilder.UseSqlServer(connectionStrings.ProductsAndPricing);
 
             optionsBuilder.AddInterceptors(
-                serviceProvider.GetRequiredService<AuditSaveChangesInterceptor>(),
+                serviceProvider.GetRequiredService<AuditInterceptor>(),
                 serviceProvider.GetRequiredService<SoftDeleteInterceptor>());
         });
 
