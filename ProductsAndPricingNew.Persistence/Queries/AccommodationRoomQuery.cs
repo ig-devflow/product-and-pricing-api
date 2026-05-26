@@ -91,8 +91,9 @@ internal sealed class AccommodationRoomQuery : BaseQuery, IAccommodationRoomQuer
         return row is null ? null : MapDetailsRow(row);
     }
 
-    public async Task<PagedResult<AccommodationRoomListItemDto>> GetListAsync(string? search, bool? isActive, PagingFilter paging, CancellationToken ct = default)
+    public async Task<PagedResult<AccommodationRoomListItemDto>> GetListAsync(int divisionId, int accommodationId, string? search, bool? isActive, PagingFilter paging, CancellationToken ct = default)
     {
+        // todo: how to use int divisionId, int accommodationId
         const string sql = """
            SELECT COUNT(1)
            FROM Product.AccommodationRoom ar

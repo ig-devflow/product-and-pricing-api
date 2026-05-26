@@ -20,7 +20,7 @@ internal abstract class BaseQuery
         => string.Join(" ", new[] { firstName, lastName }.Where(v => !string.IsNullOrWhiteSpace(v)));
 
     protected static DateOnly ToDateOnly(DateTimeOffset value) =>
-        DateOnly.FromDateTime(value.DateTime);
+        DateOnly.FromDateTime(value.UtcDateTime);
 
     protected static string ToBase64Version(byte[]? version) =>
         Convert.ToBase64String(version ?? []);

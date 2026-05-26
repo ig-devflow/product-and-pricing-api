@@ -1,6 +1,6 @@
 ﻿namespace ProductsAndPricingNew.AdminApi.Contracts.Accommodation;
 
-public record CreateAccommodationRequest(
+public sealed record CreateAccommodationRequest(
     string Name,
     int AccommodationTypeId,
     bool IsActive,
