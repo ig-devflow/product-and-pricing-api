@@ -11,7 +11,7 @@ public sealed record CentreListItemDto(
     string? BrandColor,
     string? Telephone,
     DateOnly CreatedAt,
-    string? CreatedByName,
+    string CreatedByName,
     DateOnly UpdatedAt,
-    string? UpdatedByName
+    string UpdatedByName
 );

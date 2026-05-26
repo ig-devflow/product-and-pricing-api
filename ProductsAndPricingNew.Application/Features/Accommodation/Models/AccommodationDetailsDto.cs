@@ -12,7 +12,7 @@ public record AccommodationDetailsDto(
     bool IsNonCommitted,
     string Version,
     DateOnly CreatedAt,
-    string? CreatedByName,
+    string CreatedByName,
     DateOnly UpdatedAt,
-    string? UpdatedByName
+    string UpdatedByName
 );

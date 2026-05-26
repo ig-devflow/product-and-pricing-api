@@ -460,10 +460,10 @@ internal sealed class CentreQuery : ICentreQuery
         public byte[]? Version { get; init; }
         public DateTimeOffset CreatedAt { get; init; }
         public DateTimeOffset UpdatedAt { get; init; }
-        public string? CreatedByFirstName { get; init; }
-        public string? CreatedByLastName { get; init; }
-        public string? UpdatedByFirstName { get; init; }
-        public string? UpdatedByLastName { get; init; }
+        public string CreatedByFirstName { get; init; } = null!;
+        public string CreatedByLastName { get; init; } = null!;
+        public string UpdatedByFirstName { get; init; } = null!;
+        public string UpdatedByLastName { get; init; } = null!;
     }
 
     private sealed class CentreContactRow
@@ -489,9 +489,9 @@ internal sealed class CentreQuery : ICentreQuery
         public string? Telephone { get; init; }
         public DateTimeOffset CreatedAt { get; init; }
         public DateTimeOffset UpdatedAt { get; init; }
-        public string? CreatedByFirstName { get; init; }
-        public string? CreatedByLastName { get; init; }
-        public string? UpdatedByFirstName { get; init; }
-        public string? UpdatedByLastName { get; init; }
+        public string CreatedByFirstName { get; init; } = null!;
+        public string CreatedByLastName { get; init; } = null!;
+        public string UpdatedByFirstName { get; init; } = null!;
+        public string UpdatedByLastName { get; init; } = null!;
     }
 }

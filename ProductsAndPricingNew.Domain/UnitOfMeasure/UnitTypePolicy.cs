@@ -9,7 +9,7 @@ namespace ProductsAndPricingNew.Domain.UnitOfMeasure;
 /// persisted with a UnitType its kind disallows. <see cref="UnitCalculationKind.Any"/> is
 /// reserved for legacy Discount placeholders and is rejected for offerings/products.
 /// </summary>
-public static class UnitTypePolicy
+internal static class UnitTypePolicy
 {
     private static readonly Dictionary<ProductKind, HashSet<UnitCalculationKind>> ProductRules = new()
     {

@@ -6,7 +6,7 @@ public record AccommodationListItemDto(
     string AccommodationTypeName,
     bool IsActive,
     DateOnly CreatedAt,
-    string? CreatedByName,
+    string CreatedByName,
     DateOnly UpdatedAt,
-    string? UpdatedByName
+    string UpdatedByName
 );

@@ -1,17 +1,17 @@
 ﻿using System.Data.Common;
 using Dapper;
 using ProductsAndPricingNew.Application.Common.Pagination;
-using ProductsAndPricingNew.Application.Features.Accommodation.Abstractions;
-using ProductsAndPricingNew.Application.Features.Accommodation.Models;
+using ProductsAndPricingNew.Application.Features.AccommodationRoom.Abstractions;
+using ProductsAndPricingNew.Application.Features.AccommodationRoom.Models;
 using ProductsAndPricingNew.Persistence.Queries.Configuration;
 
 namespace ProductsAndPricingNew.Persistence.Queries;
 
-internal sealed class AccommodationQuery : IAccommodationQuery
+internal sealed class AccommodationRoomQuery : IAccommodationRoomQuery
 {
     private readonly ISqlConnectionFactory _connectionFactory;
 
-    public AccommodationQuery(ISqlConnectionFactory connectionFactory)
+    public AccommodationRoomQuery(ISqlConnectionFactory connectionFactory)
     {
         _connectionFactory = connectionFactory;
     }
@@ -21,10 +21,10 @@ internal sealed class AccommodationQuery : IAccommodationQuery
         const string sql = """
            SELECT CAST(CASE WHEN EXISTS (
                SELECT 1
-               FROM Product.Accommodation a
-               WHERE a.IsDeleted = 0
-                 AND a.Name = @Name
-                 AND (@ExcludingId IS NULL OR a.Id <> @ExcludingId)
+               FROM Product.AccommodationRoom ar
+               WHERE ar.IsDeleted = 0
+                 AND ar.Name = @Name
+                 AND (@ExcludingId IS NULL OR ar.Id <> @ExcludingId)
            ) THEN 1 ELSE 0 END AS bit);
            """;
 
@@ -42,33 +42,41 @@ internal sealed class AccommodationQuery : IAccommodationQuery
         return await connection.QuerySingleAsync<bool>(command);
     }
 
-    public async Task<AccommodationDetailsDto?> GetByIdAsync(int id, CancellationToken ct = default)
+    public async Task<AccommodationRoomDetailsDto?> GetByIdAsync(int id, CancellationToken ct = default)
     {
         const string sql = """
            SELECT
-               a.Id,
-               a.Name,
-               a.AccommodationTypeId,
-               a.IsActive,
-               a.MinimumStayInWeeks,
-               a.MinimumAge,
-               a.MaximumAge,
-               a.IsCommitted,
-               a.IsNonCommitted,
-               a.Version,
-               a.CreatedAt,
-               a.UpdatedAt,
+               ar.Id,
+               ar.AccommodationId,
+               ar.DivisionId,
+               ar.Name,
+               ar.UnitTypeId,
+               ar.IsActive,
+               ar.OccupyRoom,
+               ar.RoomTypeId,
+               ar.BoardTypeId,
+               ar.BathroomTypeId,
+               ar.RoomGradeId,
+               ar.AccountCategoryId,
+               ar.ProductCategoryId,
+               ar.GeneralLedgerCode,
+               ar.CostCentreCode,
+               ar.ProductCategoryId,
+               ar.OfferingsClosureDate as ClosurePolicy,
+               ar.Version,
+               ar.CreatedAt,
+               ar.UpdatedAt,
                createdEditor.FirstName AS CreatedByFirstName,
                createdEditor.LastName  AS CreatedByLastName,
                updatedEditor.FirstName AS UpdatedByFirstName,
                updatedEditor.LastName  AS UpdatedByLastName
-           FROM Product.Accommodation a
+           FROM Product.AccommodationRoom ar
            LEFT JOIN Edit.Editor createdEditor
-               ON createdEditor.Id = a.CreatedById
+               ON createdEditor.Id = ar.CreatedById
            LEFT JOIN Edit.Editor updatedEditor
-               ON updatedEditor.Id = a.UpdatedById
-           WHERE a.Id = @Id
-             AND a.IsDeleted = 0;
+               ON updatedEditor.Id = ar.UpdatedById
+           WHERE ar.Id = @Id
+             AND ar.IsDeleted = 0;
            """;
 
         await using DbConnection connection = _connectionFactory.CreateConnection();
@@ -78,29 +86,33 @@ internal sealed class AccommodationQuery : IAccommodationQuery
             parameters: new { Id = id },
             cancellationToken: ct);
 
-        AccommodationDetailsRow? row = await connection.QuerySingleOrDefaultAsync<AccommodationDetailsRow>(command);
+        AccommodationRoomDetailsRow? row = await connection.QuerySingleOrDefaultAsync<AccommodationRoomDetailsRow>(command);
 
         return row is null ? null : MapDetailsRow(row);
     }
 
-    public async Task<PagedResult<AccommodationListItemDto>> GetListAsync(string? search, bool? isActive, PagingFilter paging, CancellationToken ct = default)
+    public async Task<PagedResult<AccommodationRoomListItemDto>> GetListAsync(string? search, bool? isActive, PagingFilter paging, CancellationToken ct = default)
     {
         const string sql = """
            SELECT COUNT(1)
-           FROM Product.Accommodation a
-           LEFT JOIN ReferenceData.AccommodationType acct
-               ON acct.Id = a.AccommodationTypeId
-              AND acct.IsDeleted = 0
+           FROM Product.AccommodationRoom ar
+           LEFT JOIN Product.Accommodation a
+               ON a.Id = ar.AccommodationId
+              AND a.IsDeleted = 0
+           LEFT JOIN PricingRef.Division d
+               ON d.Id = ar.DivisionId
+              AND d.IsDeleted = 0
            LEFT JOIN Edit.Editor createdEditor
-               ON createdEditor.Id = a.CreatedById
+               ON createdEditor.Id = ar.CreatedById
            LEFT JOIN Edit.Editor updatedEditor
-               ON updatedEditor.Id = a.UpdatedById
-           WHERE a.IsDeleted = 0
+               ON updatedEditor.Id = ar.UpdatedById
+           WHERE ar.IsDeleted = 0
              AND (@IsActive IS NULL OR a.IsActive = @IsActive)
              AND (
                  @Search IS NULL
+                 OR ar.Name LIKE '%' + @Search + '%'
                  OR a.Name LIKE '%' + @Search + '%'
-                 OR acct.Name LIKE '%' + @Search + '%'
+                 OR d.Name LIKE '%' + @Search + '%'
                  OR createdEditor.FirstName LIKE '%' + @Search + '%'
                  OR createdEditor.LastName LIKE '%' + @Search + '%'
                  OR updatedEditor.FirstName LIKE '%' + @Search + '%'
@@ -108,36 +120,42 @@ internal sealed class AccommodationQuery : IAccommodationQuery
              );
 
            SELECT
-               a.Id,
-               a.Name,
-               acct.Name AS AccommodationTypeName,
-               a.IsActive,
-               a.CreatedAt,
-               a.UpdatedAt,
+               ar.Id,
+               a.Name AS AccommodationName,
+               d.Name AS DivisionName,
+               ar.Name,
+               ar.IsActive,
+               ar.OccupyRoom,
+               ar.CreatedAt,
+               ar.UpdatedAt,
                createdEditor.FirstName AS CreatedByFirstName,
                createdEditor.LastName  AS CreatedByLastName,
                updatedEditor.FirstName AS UpdatedByFirstName,
                updatedEditor.LastName  AS UpdatedByLastName
-           FROM Product.Accommodation a
-           LEFT JOIN ReferenceData.AccommodationType acct
-               ON acct.Id = a.AccommodationTypeId
-              AND acct.IsDeleted = 0
+           FROM Product.AccommodationRoom ar
+           LEFT JOIN Product.Accommodation a
+               ON a.Id = ar.AccommodationId
+              AND a.IsDeleted = 0
+           LEFT JOIN PricingRef.Division d
+               ON d.Id = ar.DivisionId
+              AND d.IsDeleted = 0
            LEFT JOIN Edit.Editor createdEditor
-               ON createdEditor.Id = a.CreatedById
+               ON createdEditor.Id = ar.CreatedById
            LEFT JOIN Edit.Editor updatedEditor
-               ON updatedEditor.Id = a.UpdatedById
-           WHERE a.IsDeleted = 0
+               ON updatedEditor.Id = ar.UpdatedById
+           WHERE ar.IsDeleted = 0
              AND (@IsActive IS NULL OR a.IsActive = @IsActive)
              AND (
                  @Search IS NULL
+                 OR ar.Name LIKE '%' + @Search + '%'
                  OR a.Name LIKE '%' + @Search + '%'
-                 OR acct.Name LIKE '%' + @Search + '%'
+                 OR d.Name LIKE '%' + @Search + '%'
                  OR createdEditor.FirstName LIKE '%' + @Search + '%'
                  OR createdEditor.LastName LIKE '%' + @Search + '%'
                  OR updatedEditor.FirstName LIKE '%' + @Search + '%'
                  OR updatedEditor.LastName LIKE '%' + @Search + '%'
              )
-           ORDER BY a.Name, a.Id
+           ORDER BY ar.Name, ar.Id
            OFFSET @Offset ROWS
            FETCH NEXT @PageSize ROWS ONLY;
            """;
@@ -164,37 +182,39 @@ internal sealed class AccommodationQuery : IAccommodationQuery
         await using SqlMapper.GridReader grid = await connection.QueryMultipleAsync(command);
         int totalCount = await grid.ReadSingleAsync<int>();
 
-        IEnumerable<AccommodationListItemRow> rows = await grid.ReadAsync<AccommodationListItemRow>();
-        List<AccommodationListItemDto> items = rows.Select(MapListItemRow).ToList();
+        IEnumerable<AccommodationRoomListItemRow> rows = await grid.ReadAsync<AccommodationRoomListItemRow>();
+        List<AccommodationRoomListItemDto> items = rows.Select(MapListItemRow).ToList();
 
-        return new PagedResult<AccommodationListItemDto>(
+        return new PagedResult<AccommodationRoomListItemDto>(
             Items: items,
             TotalCount: totalCount,
             Page: page,
             PageSize: pageSize);
     }
-
-    private static string BuildEditorName(string firstName, string lastName)
-    {
-        return string.Join(" ", new[] { firstName, lastName }.Where(v => !string.IsNullOrWhiteSpace(v)));
-    }
+    
+    private static string BuildEditorName(string firstName, string lastName) =>
+        string.Join(" ", new[] { firstName, lastName }.Where(v => !string.IsNullOrWhiteSpace(v)));
 
     private static DateOnly ToDateOnly(DateTimeOffset value) => DateOnly.FromDateTime(value.DateTime);
 
     private static string ToBase64Version(byte[]? version) => Convert.ToBase64String(version ?? []);
 
-    private static AccommodationDetailsDto MapDetailsRow(AccommodationDetailsRow row)
+    private static AccommodationRoomDetailsDto MapDetailsRow(AccommodationRoomDetailsRow row)
     {
-        return new AccommodationDetailsDto(
+        return new AccommodationRoomDetailsDto(
             row.Id,
+            row.AccommodationId,
+            row.DivisionId,
+            row.UnitTypeId,
             row.Name,
-            row.AccommodationTypeId,
             row.IsActive,
-            row.MinimumStayInWeeks,
-            row.MinimumAge,
-            row.MaximumAge,
-            row.IsCommitted,
-            row.IsNonCommitted,
+            row.OccupyRoom,
+            BuildRoomDetails(row.RoomTypeId, row.BoardTypeId, row.BathroomTypeId, row.RoomGradeId),
+            row.AccountCategoryId,
+            row.ProductCategoryId,
+            row.GeneralLedgerCode,
+            row.CostCentreCode,
+            row.ClosurePolicy,
             ToBase64Version(row.Version),
             ToDateOnly(row.CreatedAt),
             BuildEditorName(row.CreatedByFirstName, row.CreatedByLastName),
@@ -202,30 +222,42 @@ internal sealed class AccommodationQuery : IAccommodationQuery
             BuildEditorName(row.UpdatedByFirstName, row.UpdatedByLastName));
     }
 
-    private static AccommodationListItemDto MapListItemRow(AccommodationListItemRow row)
+    private static AccommodationRoomListItemDto MapListItemRow(AccommodationRoomListItemRow row)
     {
-        return new AccommodationListItemDto(
+        return new AccommodationRoomListItemDto(
             row.Id,
+            row.AccommodationName,
+            row.DivisionName,
             row.Name,
-            row.AccommodationTypeName,
             row.IsActive,
+            row.OccupyRoom,
             ToDateOnly(row.CreatedAt),
             BuildEditorName(row.CreatedByFirstName, row.CreatedByLastName),
             ToDateOnly(row.UpdatedAt),
             BuildEditorName(row.UpdatedByFirstName, row.UpdatedByLastName));
     }
+
+    private static RoomDetailsDto BuildRoomDetails(int roomTypeId, int boardTypeId, int bathroomTypeId, int roomGradeId) =>
+        new(roomTypeId, boardTypeId, bathroomTypeId, roomGradeId);
     
-    private sealed class AccommodationDetailsRow
+    private sealed class AccommodationRoomDetailsRow
     {
         public int Id { get; init; }
+        public int AccommodationId { get; init; }
+        public int DivisionId { get; init; }
+        public int UnitTypeId { get; init; }
         public string Name { get; init; } = null!;
-        public int AccommodationTypeId { get; init; }
         public bool IsActive { get; init; }
-        public int MinimumStayInWeeks { get; init; }
-        public int? MinimumAge { get; init; }
-        public int? MaximumAge { get; init; }
-        public bool IsCommitted { get; init; }
-        public bool IsNonCommitted { get; init; }
+        public bool OccupyRoom { get; init; }
+        public int RoomTypeId { get; init; }
+        public int BoardTypeId { get; init; }
+        public int BathroomTypeId { get; init; }
+        public int RoomGradeId { get; init; }
+        public int AccountCategoryId { get; init; }
+        public int ProductCategoryId { get; init; }
+        public string? GeneralLedgerCode { get; init; }
+        public string? CostCentreCode { get; init; }
+        public DateOnly? ClosurePolicy { get; init; }
         public byte[]? Version { get; init; }
         public DateTimeOffset CreatedAt { get; init; }
         public DateTimeOffset UpdatedAt { get; init; }
@@ -235,12 +267,14 @@ internal sealed class AccommodationQuery : IAccommodationQuery
         public string UpdatedByLastName { get; init; } = null!;
     }
     
-    private sealed class AccommodationListItemRow
+    private sealed class AccommodationRoomListItemRow
     {
         public int Id { get; init; }
+        public string AccommodationName { get; init; } = null!;
+        public string DivisionName { get; init; } = null!;
         public string Name { get; init; } = null!;
-        public string AccommodationTypeName { get; init; } = null!;
         public bool IsActive { get; init; }
+        public bool OccupyRoom { get; init; }
         public DateTimeOffset CreatedAt { get; init; }
         public DateTimeOffset UpdatedAt { get; init; }
         public string CreatedByFirstName { get; init; } = null!;

@@ -19,7 +19,7 @@ public sealed record CentreDetailsDto(
     IReadOnlyCollection<CentreTextContentDto> Texts,
     string Version,
     DateOnly CreatedAt,
-    string? CreatedByName,
+    string CreatedByName,
     DateOnly UpdatedAt,
-    string? UpdatedByName
+    string UpdatedByName
 );

@@ -255,10 +255,9 @@ internal sealed class SchoolQuery : ISchoolQuery
         return isEmpty ? null : new AddressDto(street, district, city, postalCode, countryId);
     }
 
-    private static string? BuildEditorName(string? firstName, string? lastName)
+    private static string BuildEditorName(string firstName, string lastName)
     {
-        string name = string.Join(" ", new[] { firstName, lastName }.Where(v => !string.IsNullOrWhiteSpace(v)));
-        return string.IsNullOrWhiteSpace(name) ? null : name;
+        return string.Join(" ", new[] { firstName, lastName }.Where(v => !string.IsNullOrWhiteSpace(v)));
     }
 
     private static DateOnly ToDateOnly(DateTimeOffset value) => DateOnly.FromDateTime(value.DateTime);
@@ -288,10 +287,10 @@ internal sealed class SchoolQuery : ISchoolQuery
         public byte[]? Version { get; init; }
         public DateTimeOffset CreatedAt { get; init; }
         public DateTimeOffset UpdatedAt { get; init; }
-        public string? CreatedByFirstName { get; init; }
-        public string? CreatedByLastName { get; init; }
-        public string? UpdatedByFirstName { get; init; }
-        public string? UpdatedByLastName { get; init; }
+        public string CreatedByFirstName { get; init; } = null!;
+        public string CreatedByLastName { get; init; } = null!;
+        public string UpdatedByFirstName { get; init; } = null!;
+        public string UpdatedByLastName { get; init; } = null!;
     }
 
     private sealed class SchoolListItemRow
@@ -306,9 +305,9 @@ internal sealed class SchoolQuery : ISchoolQuery
         public DateOnly? DecommissionDate { get; init; }
         public DateTimeOffset CreatedAt { get; init; }
         public DateTimeOffset UpdatedAt { get; init; }
-        public string? CreatedByFirstName { get; init; }
-        public string? CreatedByLastName { get; init; }
-        public string? UpdatedByFirstName { get; init; }
-        public string? UpdatedByLastName { get; init; }
+        public string CreatedByFirstName { get; init; } = null!;
+        public string CreatedByLastName { get; init; } = null!;
+        public string UpdatedByFirstName { get; init; } = null!;
+        public string UpdatedByLastName { get; init; } = null!;
     }
 }

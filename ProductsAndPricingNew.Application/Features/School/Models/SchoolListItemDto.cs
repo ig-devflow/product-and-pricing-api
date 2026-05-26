@@ -10,7 +10,7 @@ public sealed record SchoolListItemDto(
     string? CountryName,
     DateOnly? DecommissionDate,
     DateOnly CreatedAt,
-    string? CreatedByName,
+    string CreatedByName,
     DateOnly UpdatedAt,
-    string? UpdatedByName
+    string UpdatedByName
 );
