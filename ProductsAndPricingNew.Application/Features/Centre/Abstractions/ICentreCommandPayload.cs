@@ -4,7 +4,7 @@ using ProductsAndPricingNew.Domain.Entities.PricingRef;
 
 namespace ProductsAndPricingNew.Application.Features.Centre.Abstractions;
 
-public interface ICentreCommandPayload
+internal interface ICentreCommandPayload
 {
     string Name { get; }
     string Code { get; }
