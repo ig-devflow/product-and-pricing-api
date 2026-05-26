@@ -1,8 +1,10 @@
 using ProductsAndPricingNew.Application.Features.ReferenceData.Models;
 using ProductsAndPricingNew.Application.Features.ReferenceData.Queries.GetAudiences;
+using ProductsAndPricingNew.Application.Features.ReferenceData.Queries.GetCentreContactTypes;
 using ProductsAndPricingNew.Application.Features.ReferenceData.Queries.GetContentTemplates;
 using ProductsAndPricingNew.Application.Features.ReferenceData.Queries.GetCountries;
 using ProductsAndPricingNew.Application.Features.ReferenceData.Queries.GetCurrencies;
+using ProductsAndPricingNew.Application.Features.ReferenceData.Queries.GetPrintFormats;
 using ProductsAndPricingNew.Domain.ReferenceData;
 using ProductsAndPricingNew.UnitTests.TestSupport.Assertions;
 using ProductsAndPricingNew.UnitTests.TestSupport.Fakes;
@@ -73,5 +75,41 @@ public sealed class ReferenceDataQueryHandlerTests
         Assert.Same(contentTemplates, result.Value);
         Assert.Equal(1, referenceDataQuery.GetContentTemplatesCalls);
         Assert.Equal(ContentTemplateScope.Division, referenceDataQuery.LastContentTemplateScope);
+    }
+
+    [Fact]
+    public async Task CentreContactTypes_DelegatesToReferenceDataQuery_AndReturnsOk()
+    {
+        CentreContactTypeReferenceDto[] contactTypes =
+        [
+            new(1, "Contact 1")
+        ];
+        ReferenceDataQueryFake referenceDataQuery = new ReferenceDataQueryFake()
+            .WithCentreContactTypes(contactTypes);
+        GetCentreContactTypesQueryHandler handler = new(referenceDataQuery);
+
+        var result = await handler.Handle(new GetCentreContactTypesQuery(), CancellationToken.None);
+
+        ResultAssertions.AssertSucceeded(result);
+        Assert.Same(contactTypes, result.Value);
+        Assert.Equal(1, referenceDataQuery.GetCentreContactTypeCalls);
+    }
+
+    [Fact]
+    public async Task PrintFormats_DelegatesToReferenceDataQuery_AndReturnsOk()
+    {
+        PrintFormatReferenceDto[] formats =
+        [
+            new(1, "A4")
+        ];
+        ReferenceDataQueryFake referenceDataQuery = new ReferenceDataQueryFake()
+            .WithPrintFormats(formats);
+        GetPrintFormatsQueryHandler handler = new(referenceDataQuery);
+
+        var result = await handler.Handle(new GetPrintFormatsQuery(), CancellationToken.None);
+
+        ResultAssertions.AssertSucceeded(result);
+        Assert.Same(formats, result.Value);
+        Assert.Equal(1, referenceDataQuery.GetPrintFormatsCalls);
     }
 }

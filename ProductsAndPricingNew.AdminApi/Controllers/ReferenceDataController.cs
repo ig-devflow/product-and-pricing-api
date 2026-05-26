@@ -4,9 +4,11 @@ using Microsoft.AspNetCore.Mvc;
 using ProductsAndPricingNew.AdminApi.Extensions;
 using ProductsAndPricingNew.Application.Features.ReferenceData.Models;
 using ProductsAndPricingNew.Application.Features.ReferenceData.Queries.GetAudiences;
+using ProductsAndPricingNew.Application.Features.ReferenceData.Queries.GetCentreContactTypes;
 using ProductsAndPricingNew.Application.Features.ReferenceData.Queries.GetContentTemplates;
 using ProductsAndPricingNew.Application.Features.ReferenceData.Queries.GetCountries;
 using ProductsAndPricingNew.Application.Features.ReferenceData.Queries.GetCurrencies;
+using ProductsAndPricingNew.Application.Features.ReferenceData.Queries.GetPrintFormats;
 using ProductsAndPricingNew.Application.Features.ReferenceData.Queries.GetUnitTypes;
 using ProductsAndPricingNew.Domain.ReferenceData;
 
@@ -96,6 +98,34 @@ public sealed class ReferenceDataController : ControllerBase
     public async Task<ActionResult> GetContentTemplates([FromQuery] ContentTemplateScope? scope, CancellationToken ct)
     {
         Result<IReadOnlyCollection<ContentTemplateReferenceDto>> result = await _sender.Send(new GetContentTemplatesQuery(scope), ct);
+        return result.ToActionResult(this);
+    }
+
+    /// <summary>
+    /// Gets centre contact types.
+    /// </summary>
+    /// <param name="ct">Cancellation token.</param>
+    /// <returns>A list of active centre contact types.</returns>
+    /// <response code="200">Returns active centre contact types.</response>
+    [HttpGet("centre-contact-types")]
+    [ProducesResponseType(typeof(IReadOnlyCollection<CentreContactTypeReferenceDto>), StatusCodes.Status200OK)]
+    public async Task<ActionResult> CentreContactTypes(CancellationToken ct)
+    {
+        Result<IReadOnlyCollection<CentreContactTypeReferenceDto>> result = await _sender.Send(new GetCentreContactTypesQuery(), ct);
+        return result.ToActionResult(this);
+    }
+
+    /// <summary>
+    /// Gets active print formats.
+    /// </summary>
+    /// <param name="ct">Cancellation token.</param>
+    /// <returns>A list of active print formats.</returns>
+    /// <response code="200">Returns active print formats.</response>
+    [HttpGet("print-formats")]
+    [ProducesResponseType(typeof(IReadOnlyCollection<ContentTemplateReferenceDto>), StatusCodes.Status200OK)]
+    public async Task<ActionResult> GetPrintFormats(CancellationToken ct)
+    {
+        Result<IReadOnlyCollection<PrintFormatReferenceDto>> result = await _sender.Send(new GetPrintFormatsQuery(), ct);
         return result.ToActionResult(this);
     }
 }
