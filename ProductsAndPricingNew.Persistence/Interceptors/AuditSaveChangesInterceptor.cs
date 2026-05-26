@@ -53,7 +53,7 @@ internal sealed class AuditSaveChangesInterceptor : SaveChangesInterceptor
                 continue;
             }
 
-            if (entry.State == EntityState.Modified)
+            if (entry.State == EntityState.Modified || entry.State == EntityState.Deleted)
             {
                 audit.CurrentValue = audit.CurrentValue.MarkUpdated(userId, utcNow);
             }
