@@ -13,6 +13,7 @@ internal sealed class ReferenceDataQueryFake : IReferenceDataQuery
     private IReadOnlyCollection<UnitTypeReferenceDto> _unitTypes = [];
     private IReadOnlyCollection<CentreContactTypeReferenceDto> _centreContactTypes = [];
     private IReadOnlyCollection<PrintFormatReferenceDto> _printFormats = [];
+    private IReadOnlyCollection<AccommodationTypeReferenceDto> _accommodationTypes = [];
     private IReadOnlyCollection<AccommodationRoomTypeReferenceDto> _accommodationRoomTypes = [];
     private IReadOnlyCollection<AccommodationBoardTypeReferenceDto> _accommodationBoardTypes = [];
     private IReadOnlyCollection<AccommodationBathroomTypeReferenceDto> _accommodationBathroomTypes = [];
@@ -25,6 +26,7 @@ internal sealed class ReferenceDataQueryFake : IReferenceDataQuery
     public int GetUnitTypesCalls { get; private set; }
     public int GetCentreContactTypeCalls { get; private set; }
     public int GetPrintFormatsCalls { get; private set; }
+    public int GetAccommodationTypesCalls { get; private set; }
     public int GetAccommodationRoomTypesCalls { get; private set; }
     public int GetAccommodationBoardTypesCalls { get; private set; }
     public int GetAccommodationBathroomTypesCalls { get; private set; }
@@ -72,6 +74,12 @@ internal sealed class ReferenceDataQueryFake : IReferenceDataQuery
     public ReferenceDataQueryFake WithUnitTypes(IReadOnlyCollection<UnitTypeReferenceDto> unitTypes)
     {
         _unitTypes = unitTypes;
+        return this;
+    }
+
+    public ReferenceDataQueryFake WithAccommodationTypes(IReadOnlyCollection<AccommodationTypeReferenceDto> accommodationTypes)
+    {
+        _accommodationTypes = accommodationTypes;
         return this;
     }
 
@@ -130,6 +138,12 @@ internal sealed class ReferenceDataQueryFake : IReferenceDataQuery
     {
         GetUnitTypesCalls++;
         return Task.FromResult(_unitTypes);
+    }
+
+    public Task<IReadOnlyCollection<AccommodationTypeReferenceDto>> GetAccommodationTypesAsync(CancellationToken ct = default)
+    {
+        GetAccommodationTypesCalls++;
+        return Task.FromResult(_accommodationTypes);
     }
 
     public Task<IReadOnlyCollection<AccommodationRoomTypeReferenceDto>> GetAccommodationRoomTypesAsync(CancellationToken ct = default)

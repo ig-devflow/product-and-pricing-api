@@ -9,7 +9,7 @@ namespace ProductsAndPricingNew.Application.Features.Accommodation.Validation;
 internal abstract class AccommodationCommandValidatorBase<TCommand> : AbstractValidator<TCommand>
     where TCommand : IAccommodationCommandPayload
 {
-    protected AccommodationCommandValidatorBase(IReferenceDataValidationQuery referenceData)
+    protected AccommodationCommandValidatorBase(IReferenceDataValidationQuery referenceDataValidation)
     {
         RuleFor(x => x.Name)
             .Cascade(CascadeMode.Stop)
@@ -18,10 +18,12 @@ internal abstract class AccommodationCommandValidatorBase<TCommand> : AbstractVa
             .MaximumLength(AccommodationAggregate.Rules.NameMaxLength)
             .WithMessage($"Accommodation name must not exceed {AccommodationAggregate.Rules.NameMaxLength} characters.");
 
-        RuleFor(x => x.AccommodationTypeId) // referenceData
+        RuleFor(x => x.AccommodationTypeId)
             .Cascade(CascadeMode.Stop)
             .GreaterThan(0)
-            .WithMessage("AccommodationTypeId is required.");
+            .WithMessage("AccommodationTypeId is required.")
+            .MustAsync((accommodationTypeId, ct) => AccommodationTypeIsActiveAsync(referenceDataValidation, accommodationTypeId, ct))
+            .WithMessage("AccommodationTypeId must reference an active accommodation type.");
 
         RuleFor(x => x.MinimumStayInWeeks)
             .Cascade(CascadeMode.Stop)
@@ -42,5 +44,14 @@ internal abstract class AccommodationCommandValidatorBase<TCommand> : AbstractVa
             .Must(x => !x.AgeFrom.HasValue || !x.AgeTo.HasValue || x.AgeFrom <= x.AgeTo)
             .WithMessage("Age from must be less than or equal to age to.")
             .When(x => x.AgeFrom.HasValue && x.AgeTo.HasValue);
+    }
+
+    private static async Task<bool> AccommodationTypeIsActiveAsync(IReferenceDataValidationQuery referenceDataValidation, int accommodationTypeId, CancellationToken ct)
+    {
+        if (accommodationTypeId <= 0)
+            return false;
+
+        IReadOnlySet<int> accommodationTypeIds = await referenceDataValidation.GetActiveAccommodationRoomGradesIdsAsync(new[] { accommodationTypeId }, ct);
+        return accommodationTypeIds.Contains(accommodationTypeId);
     }
 }

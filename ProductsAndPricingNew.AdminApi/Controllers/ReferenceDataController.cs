@@ -7,6 +7,7 @@ using ProductsAndPricingNew.Application.Features.ReferenceData.Queries.GetAccomm
 using ProductsAndPricingNew.Application.Features.ReferenceData.Queries.GetAccommodationBoardTypes;
 using ProductsAndPricingNew.Application.Features.ReferenceData.Queries.GetAccommodationRoomGradesTypes;
 using ProductsAndPricingNew.Application.Features.ReferenceData.Queries.GetAccommodationRoomTypes;
+using ProductsAndPricingNew.Application.Features.ReferenceData.Queries.GetAccommodationTypes;
 using ProductsAndPricingNew.Application.Features.ReferenceData.Queries.GetAudiences;
 using ProductsAndPricingNew.Application.Features.ReferenceData.Queries.GetCentreContactTypes;
 using ProductsAndPricingNew.Application.Features.ReferenceData.Queries.GetContentTemplates;
@@ -130,6 +131,20 @@ public sealed class ReferenceDataController : ControllerBase
     public async Task<ActionResult> GetPrintFormats(CancellationToken ct)
     {
         Result<IReadOnlyCollection<PrintFormatReferenceDto>> result = await _sender.Send(new GetPrintFormatsQuery(), ct);
+        return result.ToActionResult(this);
+    }
+
+    /// <summary>
+    /// Gets active accommodation types.
+    /// </summary>
+    /// <param name="ct">Cancellation token.</param>
+    /// <returns>A list of active accommodation types.</returns>
+    /// <response code="200">Returns active accommodation types.</response>
+    [HttpGet("accommodation-types")]
+    [ProducesResponseType(typeof(IReadOnlyCollection<AccommodationTypeReferenceDto>), StatusCodes.Status200OK)]
+    public async Task<ActionResult> GetAccommodationTypes(CancellationToken ct)
+    {
+        Result<IReadOnlyCollection<AccommodationTypeReferenceDto>> result = await _sender.Send(new GetAccommodationTypesQuery(), ct);
         return result.ToActionResult(this);
     }
 

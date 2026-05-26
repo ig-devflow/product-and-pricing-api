@@ -53,12 +53,12 @@ internal abstract class AccommodationRoomCommandValidatorBase<TCommand> : Abstra
             .MustAsync((roomGradeId, ct) => AccommodationRoomGradeIsActiveAsync(referenceDataValidation, roomGradeId, ct))
             .WithMessage("RoomGradeId must reference an active accommodation room grade.");
 
-        RuleFor(x => x.AccountCategoryId) // referenceData
+        RuleFor(x => x.AccountCategoryId) //todo: referenceData
             .Cascade(CascadeMode.Stop)
             .GreaterThan(0)
             .WithMessage("AccountCategoryId is required.");
 
-        RuleFor(x => x.ProductCategoryId) // referenceData
+        RuleFor(x => x.ProductCategoryId) //todo: referenceData
             .Cascade(CascadeMode.Stop)
             .GreaterThan(0)
             .WithMessage("ProductCategoryId is required.");

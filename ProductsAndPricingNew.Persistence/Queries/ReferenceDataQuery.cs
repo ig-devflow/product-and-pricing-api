@@ -106,6 +106,24 @@ internal sealed class ReferenceDataQuery : IReferenceDataQuery
         return (await connection.QueryAsync<UnitTypeReferenceDto>(command)).AsList();
     }
 
+    public async Task<IReadOnlyCollection<AccommodationTypeReferenceDto>> GetAccommodationTypesAsync(CancellationToken ct = default)
+    {
+        const string sql = """
+           SELECT Id, Name
+           FROM Product.AccommodationType
+           WHERE IsDeleted = 0
+           ORDER BY Name;
+           """;
+
+        await using DbConnection connection = _connectionFactory.CreateConnection();
+
+        CommandDefinition command = new(
+            commandText: sql,
+            cancellationToken: ct);
+
+        return (await connection.QueryAsync<AccommodationTypeReferenceDto>(command)).AsList();
+    }
+
     public async Task<IReadOnlyCollection<AccommodationRoomTypeReferenceDto>> GetAccommodationRoomTypesAsync(CancellationToken ct = default)
     {
         const string sql = """
