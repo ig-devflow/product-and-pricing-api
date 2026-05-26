@@ -1,5 +1,4 @@
-﻿using ProductsAndPricingNew.Application.Common.Models;
-using ProductsAndPricingNew.Domain.Entities.PricingRef;
+using ProductsAndPricingNew.Application.Common.Models;
 
 namespace ProductsAndPricingNew.Application.Features.Centre.Models;
 
@@ -8,7 +7,7 @@ public sealed record CentreDetailsDto(
     string Name,
     string Code,
     int CurrencyId,
-    PrintFormat PrintFormat,
+    int PrintFormatId,
     bool IsActive,
     bool IsPhysicalCentre,
     CentreContactInfoDto ContactInfo,
@@ -19,7 +18,7 @@ public sealed record CentreDetailsDto(
     IReadOnlyCollection<CentreTextContentDto> Texts,
     string Version,
     DateOnly CreatedAt,
-    string? CreatedByName,
+    string CreatedByName,
     DateOnly UpdatedAt,
-    string? UpdatedByName
+    string UpdatedByName
 );

@@ -52,8 +52,8 @@ internal sealed class SchoolQuery : ISchoolQuery
                 s.Name,
                 s.Code,
                 s.MinimumStayInWeeks,
-                s.AgeFrom,
-                s.AgeTo,
+                s.MinimumAge,
+                s.MaximumAge,
                 s.Telephone,
                 s.EmergencyTelephone,
                 s.ContactStreet,
@@ -216,8 +216,8 @@ internal sealed class SchoolQuery : ISchoolQuery
             row.Name,
             row.Code,
             row.MinimumStayInWeeks,
-            row.AgeFrom,
-            row.AgeTo,
+            row.MinimumAge,
+            row.MaximumAge,
             row.Telephone,
             row.EmergencyTelephone,
             MapAddress(row.ContactStreet, row.ContactDistrict, row.ContactCity, row.ContactPostalCode, row.ContactCountryId),
@@ -255,15 +255,14 @@ internal sealed class SchoolQuery : ISchoolQuery
         return isEmpty ? null : new AddressDto(street, district, city, postalCode, countryId);
     }
 
-    internal static string? BuildEditorName(string? firstName, string? lastName)
+    private static string BuildEditorName(string firstName, string lastName)
     {
-        string name = string.Join(" ", new[] { firstName, lastName }.Where(v => !string.IsNullOrWhiteSpace(v)));
-        return string.IsNullOrWhiteSpace(name) ? null : name;
+        return string.Join(" ", new[] { firstName, lastName }.Where(v => !string.IsNullOrWhiteSpace(v)));
     }
 
     private static DateOnly ToDateOnly(DateTimeOffset value) => DateOnly.FromDateTime(value.DateTime);
 
-    internal static string ToBase64Version(byte[]? version) => Convert.ToBase64String(version ?? []);
+    private static string ToBase64Version(byte[]? version) => Convert.ToBase64String(version ?? []);
 
     private sealed class SchoolDetailsRow
     {
@@ -272,8 +271,8 @@ internal sealed class SchoolQuery : ISchoolQuery
         public string Name { get; init; } = null!;
         public string Code { get; init; } = null!;
         public int MinimumStayInWeeks { get; init; }
-        public int? AgeFrom { get; init; }
-        public int? AgeTo { get; init; }
+        public int? MinimumAge { get; init; }
+        public int? MaximumAge { get; init; }
         public string? Telephone { get; init; }
         public string? EmergencyTelephone { get; init; }
         public string? ContactStreet { get; init; }
@@ -288,10 +287,10 @@ internal sealed class SchoolQuery : ISchoolQuery
         public byte[]? Version { get; init; }
         public DateTimeOffset CreatedAt { get; init; }
         public DateTimeOffset UpdatedAt { get; init; }
-        public string? CreatedByFirstName { get; init; }
-        public string? CreatedByLastName { get; init; }
-        public string? UpdatedByFirstName { get; init; }
-        public string? UpdatedByLastName { get; init; }
+        public string CreatedByFirstName { get; init; } = null!;
+        public string CreatedByLastName { get; init; } = null!;
+        public string UpdatedByFirstName { get; init; } = null!;
+        public string UpdatedByLastName { get; init; } = null!;
     }
 
     private sealed class SchoolListItemRow
@@ -306,9 +305,9 @@ internal sealed class SchoolQuery : ISchoolQuery
         public DateOnly? DecommissionDate { get; init; }
         public DateTimeOffset CreatedAt { get; init; }
         public DateTimeOffset UpdatedAt { get; init; }
-        public string? CreatedByFirstName { get; init; }
-        public string? CreatedByLastName { get; init; }
-        public string? UpdatedByFirstName { get; init; }
-        public string? UpdatedByLastName { get; init; }
+        public string CreatedByFirstName { get; init; } = null!;
+        public string CreatedByLastName { get; init; } = null!;
+        public string UpdatedByFirstName { get; init; } = null!;
+        public string UpdatedByLastName { get; init; } = null!;
     }
 }

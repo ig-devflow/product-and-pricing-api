@@ -103,11 +103,186 @@ internal sealed class ReferenceDataValidationQuery : IReferenceDataValidationQue
             return new HashSet<int>();
 
         const string sql = """
-                           SELECT c.Id
-                           FROM ReferenceData.Currency c
-                           WHERE c.Id IN @Ids
-                             AND c.IsDeleted = 0;
+           SELECT c.Id
+           FROM ReferenceData.Currency c
+           WHERE c.Id IN @Ids
+             AND c.IsDeleted = 0;
+           """;
+
+        await using DbConnection connection = _connectionFactory.CreateConnection();
+
+        CommandDefinition command = new(
+            commandText: sql,
+            parameters: new { Ids = normalizedIds, },
+            cancellationToken: ct);
+
+        IEnumerable<int> existingIds = await connection.QueryAsync<int>(command);
+        return existingIds.ToHashSet();
+    }
+
+    public async Task<IReadOnlySet<int>> GetActivePrintFormatsIdsAsync(IReadOnlyCollection<int> ids, CancellationToken ct = default)
+    {
+        int[] normalizedIds = GetDistinctPositiveIds(ids);
+
+        if (normalizedIds.Length == 0)
+            return new HashSet<int>();
+
+        const string sql = """
+                           SELECT f.Id
+                           FROM PricingRef.PrintFormat f
+                           WHERE f.Id IN @Ids
+                             AND f.IsDeleted = 0;
                            """;
+
+        await using DbConnection connection = _connectionFactory.CreateConnection();
+
+        CommandDefinition command = new(
+            commandText: sql,
+            parameters: new { Ids = normalizedIds, },
+            cancellationToken: ct);
+
+        IEnumerable<int> existingIds = await connection.QueryAsync<int>(command);
+        return existingIds.ToHashSet();
+    }
+
+    public async Task<IReadOnlySet<int>> GetActiveContactTypeIdsAsync(IReadOnlyCollection<int> ids, CancellationToken ct = default)
+    {
+        int[] normalizedIds = GetDistinctPositiveIds(ids);
+
+        if (normalizedIds.Length == 0)
+            return new HashSet<int>();
+
+        const string sql = """
+                           SELECT ct.Id
+                           FROM PricingRef.CentreContactType ct
+                           WHERE ct.Id IN @Ids
+                             AND ct.IsDeleted = 0;
+                           """;
+
+        await using DbConnection connection = _connectionFactory.CreateConnection();
+
+        CommandDefinition command = new(
+            commandText: sql,
+            parameters: new { Ids = normalizedIds, },
+            cancellationToken: ct);
+
+        IEnumerable<int> existingIds = await connection.QueryAsync<int>(command);
+        return existingIds.ToHashSet();
+    }
+
+    public async Task<IReadOnlySet<int>> GetActiveUnitTypesIdsAsync(IReadOnlyCollection<int> ids, CancellationToken ct = default)
+    {
+        int[] normalizedIds = GetDistinctPositiveIds(ids);
+
+        if (normalizedIds.Length == 0)
+            return new HashSet<int>();
+
+        const string sql = """
+           SELECT t.Id
+           FROM ReferenceData.UnitType t
+           WHERE t.Id IN @Ids
+             AND t.IsDeleted = 0;
+           """;
+
+        await using DbConnection connection = _connectionFactory.CreateConnection();
+
+        CommandDefinition command = new(
+            commandText: sql,
+            parameters: new { Ids = normalizedIds, },
+            cancellationToken: ct);
+
+        IEnumerable<int> existingIds = await connection.QueryAsync<int>(command);
+        return existingIds.ToHashSet();
+    }
+
+    public async Task<IReadOnlySet<int>> GetActiveAccommodationRoomTypesIdsAsync(IReadOnlyCollection<int> ids, CancellationToken ct = default)
+    {
+        int[] normalizedIds = GetDistinctPositiveIds(ids);
+
+        if (normalizedIds.Length == 0)
+            return new HashSet<int>();
+
+        const string sql = """
+           SELECT t.Id
+           FROM Product.AccommodationRoomType t
+           WHERE t.Id IN @Ids
+             AND t.IsDeleted = 0;
+           """;
+
+        await using DbConnection connection = _connectionFactory.CreateConnection();
+
+        CommandDefinition command = new(
+            commandText: sql,
+            parameters: new { Ids = normalizedIds, },
+            cancellationToken: ct);
+
+        IEnumerable<int> existingIds = await connection.QueryAsync<int>(command);
+        return existingIds.ToHashSet();
+    }
+
+    public async Task<IReadOnlySet<int>> GetActiveAccommodationBoardTypesIdsAsync(IReadOnlyCollection<int> ids, CancellationToken ct = default)
+    {
+        int[] normalizedIds = GetDistinctPositiveIds(ids);
+
+        if (normalizedIds.Length == 0)
+            return new HashSet<int>();
+
+        const string sql = """
+           SELECT t.Id
+           FROM Product.AccommodationBoardType t
+           WHERE t.Id IN @Ids
+             AND t.IsDeleted = 0;
+           """;
+
+        await using DbConnection connection = _connectionFactory.CreateConnection();
+
+        CommandDefinition command = new(
+            commandText: sql,
+            parameters: new { Ids = normalizedIds, },
+            cancellationToken: ct);
+
+        IEnumerable<int> existingIds = await connection.QueryAsync<int>(command);
+        return existingIds.ToHashSet();
+    }
+
+    public async Task<IReadOnlySet<int>> GetActiveAccommodationBathroomTypesIdsAsync(IReadOnlyCollection<int> ids, CancellationToken ct = default)
+    {
+        int[] normalizedIds = GetDistinctPositiveIds(ids);
+
+        if (normalizedIds.Length == 0)
+            return new HashSet<int>();
+
+        const string sql = """
+           SELECT t.Id
+           FROM Product.AccommodationBathroomType t
+           WHERE t.Id IN @Ids
+             AND t.IsDeleted = 0;
+           """;
+
+        await using DbConnection connection = _connectionFactory.CreateConnection();
+
+        CommandDefinition command = new(
+            commandText: sql,
+            parameters: new { Ids = normalizedIds, },
+            cancellationToken: ct);
+
+        IEnumerable<int> existingIds = await connection.QueryAsync<int>(command);
+        return existingIds.ToHashSet();
+    }
+
+    public async Task<IReadOnlySet<int>> GetActiveAccommodationRoomGradesIdsAsync(IReadOnlyCollection<int> ids, CancellationToken ct = default)
+    {
+        int[] normalizedIds = GetDistinctPositiveIds(ids);
+
+        if (normalizedIds.Length == 0)
+            return new HashSet<int>();
+
+        const string sql = """
+           SELECT g.Id
+           FROM Product.AccommodationRoomGrade g
+           WHERE g.Id IN @Ids
+             AND g.IsDeleted = 0;
+           """;
 
         await using DbConnection connection = _connectionFactory.CreateConnection();
 

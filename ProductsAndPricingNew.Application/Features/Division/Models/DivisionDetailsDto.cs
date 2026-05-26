@@ -16,7 +16,7 @@ public sealed record DivisionDetailsDto(
     IReadOnlyCollection<DivisionTextContentDto> Texts,
     string Version,
     DateOnly CreatedAt,
-    string? CreatedByName,
+    string CreatedByName,
     DateOnly UpdatedAt,
-    string? UpdatedByName
+    string UpdatedByName
 );

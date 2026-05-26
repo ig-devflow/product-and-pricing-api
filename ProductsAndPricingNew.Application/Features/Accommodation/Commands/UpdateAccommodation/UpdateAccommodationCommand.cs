@@ -1,6 +1,7 @@
 ﻿using FluentResults;
 using MediatR;
 using ProductsAndPricingNew.Application.Abstractions;
+using ProductsAndPricingNew.Application.Features.Accommodation.Abstractions;
 
 namespace ProductsAndPricingNew.Application.Features.Accommodation.Commands.UpdateAccommodation;
 
@@ -15,4 +16,4 @@ public sealed record UpdateAccommodationCommand(
     bool IsCommitted,
     bool IsNonCommitted,
     string Version
-) : ICommand<Result<Unit>>;
+) : ICommand<Result<Unit>>, IAccommodationCommandPayload;

@@ -1,5 +1,4 @@
-﻿using ProductsAndPricingNew.AdminApi.Contracts.Common;
-using ProductsAndPricingNew.Domain.Entities.PricingRef;
+using ProductsAndPricingNew.AdminApi.Contracts.Common;
 
 namespace ProductsAndPricingNew.AdminApi.Contracts.Centre;
 
@@ -8,7 +7,7 @@ public sealed record UpdateCentreRequest(
     string Name,
     string Code,
     int CurrencyId,
-    PrintFormat PrintFormat,
+    int PrintFormatId,
     bool IsActive,
     bool IsPhysicalCentre,
     CentreContactInfoRequest ContactInfo,

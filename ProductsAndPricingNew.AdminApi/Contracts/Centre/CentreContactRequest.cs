@@ -1,10 +1,9 @@
-﻿using ProductsAndPricingNew.AdminApi.Contracts.Common;
-using ProductsAndPricingNew.Domain.Entities.PricingRef;
+using ProductsAndPricingNew.AdminApi.Contracts.Common;
 
 namespace ProductsAndPricingNew.AdminApi.Contracts.Centre;
 
 public sealed record CentreContactRequest(
-    CentreContactType ContactType,
+    int ContactTypeId,
     string Name,
     string? Email,
     ImageFileRequest SignatureImage

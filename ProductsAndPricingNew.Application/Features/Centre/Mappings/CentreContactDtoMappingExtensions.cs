@@ -10,5 +10,5 @@ internal static class CentreContactDtoMappingExtensions
         dtos.Select(ToDefinition);
 
     private static CentreContactDefinition ToDefinition(this CentreContactDto dto) =>
-        new(dto.ContactType, dto.Name, dto.Email, dto.SignatureImage.ToDefinition());
+        new(dto.ContactTypeId, dto.Name, dto.Email, dto.SignatureImage.ToDefinition());
 }

@@ -26,7 +26,6 @@ public sealed class DivisionQueryTests
     }
 
     [Theory]
-    [InlineData("", " ")]
     [InlineData("System", "User")]
     public void BuildEditorName_ReturnsExpectedName(string? firstName, string? lastName)
     {

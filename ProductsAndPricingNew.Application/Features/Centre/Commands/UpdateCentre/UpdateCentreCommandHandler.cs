@@ -49,7 +49,7 @@ internal sealed class UpdateCentreCommandHandler : IRequestHandler<UpdateCentreC
         centre.Rename(name);
         centre.WithCode(request.Code);
         centre.WithCurrency(request.CurrencyId);
-        centre.WithPrintFormat(request.PrintFormat);
+        centre.WithPrintFormat(request.PrintFormatId);
         centre.SetIsActive(request.IsActive);
         centre.SetIsPhysicalCentre(request.IsPhysicalCentre);
         centre.WithGeneralEmail(contactInfo.GeneralEmail);

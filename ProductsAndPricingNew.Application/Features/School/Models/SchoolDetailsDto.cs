@@ -8,8 +8,8 @@ public sealed record SchoolDetailsDto(
     string Name,
     string Code,
     int MinimumStayInWeeks,
-    int? AgeFrom,
-    int? AgeTo,
+    int? MinimumAge,
+    int? MaximumAge,
     string? Telephone,
     string? EmergencyTelephone,
     AddressDto? ContactAddress,
@@ -19,7 +19,7 @@ public sealed record SchoolDetailsDto(
     DateOnly? DecommissionDate,
     string Version,
     DateOnly CreatedAt,
-    string? CreatedByName,
+    string CreatedByName,
     DateOnly UpdatedAt,
-    string? UpdatedByName
+    string UpdatedByName
 );

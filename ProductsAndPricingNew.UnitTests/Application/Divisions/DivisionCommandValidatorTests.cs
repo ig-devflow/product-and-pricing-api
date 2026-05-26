@@ -313,6 +313,9 @@ public sealed class DivisionCommandValidatorTests
             .WithActiveCountries(1)
             .WithActiveAudiences(10)
             .WithActiveCurrencies(2)
+            .WithActiveUnitTypes(1)
+            .WithActivePrintFormats(2)
+            .WithActiveContactTypes(1)
             .WithActiveContentTemplates(ContentTemplateScope.Division, 100);
 
     private static void AssertInvalid(ValidationResult result, string expectedMessagePart)

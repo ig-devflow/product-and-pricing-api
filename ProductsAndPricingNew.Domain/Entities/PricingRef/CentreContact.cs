@@ -1,4 +1,5 @@
-﻿using ProductsAndPricingNew.Domain.Common.Exceptions;
+using ProductsAndPricingNew.Domain.Common.Exceptions;
+using ProductsAndPricingNew.Domain.Common.Primitives;
 using ProductsAndPricingNew.Domain.Common.Text;
 using ProductsAndPricingNew.Domain.Entities.PricingRef.Definitions;
 using ProductsAndPricingNew.Domain.SharedKernel.ValueObjects;
@@ -7,7 +8,7 @@ namespace ProductsAndPricingNew.Domain.Entities.PricingRef;
 
 public sealed class CentreContact
 {
-    public CentreContactType ContactType { get; private set; }
+    public int ContactTypeId { get; private set; }
     public string Name { get; private set; } = null!;
     public EmailAddress? Email { get; private set; } = EmailAddress.Empty;
     public ImageFile SignatureImage { get; private set; } = ImageFile.Empty;
@@ -15,12 +16,12 @@ public sealed class CentreContact
     private CentreContact() { }
 
     private CentreContact(
-        CentreContactType contactType,
+        int contactTypeId,
         string name,
         EmailAddress email,
         ImageFile signatureImage)
     {
-        ContactType = contactType;
+        ContactTypeId = contactTypeId;
         Name = name;
         Email = email;
         SignatureImage = signatureImage;
@@ -29,10 +30,10 @@ public sealed class CentreContact
     internal static CentreContact Create(CentreContactDefinition definition)
     {
         ArgumentNullException.ThrowIfNull(definition);
-        EnsureValidType(definition.ContactType);
+        Guard.PositiveId(definition.ContactTypeId, nameof(ContactTypeId));
 
         return new CentreContact(
-            definition.ContactType,
+            definition.ContactTypeId,
             definition.Name.AsRequiredDomainText(nameof(Name), Rules.NameMaxLength),
             EmailAddress.Create(definition.Email),
             ImageFile.Create(definition.SignatureImage, Rules.SignatureMaxBytes));
@@ -41,23 +42,13 @@ public sealed class CentreContact
     internal void Change(CentreContactDefinition definition)
     {
         ArgumentNullException.ThrowIfNull(definition);
-        EnsureValidType(definition.ContactType);
 
-        if (definition.ContactType != ContactType)
+        if (definition.ContactTypeId != ContactTypeId)
             throw new DomainException("Contact type cannot be changed.");
 
         Name = definition.Name.AsRequiredDomainText(nameof(Name), Rules.NameMaxLength);
         Email = EmailAddress.Create(definition.Email);
         SignatureImage = ImageFile.Create(definition.SignatureImage, Rules.SignatureMaxBytes);
-    }
-
-    private static void EnsureValidType(CentreContactType type)
-    {
-        if (type == CentreContactType.None)
-            throw new DomainException("Contact type must be specified.");
-
-        if (!Enum.IsDefined(type))
-            throw new DomainException($"Unsupported contact type '{type}'.");
     }
 
     public static class Rules

@@ -44,7 +44,7 @@ internal sealed class DivisionConfiguration : IEntityTypeConfiguration<Division>
 
         entity.ConfigureAddress(x => x.ContactAddress, "Contact");
         entity.ConfigureBanner(x => x.AccreditationBanner, "Banner");
-        entity.ConfigureAuditMetadata(x => x.AuditMetadata);
+        entity.ConfigureAuditAndConcurrency();
 
         entity.HasMany(x => x.Texts)
             .WithOne()
@@ -54,16 +54,6 @@ internal sealed class DivisionConfiguration : IEntityTypeConfiguration<Division>
         entity.Navigation(x => x.Texts)
             .UsePropertyAccessMode(PropertyAccessMode.Field);
 
-        entity.Property(x => x.IsDeleted)
-            .HasDefaultValue(false)
-            .IsRequired();
-
-        entity.Property(x => x.Version).IsRowVersion();
-
-        entity.HasIndex(x => x.Name)
-            .IsUnique()
-            .HasFilter("[IsDeleted] = 0");
-
-        entity.Ignore(x => x.DomainEvents);
+        entity.HasIndex(x => x.Name).IsUnique();
     }
 }

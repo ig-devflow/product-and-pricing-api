@@ -9,7 +9,7 @@ public sealed record DivisionListItemDto(
     string? City,
     string? CountryName,
     DateOnly CreatedAt,
-    string? CreatedByName,
+    string CreatedByName,
     DateOnly UpdatedAt,
-    string? UpdatedByName
+    string UpdatedByName
 );

@@ -70,14 +70,32 @@ internal sealed class ReferenceDataQuery : IReferenceDataQuery
         return (await connection.QueryAsync<AudienceReferenceDto>(command)).AsList();
     }
 
+    public async Task<IReadOnlyCollection<CentreContactTypeReferenceDto>> GetCentreContactTypesAsync(CancellationToken ct = default)
+    {
+        const string sql = """
+           SELECT Id, Name
+           FROM PricingRef.CentreContactType
+           WHERE IsDeleted = 0
+           ORDER BY Name;
+           """;
+
+        await using DbConnection connection = _connectionFactory.CreateConnection();
+
+        CommandDefinition command = new(
+            commandText: sql,
+            cancellationToken: ct);
+
+        return (await connection.QueryAsync<CentreContactTypeReferenceDto>(command)).AsList();
+    }
+
     public async Task<IReadOnlyCollection<UnitTypeReferenceDto>> GetUnitTypesAsync(CancellationToken ct = default)
     {
         const string sql = """
-                           SELECT Id, Name, Description
-                           FROM ReferenceData.UnitType
-                           WHERE IsDeleted = 0
-                           ORDER BY Name;
-                           """;
+           SELECT Id, Name, Description
+           FROM ReferenceData.UnitType
+           WHERE IsDeleted = 0
+           ORDER BY Name;
+           """;
 
         await using DbConnection connection = _connectionFactory.CreateConnection();
 
@@ -86,6 +104,78 @@ internal sealed class ReferenceDataQuery : IReferenceDataQuery
             cancellationToken: ct);
 
         return (await connection.QueryAsync<UnitTypeReferenceDto>(command)).AsList();
+    }
+
+    public async Task<IReadOnlyCollection<AccommodationRoomTypeReferenceDto>> GetAccommodationRoomTypesAsync(CancellationToken ct = default)
+    {
+        const string sql = """
+           SELECT Id, Name
+           FROM Product.AccommodationRoomType
+           WHERE IsDeleted = 0
+           ORDER BY Name;
+           """;
+
+        await using DbConnection connection = _connectionFactory.CreateConnection();
+
+        CommandDefinition command = new(
+            commandText: sql,
+            cancellationToken: ct);
+
+        return (await connection.QueryAsync<AccommodationRoomTypeReferenceDto>(command)).AsList();
+    }
+
+    public async Task<IReadOnlyCollection<AccommodationBoardTypeReferenceDto>> GetAccommodationBoardTypesAsync(CancellationToken ct = default)
+    {
+        const string sql = """
+           SELECT Id, Name
+           FROM Product.AccommodationBoardType
+           WHERE IsDeleted = 0
+           ORDER BY Name;
+           """;
+
+        await using DbConnection connection = _connectionFactory.CreateConnection();
+
+        CommandDefinition command = new(
+            commandText: sql,
+            cancellationToken: ct);
+
+        return (await connection.QueryAsync<AccommodationBoardTypeReferenceDto>(command)).AsList();
+    }
+
+    public async Task<IReadOnlyCollection<AccommodationBathroomTypeReferenceDto>> GetAccommodationBathroomTypesAsync(CancellationToken ct = default)
+    {
+        const string sql = """
+           SELECT Id, Name
+           FROM Product.AccommodationBathroomType
+           WHERE IsDeleted = 0
+           ORDER BY Name;
+           """;
+
+        await using DbConnection connection = _connectionFactory.CreateConnection();
+
+        CommandDefinition command = new(
+            commandText: sql,
+            cancellationToken: ct);
+
+        return (await connection.QueryAsync<AccommodationBathroomTypeReferenceDto>(command)).AsList();
+    }
+
+    public async Task<IReadOnlyCollection<AccommodationRoomGradeReferenceDto>> GetAccommodationRoomGradesAsync(CancellationToken ct = default)
+    {
+        const string sql = """
+           SELECT Id, Name
+           FROM Product.AccommodationRoomGrade
+           WHERE IsDeleted = 0
+           ORDER BY Name;
+           """;
+
+        await using DbConnection connection = _connectionFactory.CreateConnection();
+
+        CommandDefinition command = new(
+            commandText: sql,
+            cancellationToken: ct);
+
+        return (await connection.QueryAsync<AccommodationRoomGradeReferenceDto>(command)).AsList();
     }
 
     public async Task<IReadOnlyCollection<ContentTemplateReferenceDto>> GetContentTemplatesAsync(ContentTemplateScope? scope, CancellationToken ct = default)
@@ -106,5 +196,23 @@ internal sealed class ReferenceDataQuery : IReferenceDataQuery
             cancellationToken: ct);
 
         return (await connection.QueryAsync<ContentTemplateReferenceDto>(command)).AsList();
+    }
+
+    public async Task<IReadOnlyCollection<PrintFormatReferenceDto>> GetPrintFormatsAsync(CancellationToken ct = default)
+    {
+        const string sql = """
+           SELECT Id, Name
+           FROM PricingRef.PrintFormat
+           WHERE IsDeleted = 0
+           ORDER BY Name;
+           """;
+
+        await using DbConnection connection = _connectionFactory.CreateConnection();
+
+        CommandDefinition command = new(
+            commandText: sql,
+            cancellationToken: ct);
+
+        return (await connection.QueryAsync<PrintFormatReferenceDto>(command)).AsList();
     }
 }

@@ -2,7 +2,7 @@ using ProductsAndPricingNew.Application.Common.Models;
 
 namespace ProductsAndPricingNew.Application.Features.School.Abstractions;
 
-public interface ISchoolCommandPayload
+internal interface ISchoolCommandPayload
 {
     string Name { get; }
     string Code { get; }

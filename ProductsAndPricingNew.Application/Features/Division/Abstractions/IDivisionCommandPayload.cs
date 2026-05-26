@@ -2,7 +2,7 @@
 
 namespace ProductsAndPricingNew.Application.Features.Division.Abstractions;
 
-public interface IDivisionCommandPayload
+internal interface IDivisionCommandPayload
 {
     string Name { get; }
     string WebsiteUrl { get; }

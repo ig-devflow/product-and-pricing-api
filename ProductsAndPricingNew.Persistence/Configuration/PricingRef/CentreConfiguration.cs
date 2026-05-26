@@ -1,7 +1,9 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using ProductsAndPricingNew.Domain.Entities.PricingRef;
+using ProductsAndPricingNew.Domain.ReferenceData;
 using ProductsAndPricingNew.Domain.SharedKernel.ValueObjects;
+using CentreContactTypeEntity = ProductsAndPricingNew.Domain.ReferenceData.CentreContactType;
 
 namespace ProductsAndPricingNew.Persistence.Configuration.PricingRef;
 
@@ -23,10 +25,12 @@ internal sealed class CentreConfiguration : IEntityTypeConfiguration<Centre>
 
         entity.Property(x => x.CurrencyId).IsRequired();
 
-        entity.Property(x => x.PrintFormat)
-            .HasConversion<short>()
-            .HasColumnType("smallint")
-            .IsRequired();
+        entity.Property(x => x.PrintFormatId).IsRequired();
+
+        entity.HasOne<PrintFormat>()
+            .WithMany()
+            .HasForeignKey(x => x.PrintFormatId)
+            .OnDelete(DeleteBehavior.Restrict);
 
         entity.Property(x => x.Code)
             .HasMaxLength(Centre.Rules.CodeMaxLength)
@@ -73,7 +77,7 @@ internal sealed class CentreConfiguration : IEntityTypeConfiguration<Centre>
 
         entity.ConfigureAddress(x => x.ContactAddress, "Contact");
         entity.ConfigureBanner(x => x.LogoImage, "Logo");
-        entity.ConfigureAuditMetadata(x => x.AuditMetadata);
+        entity.ConfigureAuditAndConcurrency();
 
         entity.Property(x => x.GeneralEmail)
             .HasConversion(Converters.EmailAddress)
@@ -156,9 +160,14 @@ internal sealed class CentreConfiguration : IEntityTypeConfiguration<Centre>
         {
             contact.ToTable("CentreContacts", "PricingRef");
             contact.WithOwner().HasForeignKey("CentreId");
-            contact.HasKey("CentreId", nameof(CentreContact.ContactType));
+            contact.HasKey("CentreId", nameof(CentreContact.ContactTypeId));
 
-            contact.Property(x => x.ContactType).HasColumnType("smallint").IsRequired();
+            contact.Property(x => x.ContactTypeId).IsRequired();
+
+            contact.HasOne<CentreContactTypeEntity>()
+                .WithMany()
+                .HasForeignKey(x => x.ContactTypeId)
+                .OnDelete(DeleteBehavior.Restrict);
             contact.Property(x => x.Name).HasMaxLength(CentreContact.Rules.NameMaxLength).IsRequired();
             contact.Property(x => x.Email)
                 .HasConversion(Converters.EmailAddress)
@@ -169,16 +178,7 @@ internal sealed class CentreConfiguration : IEntityTypeConfiguration<Centre>
             contact.ConfigureBanner(x => x.SignatureImage, "Signature");
         });
 
-        entity.Property(x => x.Version).IsRowVersion();
-
-        entity.HasIndex(x => x.Name)
-            .IsUnique()
-            .HasFilter("[IsDeleted] = 0");
-
-        entity.HasIndex(x => x.Code)
-            .IsUnique()
-            .HasFilter("[IsDeleted] = 0");
-
-        entity.Ignore(x => x.DomainEvents);
+        entity.HasIndex(x => x.Name).IsUnique();
+        entity.HasIndex(x => x.Code).IsUnique();
     }
 }

@@ -1,10 +1,9 @@
-﻿using FluentResults;
+using FluentResults;
 using MediatR;
 using ProductsAndPricingNew.Application.Abstractions;
 using ProductsAndPricingNew.Application.Common.Models;
 using ProductsAndPricingNew.Application.Features.Centre.Abstractions;
 using ProductsAndPricingNew.Application.Features.Centre.Models;
-using ProductsAndPricingNew.Domain.Entities.PricingRef;
 
 namespace ProductsAndPricingNew.Application.Features.Centre.Commands.UpdateCentre;
 
@@ -13,7 +12,7 @@ public sealed record UpdateCentreCommand(
     string Name,
     string Code,
     int CurrencyId,
-    PrintFormat PrintFormat,
+    int PrintFormatId,
     bool IsActive,
     bool IsPhysicalCentre,
     CentreContactInfoDto ContactInfo,

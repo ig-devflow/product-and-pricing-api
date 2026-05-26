@@ -1,5 +1,6 @@
 ﻿using FluentResults;
 using MediatR;
+using ProductsAndPricingNew.Application.Features.AccommodationRoom.Abstractions;
 using ProductsAndPricingNew.Application.Features.AccommodationRoom.Models;
 
 namespace ProductsAndPricingNew.Application.Features.AccommodationRoom.Commands.CreateAccommodationRoom;
@@ -11,10 +12,10 @@ public sealed record CreateAccommodationRoomCommand(
     int UnitTypeId,
     bool IsActive,
     bool OccupyRoom,
-    RoomDetailsDto roomDetails,
+    RoomDetailsDto RoomDetails,
     int AccountCategoryId,
     int ProductCategoryId,
     string? GeneralLedgerCode,
     string? CostCentreCode,
     DateOnly? ClosurePolicy
-) : IRequest<Result<int>>;
+) : IRequest<Result<int>>, IAccommodationRoomCommandPayload;

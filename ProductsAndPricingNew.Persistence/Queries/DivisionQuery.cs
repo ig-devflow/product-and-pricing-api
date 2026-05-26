@@ -256,10 +256,9 @@ internal sealed class DivisionQuery : IDivisionQuery
             BuildEditorName(row.UpdatedByFirstName, row.UpdatedByLastName));
     }
 
-    internal static string? BuildEditorName(string? firstName, string? lastName)
+    internal static string BuildEditorName(string firstName, string lastName)
     {
-        string name = string.Join(" ", new[] { firstName, lastName }.Select(value => value!.Trim()));
-        return string.IsNullOrWhiteSpace(name) ? null : name;
+        return string.Join(" ", new[] { firstName, lastName }.Select(value => value!.Trim()));
     }
 
     private static DateOnly ToDateOnly(DateTimeOffset value) => DateOnly.FromDateTime(value.DateTime);
@@ -323,10 +322,10 @@ internal sealed class DivisionQuery : IDivisionQuery
         public byte[]? Version { get; init; }
         public DateTimeOffset CreatedAt { get; init; }
         public DateTimeOffset UpdatedAt { get; init; }
-        public string? CreatedByFirstName { get; init; }
-        public string? CreatedByLastName { get; init; }
-        public string? UpdatedByFirstName { get; init; }
-        public string? UpdatedByLastName { get; init; }
+        public string CreatedByFirstName { get; init; } = null!;
+        public string CreatedByLastName { get; init; } = null!;
+        public string UpdatedByFirstName { get; init; } = null!;
+        public string UpdatedByLastName { get; init; } = null!;
     }
 
     internal sealed class DivisionListItemRow
@@ -340,9 +339,9 @@ internal sealed class DivisionQuery : IDivisionQuery
         public string? CountryName { get; init; }
         public DateTimeOffset CreatedAt { get; init; }
         public DateTimeOffset UpdatedAt { get; init; }
-        public string? CreatedByFirstName { get; init; }
-        public string? CreatedByLastName { get; init; }
-        public string? UpdatedByFirstName { get; init; }
-        public string? UpdatedByLastName { get; init; }
+        public string CreatedByFirstName { get; init; } = null!;
+        public string CreatedByLastName { get; init; } = null!;
+        public string UpdatedByFirstName { get; init; } = null!;
+        public string UpdatedByLastName { get; init; } = null!;
     }
 }
