@@ -7,7 +7,7 @@ using ProductsAndPricingNew.Persistence.Queries.Configuration;
 
 namespace ProductsAndPricingNew.Persistence.Queries;
 
-internal sealed class AccommodationQuery : IAccommodationQuery
+internal sealed class AccommodationQuery : BaseQuery, IAccommodationQuery
 {
     private readonly ISqlConnectionFactory _connectionFactory;
 
@@ -173,15 +173,6 @@ internal sealed class AccommodationQuery : IAccommodationQuery
             Page: page,
             PageSize: pageSize);
     }
-
-    private static string BuildEditorName(string firstName, string lastName)
-    {
-        return string.Join(" ", new[] { firstName, lastName }.Where(v => !string.IsNullOrWhiteSpace(v)));
-    }
-
-    private static DateOnly ToDateOnly(DateTimeOffset value) => DateOnly.FromDateTime(value.DateTime);
-
-    private static string ToBase64Version(byte[]? version) => Convert.ToBase64String(version ?? []);
 
     private static AccommodationDetailsDto MapDetailsRow(AccommodationDetailsRow row)
     {

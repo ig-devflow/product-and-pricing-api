@@ -1,6 +1,5 @@
 using System.Data.Common;
 using Dapper;
-using ProductsAndPricingNew.Application.Common.Models;
 using ProductsAndPricingNew.Application.Common.Pagination;
 using ProductsAndPricingNew.Application.Features.Division.Abstractions;
 using ProductsAndPricingNew.Application.Features.Division.Models;
@@ -8,7 +7,7 @@ using ProductsAndPricingNew.Persistence.Queries.Configuration;
 
 namespace ProductsAndPricingNew.Persistence.Queries;
 
-internal sealed class DivisionQuery : IDivisionQuery
+internal sealed class DivisionQuery : BaseQuery, IDivisionQuery
 {
     private readonly ISqlConnectionFactory _connectionFactory;
 
@@ -230,8 +229,8 @@ internal sealed class DivisionQuery : IDivisionQuery
             row.WebsiteUrl,
             row.HeadOfficeEmail,
             row.HeadOfficeTelephoneNo,
-            MapBanner(row),
-            MapAddress(row),
+            MapImage(row.AccreditationBannerData, row.AccreditationBannerContentType, row.AccreditationBannerFileName),
+            MapAddress(row.Street, row.District, row.City, row.PostalCode, row.CountryId),
             texts,
             ToBase64Version(row.Version),
             ToDateOnly(row.CreatedAt),
@@ -255,51 +254,6 @@ internal sealed class DivisionQuery : IDivisionQuery
             ToDateOnly(row.UpdatedAt),
             BuildEditorName(row.UpdatedByFirstName, row.UpdatedByLastName));
     }
-
-    internal static string BuildEditorName(string firstName, string lastName)
-    {
-        return string.Join(" ", new[] { firstName, lastName }.Select(value => value!.Trim()));
-    }
-
-    private static DateOnly ToDateOnly(DateTimeOffset value) => DateOnly.FromDateTime(value.DateTime);
-
-    private static ImageFileDto? MapBanner(DivisionDetailsRow row)
-    {
-        bool isEmpty =
-            row.AccreditationBannerData is null &&
-            row.AccreditationBannerContentType is null &&
-            row.AccreditationBannerFileName is null;
-
-        if (isEmpty)
-            return null;
-
-        return new ImageFileDto(
-            row.AccreditationBannerData,
-            row.AccreditationBannerContentType,
-            row.AccreditationBannerFileName);
-    }
-
-    private static AddressDto? MapAddress(DivisionDetailsRow row)
-    {
-        bool isEmpty =
-            row.Street is null &&
-            row.District is null &&
-            row.City is null &&
-            row.PostalCode is null &&
-            row.CountryId is null;
-
-        if (isEmpty)
-            return null;
-
-        return new AddressDto(
-            row.Street,
-            row.District,
-            row.City,
-            row.PostalCode,
-            row.CountryId);
-    }
-
-    internal static string ToBase64Version(byte[]? version) => Convert.ToBase64String(version ?? []);
 
     internal sealed class DivisionDetailsRow
     {
