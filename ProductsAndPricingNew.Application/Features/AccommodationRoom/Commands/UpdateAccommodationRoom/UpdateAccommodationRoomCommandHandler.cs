@@ -51,7 +51,7 @@ internal sealed class UpdateAccommodationRoomCommandHandler : IRequestHandler<Up
         accommodationRoom.WithUnitType(unitType);
         accommodationRoom.SetIsActive(request.IsActive);
         accommodationRoom.SetOccupyRoom(request.OccupyRoom);
-        accommodationRoom.WithRoomDetails(request.roomDetails.ToDefinition());
+        accommodationRoom.WithRoomDetails(request.RoomDetails.ToDefinition());
         accommodationRoom.WithCategories(request.AccountCategoryId, request.ProductCategoryId);
         accommodationRoom.WithFinanceCodes(request.GeneralLedgerCode, request.CostCentreCode);
         accommodationRoom.WithClosurePolicy(request.ClosurePolicy);

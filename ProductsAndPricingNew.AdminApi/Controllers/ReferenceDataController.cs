@@ -3,6 +3,10 @@ using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using ProductsAndPricingNew.AdminApi.Extensions;
 using ProductsAndPricingNew.Application.Features.ReferenceData.Models;
+using ProductsAndPricingNew.Application.Features.ReferenceData.Queries.GetAccommodationBathroomTypes;
+using ProductsAndPricingNew.Application.Features.ReferenceData.Queries.GetAccommodationBoardTypes;
+using ProductsAndPricingNew.Application.Features.ReferenceData.Queries.GetAccommodationRoomGradesTypes;
+using ProductsAndPricingNew.Application.Features.ReferenceData.Queries.GetAccommodationRoomTypes;
 using ProductsAndPricingNew.Application.Features.ReferenceData.Queries.GetAudiences;
 using ProductsAndPricingNew.Application.Features.ReferenceData.Queries.GetCentreContactTypes;
 using ProductsAndPricingNew.Application.Features.ReferenceData.Queries.GetContentTemplates;
@@ -126,6 +130,62 @@ public sealed class ReferenceDataController : ControllerBase
     public async Task<ActionResult> GetPrintFormats(CancellationToken ct)
     {
         Result<IReadOnlyCollection<PrintFormatReferenceDto>> result = await _sender.Send(new GetPrintFormatsQuery(), ct);
+        return result.ToActionResult(this);
+    }
+    
+    /// <summary>
+    /// Gets active accommodation room types.
+    /// </summary>
+    /// <param name="ct">Cancellation token.</param>
+    /// <returns>A list of active accommodation room types.</returns>
+    /// <response code="200">Returns active accommodation room types.</response>
+    [HttpGet("accommodation-room-types")]
+    [ProducesResponseType(typeof(IReadOnlyCollection<AccommodationRoomTypeReferenceDto>), StatusCodes.Status200OK)]
+    public async Task<ActionResult> GetAccommodationRoomTypes(CancellationToken ct)
+    {
+        Result<IReadOnlyCollection<AccommodationRoomTypeReferenceDto>> result = await _sender.Send(new GetAccommodationRoomTypesQuery(), ct);
+        return result.ToActionResult(this);
+    }
+    
+    /// <summary>
+    /// Gets active accommodation bathroom types.
+    /// </summary>
+    /// <param name="ct">Cancellation token.</param>
+    /// <returns>A list of active accommodation bathroom types.</returns>
+    /// <response code="200">Returns active accommodation bathroom types.</response>
+    [HttpGet("accommodation-bathroom-types")]
+    [ProducesResponseType(typeof(IReadOnlyCollection<AccommodationBathroomTypeReferenceDto>), StatusCodes.Status200OK)]
+    public async Task<ActionResult> GetAccommodationBathroomTypes(CancellationToken ct)
+    {
+        Result<IReadOnlyCollection<AccommodationBathroomTypeReferenceDto>> result = await _sender.Send(new GetAccommodationBathroomTypesQuery(), ct);
+        return result.ToActionResult(this);
+    }
+    
+    /// <summary>
+    /// Gets active accommodation board types.
+    /// </summary>
+    /// <param name="ct">Cancellation token.</param>
+    /// <returns>A list of active accommodation board types.</returns>
+    /// <response code="200">Returns active accommodation board types.</response>
+    [HttpGet("accommodation-board-types")]
+    [ProducesResponseType(typeof(IReadOnlyCollection<AccommodationBoardTypeReferenceDto>), StatusCodes.Status200OK)]
+    public async Task<ActionResult> GetAccommodationBoardTypes(CancellationToken ct)
+    {
+        Result<IReadOnlyCollection<AccommodationBoardTypeReferenceDto>> result = await _sender.Send(new GetAccommodationBoardTypesQuery(), ct);
+        return result.ToActionResult(this);
+    }
+    
+    /// <summary>
+    /// Gets active accommodation room grades.
+    /// </summary>
+    /// <param name="ct">Cancellation token.</param>
+    /// <returns>A list of active accommodation room grades.</returns>
+    /// <response code="200">Returns active accommodation room grades.</response>
+    [HttpGet("accommodation-room-grades")]
+    [ProducesResponseType(typeof(IReadOnlyCollection<AccommodationRoomGradeReferenceDto>), StatusCodes.Status200OK)]
+    public async Task<ActionResult> GetAccommodationRoomGrades(CancellationToken ct)
+    {
+        Result<IReadOnlyCollection<AccommodationRoomGradeReferenceDto>> result = await _sender.Send(new GetAccommodationRoomGradesQuery(), ct);
         return result.ToActionResult(this);
     }
 }

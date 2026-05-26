@@ -43,7 +43,7 @@ internal sealed class CreateAccommodationRoomCommandHandler : IRequestHandler<Cr
         AccommodationRoomEntity accommodation = new AccommodationRoomEntity.Builder(request.AccommodationId, request.DivisionId, unitType, name)
             .SetIsActive(request.IsActive)
             .SetOccupyRoom(request.OccupyRoom)
-            .WithRoomDetails(request.roomDetails.ToDefinition())
+            .WithRoomDetails(request.RoomDetails.ToDefinition())
             .WithCategories(request.AccountCategoryId, request.ProductCategoryId)
             .WithFinanceCodes(request.GeneralLedgerCode, request.CostCentreCode)
             .WithClosurePolicy(request.ClosurePolicy)
