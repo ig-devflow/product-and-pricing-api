@@ -1,4 +1,5 @@
 using FluentValidation;
+using ProductsAndPricingNew.Application.Common.Validation.Abstractions;
 using ProductsAndPricingNew.Application.Common.Validation.Validators;
 using ProductsAndPricingNew.Application.Features.Centre.Models;
 using ProductsAndPricingNew.Domain.Entities.PricingRef;
@@ -8,11 +9,14 @@ namespace ProductsAndPricingNew.Application.Features.Centre.Validation;
 
 internal sealed class CentreContactDtoValidator : AbstractValidator<CentreContactDto>
 {
-    public CentreContactDtoValidator()
+    public CentreContactDtoValidator(IReferenceDataValidationQuery referenceData)
     {
         RuleFor(x => x.ContactTypeId)
-            .GreaterThan(0) // todo: 
-            .WithMessage("Contact type must be specified.");
+            .Cascade(CascadeMode.Stop)
+            .GreaterThan(0)
+            .WithMessage("Contact type id must be specified.")
+            .MustAsync((contactId, ct) => ContactTypeIsActiveAsync(referenceData, contactId, ct))
+            .WithMessage("Contact type must reference an active contact type."); ;
 
         RuleFor(x => x.Name)
             .Cascade(CascadeMode.Stop)
@@ -30,5 +34,14 @@ internal sealed class CentreContactDtoValidator : AbstractValidator<CentreContac
 
         RuleFor(x => x.SignatureImage)
             .SetValidator(new ImageBannerDtoValidator("Signature image", CentreContact.Rules.SignatureMaxBytes));
+    }
+
+    private static async Task<bool> ContactTypeIsActiveAsync(IReferenceDataValidationQuery referenceData, int? contactTypeId, CancellationToken ct)
+    {
+        if (contactTypeId is null or <= 0)
+            return true;
+
+        IReadOnlySet<int> activeContactTypeIds = await referenceData.GetActiveContactTypeIdsAsync(new[] { contactTypeId.Value }, ct);
+        return activeContactTypeIds.Contains(contactTypeId.Value);
     }
 }

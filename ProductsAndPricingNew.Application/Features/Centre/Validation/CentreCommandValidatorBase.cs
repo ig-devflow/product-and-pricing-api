@@ -37,8 +37,11 @@ internal abstract class CentreCommandValidatorBase<TCommand> : AbstractValidator
             .WithMessage("Currency must reference an active currency.");
 
         RuleFor(x => x.PrintFormatId)
-            .GreaterThan(0) // todo: ref check
-            .WithMessage("PrintFormat is required.");
+            .Cascade(CascadeMode.Stop)
+            .GreaterThan(0)
+            .WithMessage("PrintFormat is required.")
+            .MustAsync((formatId, ct) => PrintFormatIsActiveAsync(referenceData, formatId, ct))
+            .WithMessage("PrintFormat must reference an active format."); ;
 
         RuleFor(x => x.ContactInfo.GeneralEmail)
             .Cascade(CascadeMode.Stop)
@@ -121,7 +124,7 @@ internal abstract class CentreCommandValidatorBase<TCommand> : AbstractValidator
             .WithMessage("Duplicate contact for the same contact type.");
 
         RuleForEach(x => x.Contacts)
-            .SetValidator(new CentreContactDtoValidator());
+            .SetValidator(new CentreContactDtoValidator(referenceData));
 
         RuleFor(x => x.Texts)
             .Cascade(CascadeMode.Stop)
@@ -179,5 +182,14 @@ internal abstract class CentreCommandValidatorBase<TCommand> : AbstractValidator
 
         IReadOnlySet<int> activeCurrencyIds = await referenceData.GetActiveCurrencyIdsAsync(new[] { currencyId.Value }, ct);
         return activeCurrencyIds.Contains(currencyId.Value);
+    }
+
+    private static async Task<bool> PrintFormatIsActiveAsync(IReferenceDataValidationQuery referenceData, int? printFormatId, CancellationToken ct)
+    {
+        if (printFormatId is null or <= 0)
+            return true;
+
+        IReadOnlySet<int> printFormatsIds = await referenceData.GetActivePrintFormatsIdsAsync(new[] { printFormatId.Value }, ct);
+        return printFormatsIds.Contains(printFormatId.Value);
     }
 }

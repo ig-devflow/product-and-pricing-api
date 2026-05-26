@@ -9,6 +9,8 @@ internal sealed class ReferenceDataValidationQueryFake : IReferenceDataValidatio
     private readonly HashSet<int> _activeAudienceIds = new();
     private readonly HashSet<int> _activeCurrencyIds = new();
     private readonly HashSet<int> _activeUnitTypeIds = new();
+    private readonly HashSet<int> _activePrintFormatIds = new();
+    private readonly HashSet<int> _activeContactTypeIds = new();
     private readonly Dictionary<ContentTemplateScope, HashSet<int>> _activeContentTemplateIds = new();
 
     public ReferenceDataValidationQueryFake WithActiveCountries(params int[] ids)
@@ -26,6 +28,18 @@ internal sealed class ReferenceDataValidationQueryFake : IReferenceDataValidatio
     public ReferenceDataValidationQueryFake WithActiveCurrencies(params int[] ids)
     {
         AddRange(_activeCurrencyIds, ids);
+        return this;
+    }
+
+    public ReferenceDataValidationQueryFake WithActivePrintFormats(params int[] ids)
+    {
+        AddRange(_activePrintFormatIds, ids);
+        return this;
+    }
+
+    public ReferenceDataValidationQueryFake WithActiveContactTypes(params int[] ids)
+    {
+        AddRange(_activeContactTypeIds, ids);
         return this;
     }
 
@@ -55,6 +69,12 @@ internal sealed class ReferenceDataValidationQueryFake : IReferenceDataValidatio
 
     public Task<IReadOnlySet<int>> GetActiveCurrencyIdsAsync(IReadOnlyCollection<int> ids, CancellationToken ct = default)
         => Task.FromResult(Filter(ids, _activeCurrencyIds));
+
+    public Task<IReadOnlySet<int>> GetActivePrintFormatsIdsAsync(IReadOnlyCollection<int> ids, CancellationToken ct = default)
+        => Task.FromResult(Filter(ids, _activePrintFormatIds));
+
+    public Task<IReadOnlySet<int>> GetActiveContactTypeIdsAsync(IReadOnlyCollection<int> ids, CancellationToken ct = default)
+        => Task.FromResult(Filter(ids, _activeContactTypeIds));
 
     public Task<IReadOnlySet<int>> GetActiveUnitTypesIdsAsync(IReadOnlyCollection<int> ids, CancellationToken ct = default)
         => Task.FromResult(Filter(ids, _activeCurrencyIds));
