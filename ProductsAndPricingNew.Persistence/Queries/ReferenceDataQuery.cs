@@ -142,7 +142,7 @@ internal sealed class ReferenceDataQuery : IReferenceDataQuery
         return (await connection.QueryAsync<AccommodationBoardTypeReferenceDto>(command)).AsList();
     }
 
-    public async Task<IReadOnlyCollection<AccommodationBathroomTypeReferenceDto>> GeAccommodationBathroomTypesAsync(CancellationToken ct = default)
+    public async Task<IReadOnlyCollection<AccommodationBathroomTypeReferenceDto>> GetAccommodationBathroomTypesAsync(CancellationToken ct = default)
     {
         const string sql = """
            SELECT Id, Name

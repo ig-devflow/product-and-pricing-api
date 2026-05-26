@@ -144,7 +144,7 @@ internal sealed class ReferenceDataQueryFake : IReferenceDataQuery
         return Task.FromResult(_accommodationBoardTypes);
     }
 
-    public Task<IReadOnlyCollection<AccommodationBathroomTypeReferenceDto>> GeAccommodationBathroomTypesAsync(CancellationToken ct = default)
+    public Task<IReadOnlyCollection<AccommodationBathroomTypeReferenceDto>> GetAccommodationBathroomTypesAsync(CancellationToken ct = default)
     {
         GetAccommodationBathroomTypesCalls++;
         return Task.FromResult(_accommodationBathroomTypes);

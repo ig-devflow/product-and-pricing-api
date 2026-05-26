@@ -132,7 +132,7 @@ public sealed class ReferenceDataController : ControllerBase
         Result<IReadOnlyCollection<PrintFormatReferenceDto>> result = await _sender.Send(new GetPrintFormatsQuery(), ct);
         return result.ToActionResult(this);
     }
-    
+
     /// <summary>
     /// Gets active accommodation room types.
     /// </summary>
@@ -146,7 +146,7 @@ public sealed class ReferenceDataController : ControllerBase
         Result<IReadOnlyCollection<AccommodationRoomTypeReferenceDto>> result = await _sender.Send(new GetAccommodationRoomTypesQuery(), ct);
         return result.ToActionResult(this);
     }
-    
+
     /// <summary>
     /// Gets active accommodation bathroom types.
     /// </summary>
@@ -160,7 +160,7 @@ public sealed class ReferenceDataController : ControllerBase
         Result<IReadOnlyCollection<AccommodationBathroomTypeReferenceDto>> result = await _sender.Send(new GetAccommodationBathroomTypesQuery(), ct);
         return result.ToActionResult(this);
     }
-    
+
     /// <summary>
     /// Gets active accommodation board types.
     /// </summary>
@@ -174,7 +174,7 @@ public sealed class ReferenceDataController : ControllerBase
         Result<IReadOnlyCollection<AccommodationBoardTypeReferenceDto>> result = await _sender.Send(new GetAccommodationBoardTypesQuery(), ct);
         return result.ToActionResult(this);
     }
-    
+
     /// <summary>
     /// Gets active accommodation room grades.
     /// </summary>

@@ -6,7 +6,7 @@ namespace ProductsAndPricingNew.Application.Features.AccommodationRoom.Commands.
 
 internal sealed class CreateAccommodationRoomCommandValidator : AccommodationRoomCommandValidatorBase<CreateAccommodationRoomCommand>
 {
-    public CreateAccommodationRoomCommandValidator(IReferenceDataValidationQuery referenceData) : base(referenceData)
+    public CreateAccommodationRoomCommandValidator(IReferenceDataValidationQuery referenceDataValidation) : base(referenceDataValidation)
     {
         RuleFor(x => x.DivisionId)
             .GreaterThan(0) // todo: referenceData

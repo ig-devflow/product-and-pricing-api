@@ -16,7 +16,7 @@ internal sealed class GetAccommodationBathroomTypesQueryHandler : IRequestHandle
 
     public async Task<Result<IReadOnlyCollection<AccommodationBathroomTypeReferenceDto>>> Handle(GetAccommodationBathroomTypesQuery request, CancellationToken ct)
     {
-        IReadOnlyCollection<AccommodationBathroomTypeReferenceDto> result = await _referenceDataQuery.GeAccommodationBathroomTypesAsync(ct);
+        IReadOnlyCollection<AccommodationBathroomTypeReferenceDto> result = await _referenceDataQuery.GetAccommodationBathroomTypesAsync(ct);
         return Result.Ok(result);
     }
 }

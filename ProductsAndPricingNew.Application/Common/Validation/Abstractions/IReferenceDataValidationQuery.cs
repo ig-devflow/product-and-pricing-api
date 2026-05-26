@@ -11,4 +11,8 @@ public interface IReferenceDataValidationQuery
     Task<IReadOnlySet<int>> GetActivePrintFormatsIdsAsync(IReadOnlyCollection<int> ids, CancellationToken ct = default);
     Task<IReadOnlySet<int>> GetActiveContactTypeIdsAsync(IReadOnlyCollection<int> ids, CancellationToken ct = default);
     Task<IReadOnlySet<int>> GetActiveUnitTypesIdsAsync(IReadOnlyCollection<int> ids, CancellationToken ct = default);
+    Task<IReadOnlySet<int>> GetActiveAccommodationRoomTypesIdsAsync(IReadOnlyCollection<int> ids, CancellationToken ct = default);
+    Task<IReadOnlySet<int>> GetActiveAccommodationBoardTypesIdsAsync(IReadOnlyCollection<int> ids, CancellationToken ct = default);
+    Task<IReadOnlySet<int>> GetActiveAccommodationBathroomTypesIdsAsync(IReadOnlyCollection<int> ids, CancellationToken ct = default);
+    Task<IReadOnlySet<int>> GetActiveAccommodationRoomGradesIdsAsync(IReadOnlyCollection<int> ids, CancellationToken ct = default);
 }
