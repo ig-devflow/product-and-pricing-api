@@ -54,6 +54,8 @@ public readonly record struct WebsiteUrl : IEmptyValueObject
         return !string.IsNullOrWhiteSpace(uri.Host);
     }
 
+    public override string ToString() => Value ?? string.Empty;
+
     public static class Rules
     {
         public const int MaxLength = 255;

@@ -46,6 +46,8 @@ public readonly record struct EmailAddress : IEmptyValueObject
             throw new DomainException("Email must be a valid email address.");
     }
 
+    public override string ToString() => Value ?? string.Empty;
+
     public static class Rules
     {
         public const int MaxLength = 100;

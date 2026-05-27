@@ -56,6 +56,8 @@ public readonly record struct TelephoneNumber : IEmptyValueObject
         return digitsCount is >= Rules.MinDigits and <= Rules.MaxDigits;
     }
 
+    public override string ToString() => Value ?? string.Empty;
+
     public static class Rules
     {
         public const int MaxLength = 50;

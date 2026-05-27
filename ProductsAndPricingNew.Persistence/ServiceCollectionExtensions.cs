@@ -7,7 +7,6 @@ using ProductsAndPricingNew.Domain.UnitOfMeasure;
 using ProductsAndPricingNew.Persistence.Interceptors;
 using ProductsAndPricingNew.Persistence.Options;
 using ProductsAndPricingNew.Persistence.Queries.Configuration;
-using ProductsAndPricingNew.Persistence.Repositories;
 using ProductsAndPricingNew.Persistence.UnitOfMeasure;
 
 namespace ProductsAndPricingNew.Persistence;
@@ -44,7 +43,7 @@ public static class ServiceCollectionExtensions
         });
 
         services.Scan(scan => scan
-            .FromAssemblyOf<DivisionRepository>()
+            .FromAssemblyOf<SqlConnectionFactory>()
             .AddClasses(classes => classes.Where(type => type.Name.EndsWith("Repository")), publicOnly: false)
                 .AsMatchingInterface()
                 .WithScopedLifetime()
