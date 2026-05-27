@@ -4,7 +4,7 @@ using ProductsAndPricingNew.Domain.Common.Text;
 
 namespace ProductsAndPricingNew.Domain.SharedKernel.ValueObjects;
 
-public readonly struct EmailAddress : IEquatable<EmailAddress>, IEmptyValueObject
+public readonly record struct EmailAddress : IEmptyValueObject
 {
     private static readonly Regex EmailRegex = new(@"^(?!\.)(""([^""\r\\]|\\[""\r\\])*""|([-a-z0-9!#$%&'*+/=?^_`{|}~]|(?<!\.)\.)*)(?<!\.)@[a-z0-9][\w\.-]*[a-z0-9]\.[a-z][a-z\.]*[a-z]$", RegexOptions.Compiled | RegexOptions.CultureInvariant | RegexOptions.IgnoreCase, TimeSpan.FromSeconds(1));
 
@@ -46,19 +46,7 @@ public readonly struct EmailAddress : IEquatable<EmailAddress>, IEmptyValueObjec
             throw new DomainException("Email must be a valid email address.");
     }
 
-    public bool Equals(EmailAddress other) =>
-        string.Equals(Value, other.Value, StringComparison.OrdinalIgnoreCase);
-
-    public override bool Equals(object? obj) =>
-        obj is EmailAddress other && Equals(other);
-
-    public override int GetHashCode() =>
-        Value is null ? 0 : StringComparer.OrdinalIgnoreCase.GetHashCode(Value);
-
     public override string ToString() => Value ?? string.Empty;
-
-    public static bool operator ==(EmailAddress left, EmailAddress right) => left.Equals(right);
-    public static bool operator !=(EmailAddress left, EmailAddress right) => !left.Equals(right);
 
     public static class Rules
     {

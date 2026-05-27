@@ -7,5 +7,5 @@ public interface IAccommodationRoomQuery
 {
     Task<bool> ExistsByNameAsync(string name, int? excludingId = null, CancellationToken ct = default);
     Task<AccommodationRoomDetailsDto?> GetByIdAsync(int id, CancellationToken ct = default);
-    Task<PagedResult<AccommodationRoomListItemDto>> GetListAsync(string? search, bool? isActive, PagingFilter paging, CancellationToken ct = default);
+    Task<PagedResult<AccommodationRoomListItemDto>> GetListAsync(int divisionId, int accommodationId, string? search, bool? isActive, PagingFilter paging, CancellationToken ct = default);
 }

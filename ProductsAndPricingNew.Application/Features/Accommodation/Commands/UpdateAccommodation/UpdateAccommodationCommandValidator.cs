@@ -7,7 +7,7 @@ namespace ProductsAndPricingNew.Application.Features.Accommodation.Commands.Upda
 
 internal sealed class UpdateAccommodationCommandValidator : AccommodationCommandValidatorBase<UpdateAccommodationCommand>
 {
-    public UpdateAccommodationCommandValidator(IReferenceDataValidationQuery referenceData) : base(referenceData)
+    public UpdateAccommodationCommandValidator(IReferenceDataValidationQuery referenceDataValidation) : base(referenceDataValidation)
     {
         RuleFor(x => x.Id)
             .GreaterThan(0)

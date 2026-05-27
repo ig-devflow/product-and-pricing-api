@@ -4,6 +4,7 @@ using ProductsAndPricingNew.Application.Features.ReferenceData.Queries.GetAccomm
 using ProductsAndPricingNew.Application.Features.ReferenceData.Queries.GetAccommodationBoardTypes;
 using ProductsAndPricingNew.Application.Features.ReferenceData.Queries.GetAccommodationRoomGradesTypes;
 using ProductsAndPricingNew.Application.Features.ReferenceData.Queries.GetAccommodationRoomTypes;
+using ProductsAndPricingNew.Application.Features.ReferenceData.Queries.GetAccommodationTypes;
 using ProductsAndPricingNew.Application.Features.ReferenceData.Queries.GetAudiences;
 using ProductsAndPricingNew.Application.Features.ReferenceData.Queries.GetCentreContactTypes;
 using ProductsAndPricingNew.Application.Features.ReferenceData.Queries.GetContentTemplates;
@@ -135,6 +136,24 @@ public sealed class ReferenceDataQueryHandlerTests
         ResultAssertions.AssertSucceeded(result);
         Assert.Same(formats, result.Value);
         Assert.Equal(1, referenceDataQuery.GetPrintFormatsCalls);
+    }
+
+    [Fact]
+    public async Task AccommodationTypes_DelegatesToReferenceDataQuery_AndReturnsOk()
+    {
+        AccommodationTypeReferenceDto[] accommodationTypes =
+        [
+            new(1, "Residence")
+        ];
+        ReferenceDataQueryFake referenceDataQuery = new ReferenceDataQueryFake()
+            .WithAccommodationTypes(accommodationTypes);
+        GetAccommodationTypesQueryHandler handler = new(referenceDataQuery);
+
+        var result = await handler.Handle(new GetAccommodationTypesQuery(), CancellationToken.None);
+
+        ResultAssertions.AssertSucceeded(result);
+        Assert.Same(accommodationTypes, result.Value);
+        Assert.Equal(1, referenceDataQuery.GetAccommodationTypesCalls);
     }
 
     [Fact]

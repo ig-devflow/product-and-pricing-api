@@ -4,7 +4,7 @@ using ProductsAndPricingNew.Domain.Common.Text;
 
 namespace ProductsAndPricingNew.Domain.SharedKernel.ValueObjects;
 
-public readonly struct TelephoneNumber : IEquatable<TelephoneNumber>, IEmptyValueObject
+public readonly record struct TelephoneNumber : IEmptyValueObject
 {
     private static readonly Regex PhoneRegex = new(@"^[\d\s\-\(\)\+]+$", RegexOptions.Compiled | RegexOptions.CultureInvariant, TimeSpan.FromSeconds(1));
 
@@ -56,19 +56,7 @@ public readonly struct TelephoneNumber : IEquatable<TelephoneNumber>, IEmptyValu
         return digitsCount is >= Rules.MinDigits and <= Rules.MaxDigits;
     }
 
-    public bool Equals(TelephoneNumber other) =>
-        string.Equals(Value, other.Value, StringComparison.OrdinalIgnoreCase);
-
-    public override bool Equals(object? obj) =>
-        obj is TelephoneNumber other && Equals(other);
-
-    public override int GetHashCode() =>
-        Value is null ? 0 : StringComparer.OrdinalIgnoreCase.GetHashCode(Value);
-
     public override string ToString() => Value ?? string.Empty;
-
-    public static bool operator ==(TelephoneNumber left, TelephoneNumber right) => left.Equals(right);
-    public static bool operator !=(TelephoneNumber left, TelephoneNumber right) => !left.Equals(right);
 
     public static class Rules
     {

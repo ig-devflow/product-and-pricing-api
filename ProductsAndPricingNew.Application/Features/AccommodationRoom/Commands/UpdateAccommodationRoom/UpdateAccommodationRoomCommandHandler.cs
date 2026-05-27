@@ -41,7 +41,7 @@ internal sealed class UpdateAccommodationRoomCommandHandler : IRequestHandler<Up
 
         string name = request.Name.AsRequiredText(nameof(request.Name));
 
-        bool isNameTaken = await _accommodationRoomQuery.ExistsByNameAsync(name, request.Id, ct);
+        bool isNameTaken = await _accommodationRoomQuery.ExistsByNameAsync(name, request.Id, ct); //todo: ExistsByNameAsync scope by AccommodationId ???
         if (isNameTaken)
             return Result.Fail(new ConflictError($"Accommodation room name: '{name}' already exists"));
 

@@ -11,7 +11,7 @@ internal sealed class ReferenceDataValidationQueryFake : IReferenceDataValidatio
     private readonly HashSet<int> _activeUnitTypeIds = new();
     private readonly HashSet<int> _activePrintFormatIds = new();
     private readonly HashSet<int> _activeContactTypeIds = new();
-
+    private readonly HashSet<int> _activeAccommodationTypeIds = new();
     private readonly HashSet<int> _activeAccommodationRoomTypeIds = new();
     private readonly HashSet<int> _activeAccommodationBoardTypeIds = new();
     private readonly HashSet<int> _activeAccommodationBathroomTypeIds = new();
@@ -51,6 +51,12 @@ internal sealed class ReferenceDataValidationQueryFake : IReferenceDataValidatio
     public ReferenceDataValidationQueryFake WithActiveUnitTypes(params int[] ids)
     {
         AddRange(_activeUnitTypeIds, ids);
+        return this;
+    }
+
+    public ReferenceDataValidationQueryFake WithActiveAccommodationTypes(params int[] ids)
+    {
+        AddRange(_activeAccommodationTypeIds, ids);
         return this;
     }
 
@@ -106,7 +112,10 @@ internal sealed class ReferenceDataValidationQueryFake : IReferenceDataValidatio
         => Task.FromResult(Filter(ids, _activeContactTypeIds));
 
     public Task<IReadOnlySet<int>> GetActiveUnitTypesIdsAsync(IReadOnlyCollection<int> ids, CancellationToken ct = default)
-        => Task.FromResult(Filter(ids, _activeCurrencyIds));
+        => Task.FromResult(Filter(ids, _activeUnitTypeIds));
+
+    public Task<IReadOnlySet<int>> GetActiveAccommodationTypesIdsAsync(IReadOnlyCollection<int> ids, CancellationToken ct = default)
+        => Task.FromResult(Filter(ids, _activeAccommodationTypeIds));
 
     public Task<IReadOnlySet<int>> GetActiveAccommodationRoomTypesIdsAsync(IReadOnlyCollection<int> ids, CancellationToken ct = default)
         => Task.FromResult(Filter(ids, _activeAccommodationRoomTypeIds));

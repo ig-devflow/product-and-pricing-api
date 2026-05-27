@@ -1,6 +1,5 @@
 ﻿using System.Data.Common;
 using Dapper;
-using ProductsAndPricingNew.Application.Common.Models;
 using ProductsAndPricingNew.Application.Common.Pagination;
 using ProductsAndPricingNew.Application.Features.Centre.Abstractions;
 using ProductsAndPricingNew.Application.Features.Centre.Models;
@@ -8,7 +7,7 @@ using ProductsAndPricingNew.Persistence.Queries.Configuration;
 
 namespace ProductsAndPricingNew.Persistence.Queries;
 
-internal sealed class CentreQuery : ICentreQuery
+internal sealed class CentreQuery : BaseQuery, ICentreQuery
 {
     private readonly ISqlConnectionFactory _connectionFactory;
 
@@ -371,28 +370,6 @@ internal sealed class CentreQuery : ICentreQuery
             row.Email,
             MapImage(row.SignatureData, row.SignatureContentType, row.SignatureFileName)!);
     }
-
-    private static AddressDto? MapAddress(string? street, string? district, string? city, string? postalCode, int? countryId)
-    {
-        bool isEmpty = street is null && district is null && city is null && postalCode is null && countryId is null;
-        return isEmpty ? null : new AddressDto(street, district, city, postalCode, countryId);
-    }
-
-    private static ImageFileDto? MapImage(byte[]? data, string? contentType, string? fileName)
-    {
-        bool isEmpty = data is null && contentType is null && fileName is null;
-        return isEmpty ? null : new ImageFileDto(data, contentType, fileName);
-    }
-
-    private static string? BuildEditorName(string? firstName, string? lastName)
-    {
-        string name = string.Join(" ", new[] { firstName, lastName }.Where(v => !string.IsNullOrWhiteSpace(v)));
-        return string.IsNullOrWhiteSpace(name) ? null : name;
-    }
-
-    private static DateOnly ToDateOnly(DateTimeOffset value) => DateOnly.FromDateTime(value.DateTime);
-
-    private static string ToBase64Version(byte[]? version) => Convert.ToBase64String(version ?? []);
 
     private sealed class CentreDetailsRow
     {

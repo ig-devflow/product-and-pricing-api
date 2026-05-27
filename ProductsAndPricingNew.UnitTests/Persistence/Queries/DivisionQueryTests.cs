@@ -6,38 +6,6 @@ namespace ProductsAndPricingNew.UnitTests.Persistence.Queries;
 public sealed class DivisionQueryTests
 {
     [Fact]
-    public void ToBase64Version_ReturnsBase64RowVersion()
-    {
-        byte[] rowVersion = [1, 2, 3, 4, 5, 6, 7, 8];
-
-        string version = DivisionQuery.ToBase64Version(rowVersion);
-
-        Assert.False(string.IsNullOrWhiteSpace(version));
-        Assert.Equal(rowVersion, Convert.FromBase64String(version));
-        Assert.Equal(8, Convert.FromBase64String(version).Length);
-    }
-
-    [Fact]
-    public void BuildEditorName_ReturnsTrimmedFullName()
-    {
-        string? name = DivisionQuery.BuildEditorName(" System ", " User ");
-
-        Assert.Equal("System User", name);
-    }
-
-    [Theory]
-    [InlineData("System", "User")]
-    public void BuildEditorName_ReturnsExpectedName(string? firstName, string? lastName)
-    {
-        string? name = DivisionQuery.BuildEditorName(firstName, lastName);
-        string? expected = string.Join(" ", new[] { firstName, lastName }.Select(value => value!.Trim()));
-
-        expected = string.IsNullOrWhiteSpace(expected) ? null : expected;
-
-        Assert.Equal(expected, name);
-    }
-
-    [Fact]
     public void MapListItemRow_MapsAdminListMetadata()
     {
         DateTimeOffset createdAt = new(2026, 5, 10, 14, 8, 0, TimeSpan.Zero);

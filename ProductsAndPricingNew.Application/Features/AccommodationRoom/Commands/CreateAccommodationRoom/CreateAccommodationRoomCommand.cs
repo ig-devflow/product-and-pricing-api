@@ -1,5 +1,5 @@
 ﻿using FluentResults;
-using MediatR;
+using ProductsAndPricingNew.Application.Abstractions;
 using ProductsAndPricingNew.Application.Features.AccommodationRoom.Abstractions;
 using ProductsAndPricingNew.Application.Features.AccommodationRoom.Models;
 
@@ -18,4 +18,4 @@ public sealed record CreateAccommodationRoomCommand(
     string? GeneralLedgerCode,
     string? CostCentreCode,
     DateOnly? ClosurePolicy
-) : IRequest<Result<int>>, IAccommodationRoomCommandPayload;
+) : ICommand<Result<int>>, IAccommodationRoomCommandPayload;

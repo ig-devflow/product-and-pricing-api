@@ -7,12 +7,12 @@ using ProductsAndPricingNew.Domain.SharedKernel.ValueObjects;
 
 namespace ProductsAndPricingNew.Persistence.Interceptors;
 
-internal sealed class AuditSaveChangesInterceptor : SaveChangesInterceptor
+internal sealed class AuditInterceptor : SaveChangesInterceptor
 {
     private readonly ICurrentUser _currentUser;
     private readonly ISystemClock _clock;
 
-    public AuditSaveChangesInterceptor(ICurrentUser currentUser, ISystemClock clock)
+    public AuditInterceptor(ICurrentUser currentUser, ISystemClock clock)
     {
         _currentUser = currentUser;
         _clock = clock;
@@ -53,7 +53,7 @@ internal sealed class AuditSaveChangesInterceptor : SaveChangesInterceptor
                 continue;
             }
 
-            if (entry.State == EntityState.Modified)
+            if (entry.State == EntityState.Modified || entry.State == EntityState.Deleted)
             {
                 audit.CurrentValue = audit.CurrentValue.MarkUpdated(userId, utcNow);
             }

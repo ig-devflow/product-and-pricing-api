@@ -5,7 +5,7 @@ namespace ProductsAndPricingNew.Application.Features.Accommodation.Commands.Crea
 
 internal sealed class CreateAccommodationCommandValidator : AccommodationCommandValidatorBase<CreateAccommodationCommand>
 {
-    public CreateAccommodationCommandValidator(IReferenceDataValidationQuery referenceData) : base(referenceData)
+    public CreateAccommodationCommandValidator(IReferenceDataValidationQuery referenceDataValidation) : base(referenceDataValidation)
     {
     }
 }

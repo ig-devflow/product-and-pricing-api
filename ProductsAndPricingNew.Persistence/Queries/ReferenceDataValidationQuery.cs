@@ -195,6 +195,31 @@ internal sealed class ReferenceDataValidationQuery : IReferenceDataValidationQue
         return existingIds.ToHashSet();
     }
 
+    public async Task<IReadOnlySet<int>> GetActiveAccommodationTypesIdsAsync(IReadOnlyCollection<int> ids, CancellationToken ct = default)
+    {
+        int[] normalizedIds = GetDistinctPositiveIds(ids);
+
+        if (normalizedIds.Length == 0)
+            return new HashSet<int>();
+
+        const string sql = """
+                           SELECT t.Id
+                           FROM Product.AccommodationType t
+                           WHERE t.Id IN @Ids
+                             AND t.IsDeleted = 0;
+                           """;
+
+        await using DbConnection connection = _connectionFactory.CreateConnection();
+
+        CommandDefinition command = new(
+            commandText: sql,
+            parameters: new { Ids = normalizedIds, },
+            cancellationToken: ct);
+
+        IEnumerable<int> existingIds = await connection.QueryAsync<int>(command);
+        return existingIds.ToHashSet();
+    }
+
     public async Task<IReadOnlySet<int>> GetActiveAccommodationRoomTypesIdsAsync(IReadOnlyCollection<int> ids, CancellationToken ct = default)
     {
         int[] normalizedIds = GetDistinctPositiveIds(ids);

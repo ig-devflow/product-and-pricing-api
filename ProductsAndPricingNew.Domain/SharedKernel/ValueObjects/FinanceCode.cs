@@ -2,7 +2,7 @@ using ProductsAndPricingNew.Domain.Common.Text;
 
 namespace ProductsAndPricingNew.Domain.SharedKernel.ValueObjects;
 
-public readonly struct FinanceCode : IEquatable<FinanceCode>, IEmptyValueObject
+public readonly record struct FinanceCode : IEmptyValueObject
 {
     public string Value { get; }
 
@@ -29,20 +29,6 @@ public readonly struct FinanceCode : IEquatable<FinanceCode>, IEmptyValueObject
 
         return normalized.Length <= Rules.MaxLength;
     }
-
-    public bool Equals(FinanceCode other) =>
-        string.Equals(Value, other.Value, StringComparison.OrdinalIgnoreCase);
-
-    public override bool Equals(object? obj) =>
-        obj is FinanceCode other && Equals(other);
-
-    public override int GetHashCode() =>
-        StringComparer.OrdinalIgnoreCase.GetHashCode(Value);
-
-    public override string ToString() => Value;
-
-    public static bool operator ==(FinanceCode left, FinanceCode right) => left.Equals(right);
-    public static bool operator !=(FinanceCode left, FinanceCode right) => !left.Equals(right);
 
     public static class Rules
     {

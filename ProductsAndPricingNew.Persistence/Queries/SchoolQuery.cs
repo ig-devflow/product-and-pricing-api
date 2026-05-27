@@ -1,6 +1,5 @@
 using System.Data.Common;
 using Dapper;
-using ProductsAndPricingNew.Application.Common.Models;
 using ProductsAndPricingNew.Application.Common.Pagination;
 using ProductsAndPricingNew.Application.Features.School.Abstractions;
 using ProductsAndPricingNew.Application.Features.School.Models;
@@ -8,7 +7,7 @@ using ProductsAndPricingNew.Persistence.Queries.Configuration;
 
 namespace ProductsAndPricingNew.Persistence.Queries;
 
-internal sealed class SchoolQuery : ISchoolQuery
+internal sealed class SchoolQuery : BaseQuery, ISchoolQuery
 {
     private readonly ISqlConnectionFactory _connectionFactory;
 
@@ -249,20 +248,20 @@ internal sealed class SchoolQuery : ISchoolQuery
             BuildEditorName(row.UpdatedByFirstName, row.UpdatedByLastName));
     }
 
-    private static AddressDto? MapAddress(string? street, string? district, string? city, string? postalCode, int? countryId)
-    {
-        bool isEmpty = street is null && district is null && city is null && postalCode is null && countryId is null;
-        return isEmpty ? null : new AddressDto(street, district, city, postalCode, countryId);
-    }
-
-    private static string BuildEditorName(string firstName, string lastName)
-    {
-        return string.Join(" ", new[] { firstName, lastName }.Where(v => !string.IsNullOrWhiteSpace(v)));
-    }
-
-    private static DateOnly ToDateOnly(DateTimeOffset value) => DateOnly.FromDateTime(value.DateTime);
-
-    private static string ToBase64Version(byte[]? version) => Convert.ToBase64String(version ?? []);
+    // private static AddressDto? MapAddress(string? street, string? district, string? city, string? postalCode, int? countryId)
+    // {
+    //     bool isEmpty = street is null && district is null && city is null && postalCode is null && countryId is null;
+    //     return isEmpty ? null : new AddressDto(street, district, city, postalCode, countryId);
+    // }
+    //
+    // private static string BuildEditorName(string firstName, string lastName)
+    // {
+    //     return string.Join(" ", new[] { firstName, lastName }.Where(v => !string.IsNullOrWhiteSpace(v)));
+    // }
+    //
+    // private static DateOnly ToDateOnly(DateTimeOffset value) => DateOnly.FromDateTime(value.DateTime);
+    //
+    // private static string ToBase64Version(byte[]? version) => Convert.ToBase64String(version ?? []);
 
     private sealed class SchoolDetailsRow
     {

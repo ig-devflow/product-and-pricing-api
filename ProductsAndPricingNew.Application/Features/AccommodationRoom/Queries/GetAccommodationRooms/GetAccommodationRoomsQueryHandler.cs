@@ -21,6 +21,8 @@ internal sealed class GetAccommodationRoomsQueryHandler : IRequestHandler<GetAcc
         string? normalizedSearch = request.Search.AsOptionalText();
 
         PagedResult<AccommodationRoomListItemDto> result = await _accommodationRoomQuery.GetListAsync(
+            request.DivisionId,
+            request.AccommodationId,
             normalizedSearch,
             request.IsActive,
             request.Paging,
