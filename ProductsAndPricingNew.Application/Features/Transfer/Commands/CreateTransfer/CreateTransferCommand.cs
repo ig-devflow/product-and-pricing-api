@@ -1,5 +1,6 @@
 ﻿using FluentResults;
-using MediatR;
+using ProductsAndPricingNew.Application.Abstractions;
+using ProductsAndPricingNew.Application.Features.Transfer.Abstractions;
 
 namespace ProductsAndPricingNew.Application.Features.Transfer.Commands.CreateTransfer;
 
@@ -17,4 +18,4 @@ public sealed record CreateTransferCommand(
     string? GeneralLedgerCode,
     string? CostCentreCode,
     DateOnly? ClosurePolicy
-) : IRequest<Result<int>>;
+) : ICommand<Result<int>>, ITransferCommandPayload;

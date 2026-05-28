@@ -1,6 +1,7 @@
 ﻿using FluentResults;
 using MediatR;
 using ProductsAndPricingNew.Application.Abstractions;
+using ProductsAndPricingNew.Application.Features.AddOn.Abstractions;
 using ProductsAndPricingNew.Domain.Entities.Products;
 
 namespace ProductsAndPricingNew.Application.Features.AddOn.Commands.UpdateAddOn;
@@ -20,4 +21,4 @@ public sealed record UpdateAddOnCommand(
     string? CostCentreCode,
     DateOnly? ClosurePolicy,
     string Version
-) : ICommand<Result<Unit>>;
+) : ICommand<Result<Unit>>, IAddOnCommandPayload;

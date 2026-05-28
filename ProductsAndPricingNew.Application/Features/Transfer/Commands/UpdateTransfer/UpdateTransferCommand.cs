@@ -1,6 +1,7 @@
 ﻿using FluentResults;
 using MediatR;
 using ProductsAndPricingNew.Application.Abstractions;
+using ProductsAndPricingNew.Application.Features.Transfer.Abstractions;
 
 namespace ProductsAndPricingNew.Application.Features.Transfer.Commands.UpdateTransfer;
 
@@ -19,4 +20,4 @@ public sealed record UpdateTransferCommand(
     string? CostCentreCode,
     DateOnly? ClosurePolicy,
     string Version
-) : ICommand<Result<Unit>>;
+) : ICommand<Result<Unit>>, ITransferCommandPayload;

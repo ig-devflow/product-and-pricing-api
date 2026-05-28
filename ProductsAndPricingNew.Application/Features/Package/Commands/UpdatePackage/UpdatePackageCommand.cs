@@ -1,6 +1,7 @@
 ﻿using FluentResults;
 using MediatR;
 using ProductsAndPricingNew.Application.Abstractions;
+using ProductsAndPricingNew.Application.Features.Package.Abstractions;
 using ProductsAndPricingNew.Application.Features.Package.Models;
 
 namespace ProductsAndPricingNew.Application.Features.Package.Commands.UpdatePackage;
@@ -22,4 +23,7 @@ public sealed record UpdatePackageCommand(
     DateOnly? ClosurePolicy,
     IReadOnlyCollection<PackageItemDto> PackageItems,
     string Version
-) : ICommand<Result<Unit>>;
+) : ICommand<Result<Unit>>, IPackageCommandPayload
+{
+    IReadOnlyCollection<PackageItemDto> IPackageCommandPayload.Items => PackageItems;
+}

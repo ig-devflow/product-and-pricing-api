@@ -1,5 +1,6 @@
 ﻿using FluentResults;
-using MediatR;
+using ProductsAndPricingNew.Application.Abstractions;
+using ProductsAndPricingNew.Application.Features.AddOn.Abstractions;
 using ProductsAndPricingNew.Domain.Entities.Products;
 
 namespace ProductsAndPricingNew.Application.Features.AddOn.Commands.CreateAddOn;
@@ -18,4 +19,4 @@ public sealed record CreateAddOnCommand(
     string? GeneralLedgerCode,
     string? CostCentreCode,
     DateOnly? ClosurePolicy
-) : IRequest<Result<int>>;
+) : ICommand<Result<int>>, IAddOnCommandPayload;
