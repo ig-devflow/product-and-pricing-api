@@ -1,5 +1,6 @@
 ﻿using FluentResults;
-using MediatR;
+using ProductsAndPricingNew.Application.Abstractions;
+using ProductsAndPricingNew.Application.Features.Package.Abstractions;
 using ProductsAndPricingNew.Application.Features.Package.Models;
 
 namespace ProductsAndPricingNew.Application.Features.Package.Commands.CreatePackage;
@@ -20,4 +21,4 @@ public sealed record CreatePackageCommand(
     string? CostCentreCode,
     DateOnly? ClosurePolicy,
     IReadOnlyCollection<PackageItemDto> Items
-) : IRequest<Result<int>>;
+) : ICommand<Result<int>>, IPackageCommandPayload;

@@ -1,5 +1,6 @@
 ﻿using FluentResults;
-using MediatR;
+using ProductsAndPricingNew.Application.Abstractions;
+using ProductsAndPricingNew.Application.Features.Course.Abstractions;
 
 namespace ProductsAndPricingNew.Application.Features.Course.Commands.CreateCourse;
 
@@ -18,4 +19,4 @@ public sealed record CreateCourseCommand(
     string? GeneralLedgerCode,
     string? CostCentreCode,
     DateOnly? ClosurePolicy
-) : IRequest<Result<int>>;
+) : ICommand<Result<int>>, ICourseCommandPayload;

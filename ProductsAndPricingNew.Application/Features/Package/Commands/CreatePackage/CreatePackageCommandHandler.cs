@@ -40,16 +40,13 @@ internal sealed class CreatePackageCommandHandler : IRequestHandler<CreatePackag
 
         UnitType unitType = _unitTypeProvider.Get(request.UnitTypeId);
 
-        IEnumerable<PackageItemDefinition> items = request.Items
-            .Select(i => new PackageItemDefinition(i.ProductKind, i.ProductId, i.PriceBreakdown));
-
         PackageEntity package = new PackageEntity.Builder(request.DivisionId, name, unitType)
             .SetIsActive(request.IsActive)
             .WithDescription(request.Description)
             .WithCommission(request.Commission)
             .WithAgeRange(request.AgeFrom, request.AgeTo)
             .WithMinimumWeeks(request.MinimumWeeks)
-            .WithItems(items)
+            .WithItems(request.Items.Select(i => new PackageItemDefinition(i.ProductKind, i.ProductId, i.PriceBreakdown)))
             .WithCategories(request.AccountCategoryId, request.ProductCategoryId)
             .WithFinanceCodes(request.GeneralLedgerCode, request.CostCentreCode)
             .WithClosurePolicy(request.ClosurePolicy)

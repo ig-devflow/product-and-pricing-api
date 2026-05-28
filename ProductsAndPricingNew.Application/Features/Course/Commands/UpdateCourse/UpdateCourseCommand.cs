@@ -1,6 +1,7 @@
 ﻿using FluentResults;
 using MediatR;
 using ProductsAndPricingNew.Application.Abstractions;
+using ProductsAndPricingNew.Application.Features.Course.Abstractions;
 
 namespace ProductsAndPricingNew.Application.Features.Course.Commands.UpdateCourse;
 
@@ -20,4 +21,4 @@ public sealed record UpdateCourseCommand(
     string? CostCentreCode,
     DateOnly? ClosurePolicy,
     string Version
-) : ICommand<Result<Unit>>;
+) : ICommand<Result<Unit>>, ICourseCommandPayload;
