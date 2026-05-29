@@ -170,6 +170,21 @@ internal sealed class ReferenceDataQueryFake : IReferenceDataQuery
         return Task.FromResult(_accommodationRoomGrades);
     }
 
+    public Task<IReadOnlyCollection<TransferTypeReferenceDto>> GetTransferTypesAsync(CancellationToken ct = default)
+    {
+        throw new NotImplementedException();
+    }
+
+    public Task<IReadOnlyCollection<CourseLanguageReferenceDto>> GetCourseLanguagesAsync(CancellationToken ct = default)
+    {
+        throw new NotImplementedException();
+    }
+
+    public Task<IReadOnlyCollection<CourseIntensityReferenceDto>> GetCourseIntensitiesAsync(CancellationToken ct = default)
+    {
+        throw new NotImplementedException();
+    }
+
     public Task<IReadOnlyCollection<ContentTemplateReferenceDto>> GetContentTemplatesAsync(ContentTemplateScope? scope, CancellationToken ct = default)
     {
         GetContentTemplatesCalls++;

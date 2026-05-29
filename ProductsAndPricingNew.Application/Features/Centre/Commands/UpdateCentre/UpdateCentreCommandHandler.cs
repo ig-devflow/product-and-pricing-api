@@ -57,7 +57,7 @@ internal sealed class UpdateCentreCommandHandler : IRequestHandler<UpdateCentreC
         centre.WithTelephone(contactInfo.Telephone);
         centre.WithEmergencyTelephone(contactInfo.EmergencyTelephone);
         centre.WithTransferEmergencyTelephone(contactInfo.TransferEmergencyTelephone);
-        centre.ChangeBrandColor(contactInfo.BrandColor);
+        centre.WithBrandColor(contactInfo.BrandColor);
         centre.WithContactAddress(contactInfo.ContactAddress.ToDefinition());
         centre.WithLogo(contactInfo.LogoImage.ToDefinition());
         centre.WithSchoolSponsorshipNumber(legalInfo.SchoolSponsorshipNumber);

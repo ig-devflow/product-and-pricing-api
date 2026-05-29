@@ -9,6 +9,7 @@ using ProductsAndPricingNew.Application.Features.Division.Commands.CreateDivisio
 using ProductsAndPricingNew.Application.Features.Division.Commands.UpdateDivision;
 using ProductsAndPricingNew.Application.Features.Division.Models;
 using ProductsAndPricingNew.Application.Features.Division.Queries.GetDivisionById;
+using ProductsAndPricingNew.Application.Features.Division.Queries.GetDivisionOptions;
 using ProductsAndPricingNew.Application.Features.Division.Queries.GetDivisions;
 
 namespace ProductsAndPricingNew.AdminApi.Controllers;
@@ -44,6 +45,20 @@ public sealed class DivisionController : ControllerBase
     {
         var query = _mapper.Map<GetDivisionsQuery>(request);
         Result<PagedResult<DivisionListItemDto>> result = await _sender.Send(query, ct);
+        return result.ToActionResult(this);
+    }
+
+    /// <summary>
+    /// Gets divisions as lightweight id/name options for selects.
+    /// </summary>
+    /// <param name="ct">Cancellation token.</param>
+    /// <returns>A list of division options.</returns>
+    /// <response code="200">Returns division options.</response>
+    [HttpGet("options")]
+    [ProducesResponseType(typeof(IReadOnlyCollection<DivisionOptionDto>), StatusCodes.Status200OK)]
+    public async Task<ActionResult> GetOptions(CancellationToken ct)
+    {
+        Result<IReadOnlyCollection<DivisionOptionDto>> result = await _sender.Send(new GetDivisionOptionsQuery(), ct);
         return result.ToActionResult(this);
     }
 

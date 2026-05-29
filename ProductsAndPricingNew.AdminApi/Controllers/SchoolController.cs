@@ -9,6 +9,7 @@ using ProductsAndPricingNew.Application.Features.School.Commands.CreateSchool;
 using ProductsAndPricingNew.Application.Features.School.Commands.UpdateSchool;
 using ProductsAndPricingNew.Application.Features.School.Models;
 using ProductsAndPricingNew.Application.Features.School.Queries.GetSchoolById;
+using ProductsAndPricingNew.Application.Features.School.Queries.GetSchoolOptions;
 using ProductsAndPricingNew.Application.Features.School.Queries.GetSchools;
 
 namespace ProductsAndPricingNew.AdminApi.Controllers;
@@ -64,6 +65,21 @@ public class SchoolController : ControllerBase
     {
         var query = _mapper.Map<GetSchoolsQuery>(request);
         Result<PagedResult<SchoolListItemDto>> result = await _sender.Send(query, ct);
+        return result.ToActionResult(this);
+    }
+
+    /// <summary>
+    /// Gets schools as lightweight id/name options for selects.
+    /// </summary>
+    /// <param name="centreId">Optional centre filter.</param>
+    /// <param name="ct">Cancellation token.</param>
+    /// <returns>A list of school options.</returns>
+    /// <response code="200">Returns school options.</response>
+    [HttpGet("api/v1/schools/options")]
+    [ProducesResponseType(typeof(IReadOnlyCollection<SchoolOptionDto>), StatusCodes.Status200OK)]
+    public async Task<ActionResult> GetOptions([FromQuery] int? centreId, CancellationToken ct)
+    {
+        Result<IReadOnlyCollection<SchoolOptionDto>> result = await _sender.Send(new GetSchoolOptionsQuery(centreId), ct);
         return result.ToActionResult(this);
     }
 
