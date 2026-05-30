@@ -88,7 +88,7 @@ internal sealed class AccommodationQuery : BaseQuery, IAccommodationQuery
         const string sql = """
            SELECT COUNT(1)
            FROM Product.Accommodation a
-           LEFT JOIN ReferenceData.AccommodationType acct
+           LEFT JOIN Product.AccommodationType acct
                ON acct.Id = a.AccommodationTypeId
               AND acct.IsDeleted = 0
            LEFT JOIN Edit.Editor createdEditor
@@ -119,7 +119,7 @@ internal sealed class AccommodationQuery : BaseQuery, IAccommodationQuery
                updatedEditor.FirstName AS UpdatedByFirstName,
                updatedEditor.LastName  AS UpdatedByLastName
            FROM Product.Accommodation a
-           LEFT JOIN ReferenceData.AccommodationType acct
+           LEFT JOIN Product.AccommodationType acct
                ON acct.Id = a.AccommodationTypeId
               AND acct.IsDeleted = 0
            LEFT JOIN Edit.Editor createdEditor
