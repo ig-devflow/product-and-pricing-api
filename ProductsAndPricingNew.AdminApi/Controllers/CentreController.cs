@@ -9,6 +9,7 @@ using ProductsAndPricingNew.Application.Features.Centre.Commands.CreateCentre;
 using ProductsAndPricingNew.Application.Features.Centre.Commands.UpdateCentre;
 using ProductsAndPricingNew.Application.Features.Centre.Models;
 using ProductsAndPricingNew.Application.Features.Centre.Queries.GetCentreById;
+using ProductsAndPricingNew.Application.Features.Centre.Queries.GetCentreOptions;
 using ProductsAndPricingNew.Application.Features.Centre.Queries.GetCentres;
 
 namespace ProductsAndPricingNew.AdminApi.Controllers;
@@ -44,6 +45,20 @@ public class CentreController : ControllerBase
     {
         var query = _mapper.Map<GetCentresQuery>(request);
         Result<PagedResult<CentreListItemDto>> result = await _sender.Send(query, ct);
+        return result.ToActionResult(this);
+    }
+
+    /// <summary>
+    /// Gets centres as lightweight id/name options for selects.
+    /// </summary>
+    /// <param name="ct">Cancellation token.</param>
+    /// <returns>A list of centre options.</returns>
+    /// <response code="200">Returns centre options.</response>
+    [HttpGet("options")]
+    [ProducesResponseType(typeof(IReadOnlyCollection<CentreOptionDto>), StatusCodes.Status200OK)]
+    public async Task<ActionResult> GetOptions(CancellationToken ct)
+    {
+        Result<IReadOnlyCollection<CentreOptionDto>> result = await _sender.Send(new GetCentreOptionsQuery(), ct);
         return result.ToActionResult(this);
     }
 

@@ -1,0 +1,23 @@
+{
+  "folders": [
+	{
+		"path": "../.."
+	},
+	{
+		"path": "../../../../vue_clone/EC.ProductsAndPricing.Domain"
+	},
+	{
+		"path": "../../../../vue_clone/ProductsAndPricing/EC.ProductsAndPricing.NHibernate"
+	},
+	{
+		"path": "../../../../vue_clone/ProductsAndPricing/EC.ProductsAndPricing.Edit"
+	},
+	{
+		"path": "../../../../vue_clone/ProductsAndPricing/EC.ProductsAndPricing.AdminApi"
+	},
+	{
+		"path": "../../../../vue_clone/ProductsAndPricing/EC.ProductsAndPricing.Application"
+	}
+],
+  "settings": {}
+}

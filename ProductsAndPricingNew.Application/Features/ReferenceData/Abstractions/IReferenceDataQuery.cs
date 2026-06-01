@@ -17,4 +17,7 @@ public interface IReferenceDataQuery
     Task<IReadOnlyCollection<AccommodationBoardTypeReferenceDto>> GetAccommodationBoardTypesAsync(CancellationToken ct = default);
     Task<IReadOnlyCollection<AccommodationBathroomTypeReferenceDto>> GetAccommodationBathroomTypesAsync(CancellationToken ct = default);
     Task<IReadOnlyCollection<AccommodationRoomGradeReferenceDto>> GetAccommodationRoomGradesAsync(CancellationToken ct = default);
+    Task<IReadOnlyCollection<TransferTypeReferenceDto>> GetTransferTypesAsync(CancellationToken ct = default);
+    Task<IReadOnlyCollection<CourseLanguageReferenceDto>> GetCourseLanguagesAsync(CancellationToken ct = default);
+    Task<IReadOnlyCollection<CourseIntensityReferenceDto>> GetCourseIntensitiesAsync(CancellationToken ct = default);
 }

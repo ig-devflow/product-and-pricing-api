@@ -12,8 +12,11 @@ using ProductsAndPricingNew.Application.Features.ReferenceData.Queries.GetAudien
 using ProductsAndPricingNew.Application.Features.ReferenceData.Queries.GetCentreContactTypes;
 using ProductsAndPricingNew.Application.Features.ReferenceData.Queries.GetContentTemplates;
 using ProductsAndPricingNew.Application.Features.ReferenceData.Queries.GetCountries;
+using ProductsAndPricingNew.Application.Features.ReferenceData.Queries.GetCourseIntensities;
+using ProductsAndPricingNew.Application.Features.ReferenceData.Queries.GetCourseLanguages;
 using ProductsAndPricingNew.Application.Features.ReferenceData.Queries.GetCurrencies;
 using ProductsAndPricingNew.Application.Features.ReferenceData.Queries.GetPrintFormats;
+using ProductsAndPricingNew.Application.Features.ReferenceData.Queries.GetTransferTypes;
 using ProductsAndPricingNew.Application.Features.ReferenceData.Queries.GetUnitTypes;
 using ProductsAndPricingNew.Domain.ReferenceData;
 
@@ -201,6 +204,48 @@ public sealed class ReferenceDataController : ControllerBase
     public async Task<ActionResult> GetAccommodationRoomGrades(CancellationToken ct)
     {
         Result<IReadOnlyCollection<AccommodationRoomGradeReferenceDto>> result = await _sender.Send(new GetAccommodationRoomGradesQuery(), ct);
+        return result.ToActionResult(this);
+    }
+
+    /// <summary>
+    /// Gets active transfer types.
+    /// </summary>
+    /// <param name="ct">Cancellation token.</param>
+    /// <returns>A list of active transfer types.</returns>
+    /// <response code="200">Returns active transfer types.</response>
+    [HttpGet("transfer-types")]
+    [ProducesResponseType(typeof(IReadOnlyCollection<TransferTypeReferenceDto>), StatusCodes.Status200OK)]
+    public async Task<ActionResult> GetTransferTypes(CancellationToken ct)
+    {
+        Result<IReadOnlyCollection<TransferTypeReferenceDto>> result = await _sender.Send(new GetTransferTypesQuery(), ct);
+        return result.ToActionResult(this);
+    }
+
+    /// <summary>
+    /// Gets active course languages.
+    /// </summary>
+    /// <param name="ct">Cancellation token.</param>
+    /// <returns>A list of active course languages.</returns>
+    /// <response code="200">Returns active course languages.</response>
+    [HttpGet("course-languages")]
+    [ProducesResponseType(typeof(IReadOnlyCollection<CourseLanguageReferenceDto>), StatusCodes.Status200OK)]
+    public async Task<ActionResult> GetCourseLanguages(CancellationToken ct)
+    {
+        Result<IReadOnlyCollection<CourseLanguageReferenceDto>> result = await _sender.Send(new GetCourseLanguagesQuery(), ct);
+        return result.ToActionResult(this);
+    }
+
+    /// <summary>
+    /// Gets active course intensities.
+    /// </summary>
+    /// <param name="ct">Cancellation token.</param>
+    /// <returns>A list of active course intensities.</returns>
+    /// <response code="200">Returns active course intensities.</response>
+    [HttpGet("course-intensities")]
+    [ProducesResponseType(typeof(IReadOnlyCollection<CourseIntensityReferenceDto>), StatusCodes.Status200OK)]
+    public async Task<ActionResult> GetCourseIntensities(CancellationToken ct)
+    {
+        Result<IReadOnlyCollection<CourseIntensityReferenceDto>> result = await _sender.Send(new GetCourseIntensitiesQuery(), ct);
         return result.ToActionResult(this);
     }
 }

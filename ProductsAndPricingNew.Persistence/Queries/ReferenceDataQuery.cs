@@ -233,4 +233,58 @@ internal sealed class ReferenceDataQuery : IReferenceDataQuery
 
         return (await connection.QueryAsync<PrintFormatReferenceDto>(command)).AsList();
     }
+
+    public async Task<IReadOnlyCollection<TransferTypeReferenceDto>> GetTransferTypesAsync(CancellationToken ct = default)
+    {
+        const string sql = """
+           SELECT Id, Name
+           FROM Product.TransferType
+           WHERE IsDeleted = 0
+           ORDER BY Name;
+           """;
+
+        await using DbConnection connection = _connectionFactory.CreateConnection();
+
+        CommandDefinition command = new(
+            commandText: sql,
+            cancellationToken: ct);
+
+        return (await connection.QueryAsync<TransferTypeReferenceDto>(command)).AsList();
+    }
+
+    public async Task<IReadOnlyCollection<CourseLanguageReferenceDto>> GetCourseLanguagesAsync(CancellationToken ct = default)
+    {
+        const string sql = """
+           SELECT Id, Name
+           FROM Product.CourseLanguage
+           WHERE IsDeleted = 0
+           ORDER BY Name;
+           """;
+
+        await using DbConnection connection = _connectionFactory.CreateConnection();
+
+        CommandDefinition command = new(
+            commandText: sql,
+            cancellationToken: ct);
+
+        return (await connection.QueryAsync<CourseLanguageReferenceDto>(command)).AsList();
+    }
+
+    public async Task<IReadOnlyCollection<CourseIntensityReferenceDto>> GetCourseIntensitiesAsync(CancellationToken ct = default)
+    {
+        const string sql = """
+           SELECT Id, Name
+           FROM Product.CourseIntensity
+           WHERE IsDeleted = 0
+           ORDER BY Name;
+           """;
+
+        await using DbConnection connection = _connectionFactory.CreateConnection();
+
+        CommandDefinition command = new(
+            commandText: sql,
+            cancellationToken: ct);
+
+        return (await connection.QueryAsync<CourseIntensityReferenceDto>(command)).AsList();
+    }
 }

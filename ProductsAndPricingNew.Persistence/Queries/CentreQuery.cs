@@ -268,6 +268,24 @@ internal sealed class CentreQuery : BaseQuery, ICentreQuery
             PageSize: pageSize);
     }
 
+    public async Task<IReadOnlyCollection<CentreOptionDto>> GetOptionsAsync(CancellationToken ct = default)
+    {
+        const string sql = """
+            SELECT c.Id, c.Name
+            FROM PricingRef.Centre c
+            WHERE c.IsDeleted = 0
+            ORDER BY c.Name;
+            """;
+
+        await using DbConnection connection = _connectionFactory.CreateConnection();
+
+        CommandDefinition command = new(
+            commandText: sql,
+            cancellationToken: ct);
+
+        return (await connection.QueryAsync<CentreOptionDto>(command)).AsList();
+    }
+
     private static CentreDetailsDto MapDetailsRow(
         CentreDetailsRow row,
         IReadOnlyCollection<CentreContactRow> contactRows,

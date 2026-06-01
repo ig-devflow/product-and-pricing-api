@@ -16,8 +16,8 @@ public sealed class Division : AggregateRoot<int>
     public string? TermsAndConditions { get; private set; }
     public string? GroupsPaymentTerms { get; private set; }
     public WebsiteUrl WebsiteUrl { get; private set; } = WebsiteUrl.Empty;
-    public EmailAddress HeadOfficeEmail { get; private set; } = EmailAddress.Empty;
-    public TelephoneNumber HeadOfficeTelephoneNo { get; private set; } = TelephoneNumber.Empty;
+    public EmailAddress? HeadOfficeEmail { get; private set; } = EmailAddress.Empty;
+    public TelephoneNumber? HeadOfficeTelephoneNo { get; private set; } = TelephoneNumber.Empty;
     public Address ContactAddress { get; private set; } = Address.Empty;
     public ImageFile AccreditationBanner { get; private set; } = ImageFile.Empty;
     public IReadOnlyCollection<DivisionTextContent> Texts => _texts.AsReadOnly();

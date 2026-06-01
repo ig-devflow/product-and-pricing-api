@@ -218,6 +218,24 @@ internal sealed class DivisionQuery : BaseQuery, IDivisionQuery
             PageSize: pageSize);
     }
 
+    public async Task<IReadOnlyCollection<DivisionOptionDto>> GetOptionsAsync(CancellationToken ct = default)
+    {
+        const string sql = """
+            SELECT d.Id, d.Name
+            FROM PricingRef.Division d
+            WHERE d.IsDeleted = 0
+            ORDER BY d.Name;
+            """;
+
+        await using DbConnection connection = _connectionFactory.CreateConnection();
+
+        CommandDefinition command = new(
+            commandText: sql,
+            cancellationToken: ct);
+
+        return (await connection.QueryAsync<DivisionOptionDto>(command)).AsList();
+    }
+
     internal static DivisionDetailsDto MapDetailsRow(DivisionDetailsRow row, IReadOnlyCollection<DivisionTextContentDto> texts)
     {
         return new DivisionDetailsDto(

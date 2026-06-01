@@ -82,7 +82,7 @@ public sealed class Centre : AggregateRoot<int>
     public void WithTransferEmergencyTelephone(string? value) =>
         TransferEmergencyTelephone = TelephoneNumber.Create(value);
 
-    public void ChangeBrandColor(string? value) =>
+    public void WithBrandColor(string? value) =>
         BrandColor = HexColor.Create(value);
 
     public void WithContactAddress(AddressDefinition? definition) => // todo: CountryId is obligatory field

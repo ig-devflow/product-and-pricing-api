@@ -207,6 +207,26 @@ internal sealed class SchoolQuery : BaseQuery, ISchoolQuery
             PageSize: pageSize);
     }
 
+    public async Task<IReadOnlyCollection<SchoolOptionDto>> GetOptionsAsync(int? centreId = null, CancellationToken ct = default)
+    {
+        const string sql = """
+            SELECT s.Id, s.Name
+            FROM PricingRef.School s
+            WHERE s.IsDeleted = 0
+              AND (@CentreId IS NULL OR s.CentreId = @CentreId)
+            ORDER BY s.Name;
+            """;
+
+        await using DbConnection connection = _connectionFactory.CreateConnection();
+
+        CommandDefinition command = new(
+            commandText: sql,
+            parameters: new { CentreId = centreId },
+            cancellationToken: ct);
+
+        return (await connection.QueryAsync<SchoolOptionDto>(command)).AsList();
+    }
+
     private static SchoolDetailsDto MapDetailsRow(SchoolDetailsRow row)
     {
         return new SchoolDetailsDto(

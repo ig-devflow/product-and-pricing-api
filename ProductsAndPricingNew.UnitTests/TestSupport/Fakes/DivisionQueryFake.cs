@@ -42,4 +42,7 @@ internal sealed class DivisionQueryFake : IDivisionQuery
         PagedResult<DivisionListItemDto> result = new([], 0, paging.GetPage(), paging.GetPageSize());
         return Task.FromResult(result);
     }
+
+    public Task<IReadOnlyCollection<DivisionOptionDto>> GetOptionsAsync(CancellationToken ct = default)
+        => Task.FromResult<IReadOnlyCollection<DivisionOptionDto>>([]);
 }

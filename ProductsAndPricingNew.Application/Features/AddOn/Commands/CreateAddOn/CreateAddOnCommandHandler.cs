@@ -17,7 +17,6 @@ internal sealed class CreateAddOnCommandHandler : IRequestHandler<CreateAddOnCom
     private readonly IUnitTypeProvider _unitTypeProvider;
     private readonly IUnitOfWork _unitOfWork;
 
-
     public CreateAddOnCommandHandler(
         IAddOnQuery addOnQuery,
         IAddOnRepository addOnRepository,
